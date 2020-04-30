@@ -45,9 +45,9 @@ def str2bool(v):
 def checkEnumuation(v):
     if v.lower() in ('zeta_max'):
         return True
-    if v.lower() in ('maxvel.63.nc'):
+    if v.lower() in ('vel_max'):
         return True
-    if v.lower() in ('maxinundepth.63.nc'):
+    if v.lower() in ('inun_max'):
         return True
     return False
 
@@ -448,6 +448,6 @@ if __name__ == '__main__':
     parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=True,
                         help='Boolean: Display the generated and saved tif plot')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
-                        help='String: zeta_max, maxvel.63.nc, or maxinundepth.63.nc')
+                        help='String: zeta_max, vel_max, or inun_max')
     args = parser.parse_args()
     sys.exit(main(args))
