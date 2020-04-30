@@ -1,6 +1,6 @@
 ##
-## Preliminary methods to manage the config yaml and also 
-## begin managing the environment, eg., startup up logging
+## Methods to manage the config yaml and env 
+## eg., startup up logging
 ##
 ## APSVIZ, April 2020.
 ##
@@ -17,7 +17,7 @@ LOGGER = None
 
 class Utilities:
     """
-    Class to manage access to the requisite YAML file (default name=-main.yml)
+    Class to manage access to the requisite YAML file (default name=main.yml)
     and manage the environment
     """
 
@@ -35,7 +35,7 @@ class Utilities:
 
     def initialize_logging(self):
         """
-        Initialize project logging
+        Initialize logging
         """
         # logger = logging.getLogger(__name__)
         logger = logging.getLogger("apsviz_services")
@@ -43,9 +43,8 @@ class Utilities:
         logger.setLevel(log_level)
 
         # LogFile = self.config['LOG_FILE']
-        # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
         LogFile = 'log'
-        print('Use a log filename of '+LogFile)
+        # print('Use a log filename of '+LogFile)
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(funcName)s : %(module)s : %(name)s : %(message)s ')
 
         dirname = os.path.dirname(LogFile)
@@ -74,7 +73,7 @@ class Utilities:
 
     def reg_grid_params(self):
         # load list of reg grid params
-        return self.config["REGRID"]["RECT"]
+        return self.config["TARGETGRID"]["RECT"]
 
     def print_dict(self, t, s):
         if not isinstance(t, dict) and not isinstance(t, list):
@@ -123,12 +122,12 @@ class Utilities:
         storing the image data. basedir/subdir/filename 
         subdir is created as needed.
         """
-        print(basedir)
+        # print(basedir)
         if not os.path.exists(basedir):
             sys.error("Basepath for dumping files non existent "+str(basedir))
         fulldir = os.path.join(basedir, subdir)
         if not os.path.exists(fulldir):
-            #print("Create datastation dir space at "+fulldir)
+            # print("Create datastation dir space at "+fulldir)
             try:
                 os.mkdir(fulldir)
             except OSError:
