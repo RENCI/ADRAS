@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook demonstrates an approach for computing geotiffs from ADCIRC FEM output in netCDF. 
+# This code originally derived from a jhub notebook 
+# demonstrates an approach for computing geotiffs from ADCIRC FEM output in netCDF. 
 
 import os, sys, time
 #import re
@@ -51,34 +52,6 @@ def checkEnumuation(v):
         return True
     return False
 
-def build_dict_from_yaml():
-    """
-    Read the config yaml file and populate the dict.
-    used downstream to build URLs.
-    """
-    try:
-        config = utilities.load_config()['ADCIRC']
-    except:
-        utilities.log.error("load_config yaml failed")
-    datagrid = config['AdcircGrid']
-    machine = config['Machine']
-    instance = config['Instance']
-    baseurl =  config['baseurl']
-    catpart = config['catPart']
-    #dodscpart = '/dodsC/%s/nam/%s/%s/%s/%s/%s/%s'
-    dodscpart = config['dodsCpart'] 
-    fortnumber = config['fortNumber']
-    # NOTE the use of dodsCpart has changed wrt ADDA work 
-    urldict = {
-        'AdcircGrid': datagrid,
-        'Machine': machine, 
-        'Instance': instance, 
-        'baseurl': baseurl,
-        'catPart': catpart,
-        'dodsCpart': dodscpart,
-        'fortNumber': fortnumber}
-    return urldict
-
 def get_url(dict_cfg,varname,datestr,hourstr,yearstr,enstag):
     """
     Build a URL for finding ADCIRC information.
@@ -86,7 +59,7 @@ def get_url(dict_cfg,varname,datestr,hourstr,yearstr,enstag):
         datastr: "YYYYmmdd"
         hourstr: "hh"
         yearstr: "YYYY"
-        input dict from build_dict_from_yaml.
+        input dict.
     Returns:
         url as a full path string
     """
@@ -102,9 +75,10 @@ def get_url(dict_cfg,varname,datestr,hourstr,yearstr,enstag):
 
 def validate_url(url):  # TODO
     status = True # Innocent until proven guilty
+    # check for validity
     if not status:
         utilities.log.error("Invalid URL:".format(url))
-    return True 
+    return status 
 
 # Define some basic grid functionality and defaults
 
@@ -246,7 +220,7 @@ def construct_url(varname):
     dstr = dt.datetime.strftime(thisdate, "%Y%m%d") #
     ystr = dt.datetime.strftime(thisdate, "%Y") # NOTE slight API change to get_url
     # Fetch url
-    urldict = build_dict_from_yaml()
+    urldict = utilities.load_config()['ADCIRC']
     utilities.log.info('url dict {}'.format(urldict))
     url=get_url(urldict,varfile,dstr,str(cyc),ystr,'namforecast')
     utilities.log.info('Validated dict {}'.format(url))
@@ -384,6 +358,9 @@ def main(args):
     showInterpolatedPlot = args.showInterpolatedPlot
     showRasterizedPlot = args.showRasterizedPlot
 
+    if not checkEnumuation(varname):
+        utilities.info.error('Incorrect varname input {}'.format(varname))
+
     utilities.log.info('Start ADSVIZ')
     config = utilities.load_config()
 
@@ -394,6 +371,9 @@ def main(args):
     # Now construct filename destination using the dstr,cyc data
 
     iometadata = '_'.join([dstr,cyc])
+    utilities.log.info('Attempt building dir name: {}, {}, {}'.format(
+                 config['DEFAULT']['RDIR'], iometadata, experimentTag))
+
     if experimentTag==None:
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
     else:
