@@ -1,0 +1,63 @@
+The APSVIZ code is structured similarly to the ADDA code. 
+
+1) A few env paramaters can be specified using your startup script.
+This assumes you githuit pulled into you home space
+
+APSVIZHOME="~/APSVIZ"
+RUNTIMEDIR="."
+PYTHONPATH=$APSVIZHOME:$PYTHONPATH
+export PYTHONPATH
+export APSVIZHOME
+
+Of course, setting RUNTIMEDIR this way saves in the CWD.
+
+2) These variables are piocked up by the YAML file.
+Altewrnative, yoiu could specify RDIR here as a real path of you like
+
+DEFAULT: &default
+  PHOME: $APSVIZHOME     #  this is currently ignored
+  RDIR: $RUNTIMEDIR
+  LOGGING: true
+  LOGLEVEL: DEBUG
+  GRAPHICS: true
+
+3) The input arguments can be listed as
+python ADCIRC2Geotiff.py --help (-h)
+
+usage: ADCIRC2Geotiff.py [-h] [--experiment_name EXPERIMENT_NAME]
+                         [--tif_filename FILENAME]
+                         [--showInterpolatedPlot SHOWINTERPOLATEDPLOT]
+                         [--showRasterizedPlot SHOWRASTERIZEDPLOT]
+                         [--varname VARNAME]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --experiment_name EXPERIMENT_NAME
+                        Highlevel Experiment-tag value
+  --tif_filename FILENAME
+                        String: tif output file name will be prepended by new
+                        path
+  --showInterpolatedPlot SHOWINTERPOLATEDPLOT
+                        Boolean: Display the comparison of Trangular and
+                        interpolated plots
+  --showRasterizedPlot SHOWRASTERIZEDPLOT
+                        Boolean: Display the generated and saved tif plot
+  --varname VARNAME     String: zeta_max, maxvel.63.nc, or maxinundepth.63.nc
+
+EXPERIMENT_NAME is optional but if specified is incorporatred into the final destination directory name
+FILENAME is a filename for the tif file (def = test.tif). Directories are added by the code.
+Setting the plots to True resulkts in realtime image display. 
+
+The results of using(not) the experiment_name is as follows:
+given the filename of 'test.tif' the file is saved to 
+
+$RUNTIMEDIR/APSVIZ_experiment_name_20200430_06
+or if not specified then 
+$RUNTIMEDIR/APSVIZ_20200430_06
+
+The date/time (dstr/cyc) information is added by the program
+
+
+
+4) A log file is created in the working directory with the name of "log"
+
