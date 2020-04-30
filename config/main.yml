@@ -35,10 +35,3 @@ TIME: &time
   hoffset: -6
   period: 6
 
-
-GRAPHICS: &graphics
-  CMAP: "bwr"
-  NCOL: 20
-  VMIN: -0.5
-  VMAX: 0.5
-  MAPRES: "i"
