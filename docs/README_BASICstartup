@@ -8,6 +8,7 @@ RUNTIMEDIR="."
 PYTHONPATH=$APSVIZHOME:$PYTHONPATH
 export PYTHONPATH
 export APSVIZHOME
+export RUNTIMEDIR
 
 Of course, setting RUNTIMEDIR this way saves in the CWD.
 
