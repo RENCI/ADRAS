@@ -350,13 +350,15 @@ def main(args):
     """
     Prototype script to construct geotif files ferm the ADCIRC trangulation grid
     """
-
+    setGetURL = True
     utilities.log.info(args)
     experimentTag = args.experiment_name
     filename = args.filename
     varname = args.varname
     showInterpolatedPlot = args.showInterpolatedPlot
     showRasterizedPlot = args.showRasterizedPlot
+    
+# Add in option to simply upload a url
 
     if not checkEnumuation(varname):
         utilities.info.error('Incorrect varname input {}'.format(varname))
@@ -364,7 +366,16 @@ def main(args):
     utilities.log.info('Start ADSVIZ')
     config = utilities.load_config()
 
-    url, dstr, cyc = construct_url(varname)
+    if args.url != None:
+        setGetURL = False
+        url = args.url
+        dstr = '00' # Need to fake these if you input a url
+        cyc = '00'
+
+    if setGetURL:
+        utilities.log.info('Executing the getURL process')
+        url, dstr, cyc = construct_url(varname)
+
     if not validate_url(url):
         utilities.log.info('URL is invalid {}'.format(url))
 
@@ -429,5 +440,7 @@ if __name__ == '__main__':
                         help='Boolean: Display the generated and saved tif plot')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
                         help='String: zeta_max, vel_max, or inun_max')
+    parser.add_argument('--url', action='store', dest='url', default=None,
+                        help='String: simply input a URL for processing')
     args = parser.parse_args()
     sys.exit(main(args))
