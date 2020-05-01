@@ -14,6 +14,7 @@ import logging
 
 LOGGER = None
 
+
 class Utilities:
     """
     Class to manage access to the requisite YAML file (default name=main.yml)
