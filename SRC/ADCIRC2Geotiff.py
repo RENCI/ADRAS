@@ -34,7 +34,6 @@ utilities.log.info("Geopandas Version = {}".format(gpd.__version__))
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
 
-
 def str2bool(v):
     if isinstance(v, bool):
         return v
