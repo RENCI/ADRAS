@@ -6,18 +6,17 @@ DEFAULT: &default
   LOGLEVEL: DEBUG
   GRAPHICS: true
 
-REGRID: &regrid
+TARGETGRID: &targetgrid
   upperleft_lo: -77.09
   upperleft_la: 35.7
   res: 100  # resolution in deg
   nx: 1000
   ny: 1000
-  reference: 'epsg:6346'
+  coordrefsys: 'epsg:6346'
 
 ADCIRC: &adcirc
   AdcircGrid: 'hsofs'
   Machine: 'hatteras.renci.org'
-  NodeList: 'adcirc_test_nodes.dat'
   Instance: 'ncfs-dev-hsofs-nam-master'
   baseurl: 'http://tds.renci.org:8080/thredds/'
   catPart: '/catalog/2020/nam/catalog.xml'
@@ -33,5 +32,4 @@ VARFILEMAP: &varfilemap
 TIME: &time
   doffset: 0
   hoffset: -6
-  period: 6
 
