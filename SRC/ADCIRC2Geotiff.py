@@ -161,7 +161,7 @@ def construct_geopandas(agdict, targetepsg):
     ytemp=gdf['geometry'].y
     utilities.log.info('Time to create geopandas was {}'.format(time.time()-t0))
     utilities.log.debug('GDF data set {}'.format(gdf))
-    return xtemp, ytemp
+    return xtemp, ytemp, gdf
 
 # project interpolation grid to target crs
 
@@ -246,7 +246,7 @@ def construct_grid(url, varname):
     #
     targetgrid, targetepsg = read_inter_grid_yaml()
     # targetgrid, targetepsg = default_inter_grid() # A builtin option but same as yaml example
-    xtemp, ytemp = construct_geopandas(agdict, targetepsg)
+    xtemp, ytemp, gdf = construct_geopandas(agdict, targetepsg)
     t0 = time.time()
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
     deltat = time.time()-t0
@@ -254,7 +254,7 @@ def construct_grid(url, varname):
     vmax=np.nanmax(advardict['data'])
     utilities.log.info('Min/Max in ADCIRC Slice: {}/{}'.format(vmin,vmax))
     print("Min/Max in ADCIRC Slice: {}/{}".format(vmin,vmax))
-    return xtemp, ytemp, tri, targetgrid, targetepsg, advardict
+    return gdf, xtemp, ytemp, tri, targetgrid, targetepsg, advardict
 
 # Assemble some optionmal plot methods
 
@@ -394,7 +394,7 @@ def main(args):
 
     # Build final pieces for the subsequent plots
     t0 = time.time()
-    xtemp, ytemp, tri, targetgrid, targetepsg, advardict = construct_grid(url, varname)
+    gdf, xtemp, ytemp, tri, targetgrid, targetepsg, advardict = construct_grid(url, varname)
     utilities.log.info('Building ADCIRC grid took {} secs'.format(time.time()-t0))
 
     ## everything above this line is a once-per-grid cost.  Only need the grid parts, not the actual solution
