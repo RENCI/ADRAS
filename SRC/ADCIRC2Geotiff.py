@@ -160,19 +160,16 @@ def construct_geopandas(agdict, targetepsg):
     gdf = gpd.GeoDataFrame(
         df_Adcirc, geometry=gpd.points_from_xy(agdict['lon'], agdict['lat']))
     # print(gdf.crs)
-
     # init crs is LonLat, WGS84
     utilities.log.info('Adding WGS84 crs')
     gdf.crs = {'init' :'epsg:4326'}
     utilities.log.info('Converting to {}'.format(targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
-    
     # get converted ADCIRC node coordinates
     xtemp = gdf['geometry'].x
     ytemp = gdf['geometry'].y
     utilities.log.info('Time to create geopandas was {}'.format(time.time()-t0))
     utilities.log.debug('GDF data set {}'.format(gdf))
-
     return xtemp, ytemp, gdf
 
 # project interpolation grid to target crs
@@ -344,14 +341,43 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
         utilities.log.error('Failed to write TIF file to {}'.format(filename))
     dst.close()
 
+def write_png(filenametif='test.tif', filenamepng='test.png'):
+    """
+    Construct the new PNG file  from the tif file
+    Translate will automatically create and save the new file,
+    """
+    from osgeo import gdal
+    scale = '-scale min_val max_val'
+    options_list = [
+        '-ot Byte',
+        '-of PNG',
+        scale
+    ] 
+    options_string = " ".join(options_list)
+    gdal.Translate(filenamepng,
+           filenametif,
+           options=options_string)
+    utilities.log.info('Storing a PNG with the name {}'.format(filenamepng))
+
 def plot_tif(filename='test.tif'):
     """
     Read TIF file that has been previously generated
     """
-    dataset = rio.open(filename)
+    dataset = rio.open(filename, driver='GTiff')
     band1 = dataset.read(1,masked=True)
     show(band1,cmap='jet')
     msk=dataset.read_masks(1)
+
+def plot_png(filename='test.png'):
+    """
+    Read TIF file that has been previously generated
+    """
+    import matplotlib.image as mpimg
+
+    img = mpimg.imread(filename)
+    plt.imshow(img)
+    plt.show()
+
 
 #################################################################
 ## Start doing some work
@@ -369,14 +395,16 @@ def plot_tif(filename='test.tif'):
 def main(args):
     """
     Prototype script to construct geotif files from the ADCIRC trangular grid
-    """
+    filename'"""
     setGetURL = True
     utilities.log.info(args)
     experimentTag = args.experiment_name
     filename = args.filename
+    png_filename = args.png_filename
     varname = args.varname
     showInterpolatedPlot = args.showInterpolatedPlot
     showRasterizedPlot = args.showRasterizedPlot
+    showPNGPlot = args.showPNGPlot
     
     # Add in option to simply upload a url
 
@@ -409,6 +437,7 @@ def main(args):
     else:
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
     filename = '/'.join([rootdir,filename])
+    png_filename = '/'.join([rootdir,png_filename])
     utilities.log.info('Using outputfilename of {}'.format(filename))
 
     # Build final pieces for the subsequent plots
@@ -437,13 +466,20 @@ def main(args):
 
     t0 = time.time()
     write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
-    utilities.log.info('compute_mesh took {} secs'.format(time.time()-t0))
+    utilities.log.info('write_tif took {} secs'.format(time.time()-t0))
+
+    t0 = time.time()
+    write_png(filename, png_filename)
+    utilities.log.info('write_png took {} secs'.format(time.time()-t0))
 
     if (showInterpolatedPlot):
         plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict)
 
     if (showRasterizedPlot):
         plot_tif(filename)
+
+    if (showPNGPlot):
+        plot_png(png_filename)
 
     utilities.log.info('Finished') 
 
@@ -455,10 +491,14 @@ if __name__ == '__main__':
                         help='Highlevel Experiment-tag value')
     parser.add_argument('--tif_filename', action='store', dest='filename', default='test.tif',
                         help='String: tif output file name will be prepended by new path')
+    parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',
+                        help='String: png output file name will be prepended by new path')
     parser.add_argument('--showInterpolatedPlot', type=str2bool, action='store', dest='showInterpolatedPlot', default=True,
                         help='Boolean: Display the comparison of Trangular and interpolated plots')
     parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=True,
                         help='Boolean: Display the generated and saved tif plot')
+    parser.add_argument('--showPNGPlot', type=str2bool, action='store', dest='showPNGPlot', default=True,
+                        help='Boolean: Display the generated and saved png plot')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
                         help='String: zeta_max, vel_max, or inun_max')
     parser.add_argument('--url', action='store', dest='url', default=None,
