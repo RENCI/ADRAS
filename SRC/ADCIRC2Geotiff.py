@@ -34,6 +34,7 @@ utilities.log.info("Geopandas Version = {}".format(gpd.__version__))
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
 
+ensname = 'namforecast'
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -184,7 +185,7 @@ def construct_geopandas(agdict, targetepsg):
 
     # init crs is LonLat, WGS84
     utilities.log.info('Adding WGS84 crs')
-    gdf.crs = {'init' :'epsg:4326'}
+    gdf.crs = {'init':'epsg:4326'}
     utilities.log.info('Converting to {}'.format(targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
     
@@ -205,7 +206,7 @@ def compute_geotiff_grid(targetgrid, targetepsg):
     """
     df_target = pd.DataFrame(data=targetgrid)
     gdf_target = gpd.GeoDataFrame(
-        df_target, geometry = gpd.points_from_xy(df_target.Longitude, df_target.Latitude))
+        df_target, geometry=gpd.points_from_xy(df_target.Longitude, df_target.Latitude))
     # print(gdf_target.crs)
 
     # init projection is LonLat, WGS84
@@ -223,14 +224,20 @@ def compute_geotiff_grid(targetgrid, targetepsg):
     xx, yy = np.meshgrid(x, y)
 
     # get centroid coords
-    xm=(x[1:] + x[:-1]) / 2
-    ym=(y[1:] + y[:-1]) / 2
-    xxm,yym = np.meshgrid(xm,ym)
-    utilities.log.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x,upperleft_y)) 
+    xm = (x[1:] + x[:-1]) / 2
+    ym = (y[1:] + y[:-1]) / 2
+    xxm, yym = np.meshgrid(xm, ym)
+    utilities.log.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
     
-    # also need geometry
-    meshdict ={'uplx': upperleft_x, 'uply': upperleft_y,
-               'x': x, 'y': y, 'xx': xx, 'yy': yy, 'xxm': xxm, 'yym': yym}
+    meshdict = {'uplx': upperleft_x,
+                'uply': upperleft_y,
+                'x': x,
+                'y': y,
+                'xx': xx,
+                'yy': yy,
+                'xxm': xxm,
+                'yym': yym}
+
     return meshdict
 
 # Aggregation of individual methods
@@ -260,9 +267,9 @@ def construct_url(varname):
     utilities.log.info('url dict {}'.format(urldict))
 
     # TODO: we will also need to elevate "namforecast" to be a default/input parameter, since this
-    # can take several different values that depend in the ASGS configuration. namforecast is a reasonable
-    # default
-    url = get_url(urldict, varfile, dstr, str(cyc), ystr, 'namforecast')
+    # can take several different values that depend in the ASGS configuration.
+    # However, namforecast is a reasonable default
+    url = get_url(urldict, varfile, dstr, str(cyc), ystr, ensname)
     utilities.log.info('Validated url {}'.format(url))
     utilities.log.info('Datetime {}'.format(dstr))
     utilities.log.debug('Constructed URL {}'.format(url))
@@ -270,39 +277,22 @@ def construct_url(varname):
 
 
 # get ADCIRC grid parts;  this need only be done once, as it can be time-consuming over the network
-def extract_grid(url, varname):
+def extract_grid(url, targetepsg):
     """
     Extract ADCIRC grid parts from THREDDS dataset
     Results:
-        advardict:
         tri:
-        xtemp,ytemp:
-        targetgrid, targetepsg:
     """
     nc = netCDF4.Dataset(url)
     # print(nc.variables.keys())
     agdict = get_adcirc_grid(nc)
 
-    # TODO: this needs to be removed/elevated from extract_grid, since the advardict contains the 
-    # actual variable data to project to geotiff.  When we eventually deal with tim-dependent data,
-    # get_adcirc_slice takes a time index to extract from THREDDS/netCDF
-    advardict = get_adcirc_slice(nc, varname)
-    
-    targetgrid, targetepsg = read_inter_grid_yaml()
-    # targetgrid, targetepsg = default_inter_grid() # A builtin option but same as yaml example
     xtemp, ytemp, gdf = construct_geopandas(agdict, targetepsg)
-    t0 = time.time()
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
-    deltat = time.time()-t0
-    vmin = np.nanmin(advardict['data'])
-    vmax = np.nanmax(advardict['data'])
-    utilities.log.info('Min/Max in ADCIRC Slice: {}/{}'.format(vmin, vmax))
-    # print("Min/Max in ADCIRC Slice: {}/{}".format(vmin,vmax))
-    return xtemp, ytemp, gdf, tri, targetgrid, targetepsg, advardict
+    return tri
 
 
 # Assemble some optional plot methods
-
 def plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict):
     """
     A rough plotting routine generally used for validation studies.
@@ -347,6 +337,7 @@ def plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict):
     ax[1].set_title('Interpolated ADCIRC {}'.format(varname), fontsize=14)
     plt.show()
 
+
 def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
     Construct the new TIF file and store it to disk in filename
@@ -376,7 +367,7 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     dst.close()
 
 
-def plot_tif(filename= 'test.tif'):
+def plot_tif(filename='test.tif'):
     """
     Read TIF file that has been previously generated
     """
@@ -415,62 +406,91 @@ def main(args):
     utilities.log.info('Start ADCIRC2Geotiff')
     config = utilities.load_config()
 
+    if args.url is not None and args.urljson is not None:
+        utilities.log.error('Cannot specify both url and urljson.')
+        sys.exit(1)
+
     if args.url is not None:
         setGetURL = False
-        url = args.url
+        urls = {'single': args.url}
         dstr = '00'  # Need to fake these if you input a url
+        cyc = '00'
+
+    if args.urljson is not None:
+        setGetURL = False
+        if not os.path.exists(args.urljson):
+            utilities.log.error('urljson file not found.')
+            sys.exit(1)
+        urls = utilities.read_json_file(args.urljson)
+        dstr = '00'  # Need to fake these if you input a urljson
         cyc = '00'
 
     if setGetURL:
         utilities.log.info('Executing the getURL process')
         url, dstr, cyc = construct_url(varname)
+        urls = {'dstr': url}
 
-    if not validate_url(url):
-        utilities.log.info('URL is invalid {}'.format(url))
 
-    # Now construct filename destination using the dstr,cyc data
+    # if not validate_url(urls):
+    #     utilities.log.info('URL is invalid {}'.format(url))
+
+    # Now construct filename destination using the dstr, cyc data
     iometadata = '_'.join([dstr, cyc])
     utilities.log.info('Attempt building dir name: {}, {}, {}'.format(
                  config['DEFAULT']['RDIR'], iometadata, experimentTag))
 
-    if experimentTag==None:
+    if experimentTag is None:
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
     else:
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
-    filename = '/'.join([rootdir,filename])
+    filename = '/'.join([rootdir, filename])
     utilities.log.info('Using outputfilename of {}'.format(filename))
 
     # Build final pieces for the subsequent plots
+#    if args.urljson is not None:
+#        # my_dict.keys()[0]
+#        url = list(urls.values())[0]
+
+    targetgrid, targetepsg = read_inter_grid_yaml()
+    # targetgrid, targetepsg = default_inter_grid() # A builtin option but same as yaml example
+    # use the first url to get the ADCIRC grid parts, assumes all urls point to the same
+    # ADCIRC grid...
+    url = list(urls.values())[0]
+
     t0 = time.time()
-    xtemp, ytemp, gdf, tri, targetgrid, targetepsg, advardict = extract_grid(url, varname)
+    tri = extract_grid(url, targetepsg)
     utilities.log.info('Building ADCIRC grid took {} secs'.format(time.time()-t0))
-
-    ## TODO: everything above this line is a once-per-grid cost, except for advardict.
-    ## xtemp, ytemp, tri, should be pickled and stored for future
-    ## Only need the grid parts, not the actual solution
-
-    # construct the interpolator
-    t0 = time.time()
-    interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
-    utilities.log.info('Finished linearInterpolator in {} secs'.format(time.time()-t0))
-
     t0 = time.time()
     meshdict = compute_geotiff_grid(targetgrid, targetepsg)
-    utilities.log.info('compute_geotiff_grid took {} secs'.format(time.time()-t0))
+    utilities.log.info('compute_geotiff_grid took {} secs'.format(time.time() - t0))
     xxm, yym = meshdict['xxm'], meshdict['yym']
 
-    # zi_lin is the interpolated data that form the rasterized data down below
-    zi_lin = interp_lin(xxm, yym)
-    utilities.log.debug('zi_lin {}'.format(zi_lin))
+    for utime, url in urls.items():
+        fname = "{}.tif".format(utime)
 
-    t0 = time.time()
-    write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
-    utilities.log.info('compute_mesh took {} secs'.format(time.time()-t0))
+        nc = netCDF4.Dataset(url)
+        advardict = get_adcirc_slice(nc, varname)
+        vmin = np.nanmin(advardict['data'])
+        vmax = np.nanmax(advardict['data'])
+        utilities.log.info('Min/Max in ADCIRC Slice: {}/{}'.format(vmin, vmax))
 
-    if (showInterpolatedPlot):
+        # construct the interpolator
+        t0 = time.time()
+        interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
+        utilities.log.info('Finished linearInterpolator in {} secs'.format(time.time()-t0))
+
+        # zi_lin is the interpolated data that form the rasterized data down below
+        zi_lin = interp_lin(xxm, yym)
+        utilities.log.debug('zi_lin {}'.format(zi_lin))
+
+        t0 = time.time()
+        write_tif(meshdict, zi_lin, targetgrid, targetepsg, fname)
+        utilities.log.info('compute_mesh took {} secs'.format(time.time()-t0))
+
+    if showInterpolatedPlot:
         plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict)
 
-    if (showRasterizedPlot):
+    if showRasterizedPlot:
         plot_tif(filename)
 
     utilities.log.info('Finished') 
@@ -492,5 +512,7 @@ if __name__ == '__main__':
                         help='String: zeta_max, vel_max, or inun_max')
     parser.add_argument('--url', action='store', dest='url', default=None,
                         help='String: simply input a URL for processing')
+    parser.add_argument('--urljson', action='store', dest='urljson', default=None,
+                        help='String: Filename with a json of urls to loop over.')
     args = parser.parse_args()
     sys.exit(main(args))

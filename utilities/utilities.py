@@ -10,6 +10,7 @@ import pandas as pd
 import sys
 import os
 import yaml
+import json
 import logging
 
 LOGGER = None
@@ -117,8 +118,8 @@ class Utilities:
                     sys.error("Creation of the high level run directory %s failed" % rundir)
         return rundir
 
-    def getSubdirectoryFileName(self, basedir, subdir, fname ):
-        """Check and existance of and construct filenames for 
+    def getSubdirectoryFileName(self, basedir, subdir, fname):
+        """Check and existence of and construct filenames for
         storing the image data. basedir/subdir/filename 
         subdir is created as needed.
         """
@@ -135,5 +136,12 @@ class Utilities:
             #else:
             #    print("Successfully created the directory %s " % fulldir)
         return os.path.join(fulldir, fname)
+
+    def read_json_file(self, filepath):
+        # Read data from JSON file specified by full path
+        data = {}
+        with open(filepath, 'r') as fp:
+            data = json.load(fp)
+        return data
 
 utilities = Utilities()
