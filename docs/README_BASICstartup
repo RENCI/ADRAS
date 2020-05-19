@@ -12,8 +12,8 @@ export RUNTIMEDIR
 
 Of course, setting RUNTIMEDIR this way saves in the CWD.
 
-2) These variables are piocked up by the YAML file.
-Altewrnative, yoiu could specify RDIR here as a real path of you like
+2) These variables are picked up by the YAML file.
+Alternatively, you could specify RDIR here as a real path of you like
 
 DEFAULT: &default
   PHOME: $APSVIZHOME     #  this is currently ignored
@@ -57,8 +57,6 @@ or if not specified then
 $RUNTIMEDIR/APSVIZ_20200430_06
 
 The date/time (dstr/cyc) information is added by the program
-
-
 
 4) A log file is created in the working directory with the name of "log"
 

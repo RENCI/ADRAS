@@ -427,7 +427,7 @@ def main(args):
     showRasterizedPlot = args.showRasterizedPlot
     showPNGPlot = args.showPNGPlot
     
-    showGDALPLot = True # Tells GDAL to load the tif and display it
+    showGDALPlot = True # Tells GDAL to load the tif and display it
     # Add in option to simply upload a url
 
     if not checkEnumuation(varname):
@@ -531,7 +531,7 @@ def main(args):
     if (showPNGPlot):
         plot_png(png_filename)
 
-    if (showGDALPLot:
+    if (showGDALPlot):
         # Can we reread the file using GDAL ?
         from osgeo import gdal
         ds = gdal.Open(filename).ReadAsArray()
