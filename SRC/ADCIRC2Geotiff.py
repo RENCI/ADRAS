@@ -102,6 +102,11 @@ def validate_url(url):  # TODO
 
 # Define some basic grid functionality and defaults
 
+# If the ASGS serbver is buggered but thredds is okay, this can results
+# in a fault thaty cannot easily be trapped:
+# Example: 
+# <class 'netCDF4._netCDF4.Variable'>
+# dim->dim.declsize0 > 0
 
 def get_adcirc_grid(nc):
     agdict = {}
@@ -498,6 +503,8 @@ def main(args):
 
     for utime, url in urls.items():
         fname = "{}.tif".format(utime)
+        print('fname')
+        print(fname)
 
         nc = netCDF4.Dataset(url)
         advardict = get_adcirc_slice(nc, varname)
@@ -515,7 +522,7 @@ def main(args):
         utilities.log.debug('zi_lin {}'.format(zi_lin))
 
         t0 = time.time()
-        write_tif(meshdict, zi_lin, targetgrid, targetepsg, fname)
+        write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
         utilities.log.info('compute_mesh took {} secs'.format(time.time()-t0))
 
         t0 = time.time()
