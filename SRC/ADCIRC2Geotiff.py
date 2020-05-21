@@ -4,6 +4,10 @@
 # This code originally derived from a jhub notebook 
 # implements an approach for computing geotiffs from ADCIRC FEM output in netCDF.
 
+# If inputting urlk as a json then we muist have filename metadata incliuded as:
+#{"1588269600000": "http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020043018/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/nowcast/maxele.63.nc"}
+# If simply imputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
+
 import os
 import sys
 import time
@@ -465,7 +469,6 @@ def main(args):
         url, dstr, cyc = construct_url(varname)
         urls = {'dstr': url}
 
-
     # if not validate_url(urls):
     #     utilities.log.info('URL is invalid {}'.format(url))
 
@@ -478,11 +481,8 @@ def main(args):
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
     else:
         rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
-    filename = '/'.join([rootdir,filename])
-    png_filename = '/'.join([rootdir,png_filename])
-    utilities.log.info('Using outputfilename of {}'.format(filename))
 
-    # Build final pieces for the subsequent plots
+#Build final pieces for the subsequent plots
 #    if args.urljson is not None:
 #        # my_dict.keys()[0]
 #        url = list(urls.values())[0]
@@ -492,7 +492,7 @@ def main(args):
     # use the first url to get the ADCIRC grid parts, assumes all urls point to the same
     # ADCIRC grid...
     url = list(urls.values())[0]
-
+    
     t0 = time.time()
     tri = extract_grid(url, targetepsg)
     utilities.log.info('Building ADCIRC grid took {} secs'.format(time.time()-t0))
@@ -502,9 +502,16 @@ def main(args):
     xxm, yym = meshdict['xxm'], meshdict['yym']
 
     for utime, url in urls.items():
-        fname = "{}.tif".format(utime)
-        print('fname')
-        print(fname)
+       
+        filename = '_'.join([utime,filename])
+        png_filename = '_'.join([utime,png_filename])
+        filename = '/'.join([rootdir,filename])
+        png_filename = '/'.join([rootdir,png_filename]) 
+        utilities.log.info('Using tif outputfilename of {}'.format(filename))
+        utilities.log.info('Using png outputfilename of {}'.format(png_filename))
+        #fname = "{}.tif".format(utime)
+        print('filename')
+        print(filename)
 
         nc = netCDF4.Dataset(url)
         advardict = get_adcirc_slice(nc, varname)
@@ -555,9 +562,9 @@ if __name__ == '__main__':
     parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
                         help='Highlevel Experiment-tag value')
     parser.add_argument('--tif_filename', action='store', dest='filename', default='test.tif',
-                        help='String: tif output file name will be prepended by new path')
+                        help='String: tif output file name will be prepended by new path. Must include extension')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',
-                        help='String: png output file name will be prepended by new path')
+                        help='String: png output file name will be prepended by new path. Must include extension')
     parser.add_argument('--showInterpolatedPlot', type=str2bool, action='store', dest='showInterpolatedPlot', default=True,
                         help='Boolean: Display the comparison of Trangular and interpolated plots')
     parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=True,
