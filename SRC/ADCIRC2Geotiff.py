@@ -436,7 +436,7 @@ def main(args):
     showRasterizedPlot = args.showRasterizedPlot
     showPNGPlot = args.showPNGPlot
     
-    showGDALPlot = True # Tells GDAL to load the tif and display it
+    showGDALPlot = False # Tells GDAL to load the tif and display it
     # Add in option to simply upload a url
 
     if not checkEnumuation(varname):
@@ -501,17 +501,16 @@ def main(args):
     utilities.log.info('compute_geotiff_grid took {} secs'.format(time.time() - t0))
     xxm, yym = meshdict['xxm'], meshdict['yym']
 
+    orig_filename = filename 
+    orig_png_filename = png_filename 
     for utime, url in urls.items():
-       
-        filename = '_'.join([utime,filename])
-        png_filename = '_'.join([utime,png_filename])
+        filename = '_'.join([utime,orig_filename])
+        png_filename = '_'.join([utime,orig_png_filename])
         filename = '/'.join([rootdir,filename])
         png_filename = '/'.join([rootdir,png_filename]) 
         utilities.log.info('Using tif outputfilename of {}'.format(filename))
         utilities.log.info('Using png outputfilename of {}'.format(png_filename))
         #fname = "{}.tif".format(utime)
-        print('filename')
-        print(filename)
 
         nc = netCDF4.Dataset(url)
         advardict = get_adcirc_slice(nc, varname)
@@ -542,10 +541,10 @@ def main(args):
     if showRasterizedPlot:
         plot_tif(filename)
 
-    if (showPNGPlot):
+    if showPNGPlot:
         plot_png(png_filename)
 
-    if (showGDALPlot):
+    if showGDALPlot:
         # Can we reread the file using GDAL ?
         from osgeo import gdal
         ds = gdal.Open(filename).ReadAsArray()
@@ -565,11 +564,11 @@ if __name__ == '__main__':
                         help='String: tif output file name will be prepended by new path. Must include extension')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',
                         help='String: png output file name will be prepended by new path. Must include extension')
-    parser.add_argument('--showInterpolatedPlot', type=str2bool, action='store', dest='showInterpolatedPlot', default=True,
+    parser.add_argument('--showInterpolatedPlot', type=str2bool, action='store', dest='showInterpolatedPlot', default=False,
                         help='Boolean: Display the comparison of Trangular and interpolated plots')
-    parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=True,
+    parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=False,
                         help='Boolean: Display the generated and saved tif plot')
-    parser.add_argument('--showPNGPlot', type=str2bool, action='store', dest='showPNGPlot', default=True,
+    parser.add_argument('--showPNGPlot', type=str2bool, action='store', dest='showPNGPlot', default=False,
                         help='Boolean: Display the generated and saved png plot')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
                         help='String: zeta_max, vel_max, or inun_max')
