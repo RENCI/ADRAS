@@ -39,7 +39,7 @@ class Utilities:
         Initialize logging
         """
         # logger = logging.getLogger(__name__)
-        logger = logging.getLogger("apsviz_services")
+        logger = logging.getLogger("ADCIRC_support_services")
         log_level = getattr(logging, self.config["DEFAULT"].get('LOGLEVEL', 'DEBUG'))
         logger.setLevel(log_level)
 
@@ -71,10 +71,6 @@ class Utilities:
             config = yaml.safe_load(stream)
         self.config = config
         return config
-
-    def reg_grid_params(self):
-        # load list of reg grid params
-        return self.config["TARGETGRID"]["RECT"]
 
     def print_dict(self, t, s):
         if not isinstance(t, dict) and not isinstance(t, list):
@@ -143,5 +139,16 @@ class Utilities:
         with open(filepath, 'r') as fp:
             data = json.load(fp)
         return data
+
+    def str2bool(v):
+        if isinstance(v, bool):
+            return v
+        if v.lower() in ('yes', 'true', 't', 'y', '1'):
+            return True
+        elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+            return False
+        else:
+            raise argparse.ArgumentTypeError('Boolean value expected.')
+
 
 utilities = Utilities()

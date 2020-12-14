@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This code originally derived from a jhub notebook 
-# implements an approach for computing geotiffs from ADCIRC FEM output in netCDF.
-
-# If inputting urlk as a json then we muist have filename metadata incliuded as:
+# If inputting urls as a json then we must have filename metadata included as:
 #{"1588269600000": "http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020043018/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/nowcast/maxele.63.nc"}
-# If simply imputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
+# If simply inputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
 
 import os
 import sys
@@ -37,19 +34,6 @@ utilities.log.info("Geopandas Version = {}".format(gpd.__version__))
 
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
-
-ensname = 'namforecast'
-
-def str2bool(v):
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
-
 
 # TODO: Jeff, the original intent of the regex that checkEnumuation replaced
 # was to catch the "max" in the variable name.  If max is in the name,
