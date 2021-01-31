@@ -29,8 +29,10 @@ RUN conda init bash
 RUN mkdir /repo
 WORKDIR /repo
 
-# get the repos
-RUN git clone https://github.com/RENCI/ADRAS.git
+# get the repos: Must be public or proviude user/pass
+# Until the repo is public you must supply your github username:password
+# 
+RUN git clone https://username:password@github.com/RENCI/ADRAS.git
                
 # move to the install directory
 WORKDIR ADRAS/deploy

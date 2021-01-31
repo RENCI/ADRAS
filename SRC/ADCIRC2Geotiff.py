@@ -130,7 +130,7 @@ def default_inter_grid():
     return targetgrid, crs
 
 
-def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '../config', 'geotiff.yml')):
+def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '../config', 'main.yml')):
     """
     fetch geotiff grid parameters from the yaml
     Returns:
@@ -222,7 +222,7 @@ def compute_geotiff_grid(targetgrid, targetepsg):
 
 # Aggregation of individual methods
 
-def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '../config', 'geotiff.yml')):
+def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '../config', 'main.yml')):
     """
     Assembles several method into an aggregate method to grab parameters
     from the yaml and construct a url. This is skipped if the user
@@ -270,7 +270,7 @@ def extract_grid(url, targetepsg):
 
     xtemp, ytemp, gdf = construct_geopandas(agdict, targetepsg)
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
-    return tri
+    return tri, gdf
 
 
 # Assemble some optional plot methods
@@ -399,7 +399,6 @@ def main(args):
     Prototype script to construct geotiff files from the ADCIRC triangular grid
     """
     utilities.log.info(args)
-    experimentTag = args.experiment_name
     filename = args.filename
     png_filename = args.png_filename
     varname = args.varname
@@ -414,7 +413,7 @@ def main(args):
         utilities.info.error('Incorrect varname input {}'.format(varname))
 
     utilities.log.info('Start ADCIRC2Geotiff')
-    main_config = utilities.load_config()
+    main_config = utilities.load_config(yaml_file=os.path.join(os.path.dirname(__file__), '../config', 'main.yml') )
 
     if args.urljson is not None:
         setGetURL = False
@@ -446,13 +445,10 @@ def main(args):
     # Now construct filename destination using the dstr, cyc data
 
     iometadata = '_'.join([dstr, cyc])
-    utilities.log.info('Attempt building dir name: {}, {}, {}'.format(
-                 main_config['DEFAULT']['RDIR'], iometadata, experimentTag))
+    utilities.log.info('Attempt building dir name: {}'.format(
+                 main_config['DEFAULT']['RDIR']))
 
-    if experimentTag is None:
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
-    else:
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
+    rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'])
 
 #Build final pieces for the subsequent plots
 #    if args.urljson is not None:
@@ -466,8 +462,11 @@ def main(args):
     url = list(urls.values())[0]
     
     t0 = time.time()
-    tri = extract_grid(url, targetepsg)
+    tri, gdf = extract_grid(url, targetepsg)
     utilities.log.info('Building ADCIRC grid took {} secs'.format(time.time()-t0))
+    utilities.writePickle(gdf, rootdir=rootdir,fileroot='geopandas',subdir='', iometadata='')
+    utilities.log.info('Wrote Geopandas file to {}'.format('gdf.pkl'))
+    
     t0 = time.time()
     meshdict = compute_geotiff_grid(targetgrid, targetepsg)
     utilities.log.info('compute_geotiff_grid took {} secs'.format(time.time() - t0))
@@ -529,8 +528,6 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
     parser = ArgumentParser()
-    parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
-                        help='Highlevel Experiment-tag value')
     parser.add_argument('--tif_filename', action='store', dest='filename', default='test.tif',
                         help='String: tif output file name will be prepended by new path. Must include extension')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',

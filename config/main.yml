@@ -1,27 +1,28 @@
---- # adcirc DA config file
+# A slightly different format than used for our typical ADCIRC thredds calls
+
 DEFAULT: &default
-  PHOME: $APSVIZHOME     #  this is currently ignored
-  RDIR: $RUNTIMEDIR   
+  RDIR: $RUNTIMEDIR
   LOGGING: true
   LOGLEVEL: DEBUG
   GRAPHICS: true
 
-TARGETGRID: &targetgrid
+ADCIRC: &adcirc
+  AdcircGrid: 'hsofs'
+  Machine: 'hatteras.renci.org'
+  NodeList: 'adcirc_test_nodes.dat'
+  Instance: "hsofs-nam-bob"  #  "ncfs-dev-hsofs-nam-master"
+  baseurl: 'http://tds.renci.org:8080/thredds/'
+  catPart: '/catalog/2020/nam/catalog.xml'
+  dodsCpart: '/dodsC/%s/nam/%s/%s/%s/%s/%s/%s'
+  fortNumber: '63'
+
+REGRID: &regrid
   upperleft_lo: -77.09
   upperleft_la: 35.7
   res: 100  # resolution in deg
   nx: 1000
   ny: 1000
-  coordrefsys: 'epsg:6346'
-
-ADCIRC: &adcirc
-  AdcircGrid: 'hsofs'
-  Machine: 'hatteras.renci.org'
-  Instance: 'ncfs-dev-hsofs-nam-master'
-  baseurl: 'http://tds.renci.org:8080/thredds/'
-  catPart: '/catalog/2020/nam/catalog.xml'
-  dodsCpart: '/dodsC/%s/nam/%s/%s/%s/%s/%s/%s'
-  fortNumber: '63'
+  reference: 'epsg:6346'
 
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'
@@ -32,4 +33,12 @@ VARFILEMAP: &varfilemap
 TIME: &time
   doffset: 0
   hoffset: -6
+  period: 6
+
+GRAPHICS: &graphics
+  CMAP: "bwr"
+  NCOL: 20
+  VMIN: -0.5
+  VMAX: 0.5
+  MAPRES: "i"
 

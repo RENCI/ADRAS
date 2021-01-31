@@ -2,7 +2,7 @@
 conda activate adras
 
 export PYTHONPATH=/home/jtilson/ADRAS
-export RUNTIMEDIR=./TEST
+export RUNTIMEDIR=.
 
 # Fetch via http:
 #
@@ -10,9 +10,14 @@ python ADCIRC2Geotiff.py --urljson data_test.json  --showInterpolatedPlot --show
 
 # Fetch via local 
 #
-python ADCIRC2Geotiff.py --varname 'zeta_max' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/maxele.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
+python ./SRC/ADCIRC2Geotiff.py --varname 'zeta_max' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/maxele.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
 
-python ADCIRC2Geotiff.py --varname 'zeta' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/fort.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
+python ./SRC/ADCIRC2Geotiff.py --varname 'zeta' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/fort.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
 
-python ADCIRC2Geotiff.py --varname 'vel_max' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/maxvel.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
+python ./SRC/ADCIRC2Geotiff.py --varname 'vel_max' --url /projects/sequence_analysis/vol1/prediction_work/ADRAS_TESTING/maxvel.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
+
+#Isaias
+
+python ./SRC/ADCIRC2Geotiff.py --varname 'zeta_max' --url http://tds.renci.org:8080/thredds/dodsC/2020/isaias/25/nc_inundation_v9.99_w_rivers/hatteras.renci.org/ncv99-al092020-bob/nhcConsensus/maxele.63.nc --showInterpolatedPlot --showRasterizedPlot --showPNGPlot
+
 

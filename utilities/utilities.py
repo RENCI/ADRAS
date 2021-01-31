@@ -119,7 +119,7 @@ class Utilities:
 #############################################################
 # IO uses the base YAML config to do its work
 
-    def fetchBasedir(self, inconfig, basedirExtra='None'):
+    def fetchBasedir(self, inconfig, basedirExtra=None):
         try:
             rundir = os.environ[inconfig.replace('$', '')]  # Yaml call to be subsequently removed
         except:
