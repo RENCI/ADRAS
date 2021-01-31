@@ -427,7 +427,7 @@ def main(args):
     elif args.url != None:
         # If here we still need to build a dict for ADCIRC
         url = args.url
-        dte='placeHolder' # The times will be determined from the real data
+        dte='manual' # The times will be determined from the real data
         urls={dte:url}
         dstr = '00'  # Need to fake these if you input a url
         cyc = '00'
