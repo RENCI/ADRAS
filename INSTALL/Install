@@ -1,0 +1,21 @@
+
+# This approach works fine on Lynch.
+# This approach also works fine on hatteras (Jan 19, 2021)
+# An install procedure on your local machine inside a venv
+#
+# 1) Install conda on your system
+#
+# 2) Build the environment
+# conda create --name adrastest -y python=3.7.3
+# conda activate adrastest
+#
+
+
+# This approach worked for me. gdal and rasterio can fail to work together 
+
+conda create -name adras -y python=3.7.3 gdal rasterio pyyaml pandas numpy matplotlib netCDF4 geopandas
+source activate adras
+
+gdalinfo --version
+
+conda deactivate
