@@ -15,7 +15,12 @@ LABEL maintainer="jtilson@renci.org"
 RUN apt-get update
 
 # Start off getting Python 3.7.3
-RUN conda create -name adras -y python=3.7.3 gdal rasterio pyyaml pandas numpy matplotlib netCDF4 geopandas
+RUN conda install  -y python=3.7.3
+
+# update conda and set the download channel
+RUN conda update conda && \
+    conda config --add channels conda-forge
+
 
 # tell conda what the shell is
 RUN conda init bash
@@ -28,7 +33,7 @@ WORKDIR /repo
 RUN git clone https://github.com/RENCI/ADRAS.git
                
 # move to the install directory
-WORKDIR ADRAS/INSTALL
+WORKDIR ADRAS/deploy
 
 # install the conda requirements
 RUN conda install --yes --file conda_requirements.txt
