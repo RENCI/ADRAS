@@ -80,8 +80,8 @@ def validate_url(url):  # TODO
 
 # Define some basic grid functionality and defaults
 
-# If the ASGS serbver is buggered but thredds is okay, this can results
-# in a fault thaty cannot easily be trapped:
+# If the ASGS server is buggered but thredds is okay, this can result
+# in a fault that cannot easily be trapped:
 # Example: 
 # <class 'netCDF4._netCDF4.Variable'>
 # dim->dim.declsize0 > 0
@@ -130,7 +130,7 @@ def default_inter_grid():
     return targetgrid, crs
 
 
-def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '../config', 'main.yml')):
+def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
     fetch geotiff grid parameters from the yaml
     Returns:
@@ -146,8 +146,7 @@ def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '
     res = config['res']
     nx = config['nx']
     ny = config['ny']
-    #crs = config['coordrefsys']
-    crs = config['reference']
+    crs = config['crs']
     targetgrid = {'Latitude': [upperleft_la],
                   'Longitude': [upperleft_lo],
                   'res': res,
@@ -222,7 +221,7 @@ def compute_geotiff_grid(targetgrid, targetepsg):
 
 # Aggregation of individual methods
 
-def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '../config', 'main.yml')):
+def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
     Assembles several method into an aggregate method to grab parameters
     from the yaml and construct a url. This is skipped if the user
@@ -405,15 +404,16 @@ def main(args):
     showInterpolatedPlot = args.showInterpolatedPlot
     showRasterizedPlot = args.showRasterizedPlot
     showPNGPlot = args.showPNGPlot
-    
+    writePNG = False 
     showGDALPlot = False # Tells GDAL to load the tif and display it
+
     # Add in option to simply upload a url
 
     if not checkEnumuation(varname):
         utilities.info.error('Incorrect varname input {}'.format(varname))
 
     utilities.log.info('Start ADCIRC2Geotiff')
-    main_config = utilities.load_config(yaml_file=os.path.join(os.path.dirname(__file__), '../config', 'main.yml') )
+    main_config = utilities.load_config(yaml_file=os.path.join(os.path.dirname(__file__), '..' , 'config', 'main.yml') )
 
     if args.urljson is not None:
         setGetURL = False
@@ -424,7 +424,7 @@ def main(args):
         urls = utilities.read_json_file(args.urljson)
         dstr = '00'  # Need to fake these if you input a urljson
         cyc = '00'
-    elif args.url != None:
+    elif args.url is not None:
         # If here we still need to build a dict for ADCIRC
         url = args.url
         dte='manual' # The times will be determined from the real data
@@ -503,8 +503,9 @@ def main(args):
         utilities.log.info('compute_mesh took {} secs'.format(time.time()-t0))
 
         t0 = time.time()
-        write_png(filename, png_filename)
-        utilities.log.info('write_png took {} secs'.format(time.time()-t0))
+        if writePNG: 
+            write_png(filename, png_filename)
+            utilities.log.info('write_png took {} secs'.format(time.time()-t0))
 
     if showInterpolatedPlot:
         plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict)

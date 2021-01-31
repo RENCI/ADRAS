@@ -22,7 +22,7 @@ REGRID: &regrid
   res: 100  # resolution in deg
   nx: 1000
   ny: 1000
-  reference: 'epsg:6346'
+  crs: 'epsg:6346'
 
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'

@@ -80,13 +80,13 @@ class Utilities:
 
 #############################################################
 # YAML
-    def load_config(self, yaml_file=os.path.join(os.path.dirname(__file__), '../config', 'main.yml')):
+    def load_config(self, yaml_file=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
         #yaml_file = os.path.join(os.path.dirname(__file__), "../config/", "main.yml")
         if not os.path.exists(yaml_file):
             raise IOError("Failed to load yaml config file {}".format(yaml_file))
         with open(yaml_file, 'r') as stream:
             config = yaml.safe_load(stream)
-            print('Opened yaml file {}'.format(yaml_file,))
+            #print('Opened yaml file {}'.format(yaml_file,))
         self.config = config
         return config
 
@@ -242,21 +242,21 @@ class Utilities:
 
     def get_clamp_list(self):
         # load list of zero-clamp points
-        ffile = os.path.join(os.path.dirname(__file__), "../config/", self.config['DEFAULT']['ClampList'])
+        ffile = os.path.join(os.path.dirname(__file__), "..", "config", self.config['DEFAULT']['ClampList'])
         if not os.path.exists(ffile):
             raise IOError("Failed to load clamplist file")
         df = pd.read_csv(ffile)
         return df
 
     def get_station_list(self):
-        sfile = os.path.join(os.path.dirname(__file__), "../config/", self.config["DEFAULT"]["StationFile"])
+        sfile = os.path.join(os.path.dirname(__file__), "..", "config", self.config["DEFAULT"]["StationFile"])
         if not os.path.exists(sfile):
             raise IOError("Failed to load station list file")
         df = pd.read_csv(sfile, header=[0, 1], index_col=0)
         return df
 
     def get_adcirc_nodes(self):
-        sfile = os.path.join(os.path.dirname(__file__), "../config/", self.config["ADCIRC"]["NodeList"])
+        sfile = os.path.join(os.path.dirname(__file__), "..", "config", self.config["ADCIRC"]["NodeList"])
         if not os.path.exists(sfile):
             raise IOError("Failed to load ADCIRC node list file")
         # columns = ["nodenumber", "lon", "lat", "z"]
