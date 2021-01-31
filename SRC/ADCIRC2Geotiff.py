@@ -14,7 +14,6 @@ import time
 import datetime as dt
 import numpy.ma as ma
 import pandas as pd
-
 from pylab import *
 import matplotlib.tri as Tri
 from matplotlib import pyplot
@@ -69,7 +68,6 @@ def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
          enstag,
          varname)
     return url
-
 
 def validate_url(url):  # TODO
     status = True  # Innocent until proven guilty
@@ -163,6 +161,7 @@ def construct_geopandas(agdict, targetepsg):
         'Longitude': agdict['lon']})
     utilities.log.info('Converting to Geopandas DF')
     t0 = time.time()
+    # Add a check fior preexisting geopandas
     gdf = gpd.GeoDataFrame(
         df_Adcirc, geometry=gpd.points_from_xy(agdict['lon'], agdict['lat']))
     # print(gdf.crs)
@@ -346,7 +345,7 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
         utilities.log.error('Failed to write TIF file to {}'.format(filename))
     dst.close()
 
-def write_png(filenametif='test.tif', filenamepng='test.png'):
+def write_png(filenametif, filenamepng):
     """
     Construct the new PNG file  from the tif file
     Translate will automatically create and save the new file,
@@ -364,7 +363,7 @@ def write_png(filenametif='test.tif', filenamepng='test.png'):
            options=options_string)
     utilities.log.info('Storing a PNG with the name {}'.format(filenamepng))
 
-def plot_tif(filename='test.tif'):
+def plot_tif(filename):
     """
     Read TIF file that has been previously generated
     """
@@ -373,7 +372,7 @@ def plot_tif(filename='test.tif'):
     show(band1, cmap='jet')
     msk = dataset.read_masks(1)
 
-def plot_png(filename='test.png'):
+def plot_png(filename):
     """
     Read TIF file that has been previously generated
     """
@@ -398,14 +397,15 @@ def main(args):
     Prototype script to construct geotiff files from the ADCIRC triangular grid
     """
     utilities.log.info(args)
-    filename = args.filename
-    png_filename = args.png_filename
     varname = args.varname
     showInterpolatedPlot = args.showInterpolatedPlot
     showRasterizedPlot = args.showRasterizedPlot
     showPNGPlot = args.showPNGPlot
-    writePNG = False 
+    writePNG = True 
     showGDALPlot = False # Tells GDAL to load the tif and display it
+    filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
+    png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
+    print('out files {}, {}'.format(filename, png_filename))
 
     # Add in option to simply upload a url
 
@@ -465,7 +465,7 @@ def main(args):
     tri, gdf = extract_grid(url, targetepsg)
     utilities.log.info('Building ADCIRC grid took {} secs'.format(time.time()-t0))
     utilities.writePickle(gdf, rootdir=rootdir,fileroot='geopandas',subdir='', iometadata='')
-    utilities.log.info('Wrote Geopandas file to {}'.format('gdf.pkl'))
+    utilities.log.info('Wrote Geopandas file to {}'.format('adcircgridname.gdf.pkl'))
     
     t0 = time.time()
     meshdict = compute_geotiff_grid(targetgrid, targetepsg)
@@ -474,12 +474,14 @@ def main(args):
 
     orig_filename = filename 
     orig_png_filename = png_filename 
+    # Perhaps we need to MERGE multiple urls?
+
     for utime, url in urls.items():
-        filename = '_'.join([utime,orig_filename])
-        png_filename = '_'.join([utime,orig_png_filename])
+        #filename = '_'.join([utime,orig_filename])
+        #png_filename = '_'.join([utime,orig_png_filename])
         filename = '/'.join([rootdir,filename])
         png_filename = '/'.join([rootdir,png_filename]) 
-        utilities.log.info('Using tif outputfilename of {}'.format(filename))
+        utilities.log.info('Using tiff outputfilename of {}'.format(filename))
         utilities.log.info('Using png outputfilename of {}'.format(png_filename))
         #fname = "{}.tif".format(utime)
 
@@ -529,9 +531,9 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
     parser = ArgumentParser()
-    parser.add_argument('--tif_filename', action='store', dest='filename', default='test.tif',
-                        help='String: tif output file name will be prepended by new path. Must include extension')
-    parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',
+    parser.add_argument('--tif_filename', action='store', dest='filename', default=None,
+                        help='String: tiff output file name will be prepended by new path. Must include extension')
+    parser.add_argument('--png_filename', action='store', dest='png_filename', default=None,
                         help='String: png output file name will be prepended by new path. Must include extension')
     parser.add_argument('--showInterpolatedPlot', action='store_true', 
                         help='Boolean: Display the comparison of Trangular and interpolated plots')
