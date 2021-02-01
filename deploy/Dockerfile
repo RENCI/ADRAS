@@ -40,9 +40,6 @@ WORKDIR ADRAS/deploy
 # install the conda requirements
 RUN conda install --yes --file conda_requirements.txt
                                 
-# install the pip requirements
-RUN pip install -r pip_requirements.txt
-                        
 # change to the pipelines directory                        
 WORKDIR /repo/ADRAS
                                    
