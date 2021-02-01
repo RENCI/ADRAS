@@ -47,6 +47,7 @@ def checkEnumuation(v):
         return True
     return False
 
+# Deprecated
 def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
     """
     Build a URL for finding ADCIRC information.
@@ -85,7 +86,6 @@ def get_adcirc_grid(nc):
     agdict['latmin'] = np.mean(nc.variables['y'][:])  # needed for scaling lon/lat plots
     return agdict
 
-
 def get_adcirc_slice(nc, v, it=None):
     advardict = {}
     var = nc.variables[v]
@@ -96,7 +96,6 @@ def get_adcirc_slice(nc, v, it=None):
     var_d[var_d.mask] = np.nan
     advardict['data'] = var_d
     return advardict
-
 
 def default_inter_grid():
     """
@@ -118,7 +117,6 @@ def default_inter_grid():
                   'nx': nx,
                   'ny': ny}
     return targetgrid, crs
-
 
 def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
@@ -151,8 +149,6 @@ def fetch_XY_fromGeopandas(gdf):
     xtemp = gdf['geometry'].x
     ytemp = gdf['geometry'].y
     return xtemp, ytemp
-
-
 
 # Define geopandas processors
 # project grid coords, before making Triangulation object
@@ -308,7 +304,6 @@ def plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict):
     ax[1].set_title('Interpolated ADCIRC {}'.format(varname), fontsize=14)
     plt.show()
 
-
 def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
     Construct the new TIF file and store it to disk in filename
@@ -377,7 +372,12 @@ def fetchGridName(nc):
     """
     Fake it for now
     """
-    return 'agridName'
+    sample = getattr(nc,'agrid')    
+    if 'NOMAD' in sample:
+        agridName='hsofs' 
+    else:
+        agridName='agridName'
+    return agridName
 
 #################################################################
 # urlinput='http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020042912/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc'
