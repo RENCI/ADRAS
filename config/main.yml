@@ -17,12 +17,22 @@ ADCIRC: &adcirc
   fortNumber: '63'
 
 REGRID: &regrid
-  upperleft_lo: -77.09
-  upperleft_la: 35.7
-  res: 100  # resolution in deg
-  nx: 1000
-  ny: 1000
-  crs: 'epsg:6346'
+  DEFAULT:
+    upperleft_lo: -77.09
+    upperleft_la: 35.7
+    res: 100  # resolution in deg
+    nx: 1000
+    ny: 1000
+    target_crs: 'epsg:6346'
+    adcirc_crs: 'epsg:4326'
+  nc_inundation_v9.99_w_rivers:
+    upperleft_lo: -78.25
+    upperleft_la: 34.5
+    res: 100  # resolution in deg
+    nx: 1000
+    ny: 1000
+    target_crs: 'epsg:6346'
+    adcirc_crs: 'epsg:4326'
 
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'

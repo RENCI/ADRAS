@@ -19,15 +19,16 @@ from argparse import ArgumentParser
 
 LOGGER = None
 
-def str2bool(v):
-    if isinstance(v, bool):
-       return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
+# def str2bool(v):
+#     if isinstance(v, bool):
+#        return v
+#     if v.lower() in ('yes', 'true', 't', 'y', '1'):
+#         return True
+#     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+#         return False
+#     else:
+#         raise argparse.ArgumentTypeError('Boolean value expected.')
+
 
 class Utilities:
     """
@@ -53,7 +54,7 @@ class Utilities:
         Initialize project logging
         """
         # logger = logging.getLogger(__name__)
-        logger = logging.getLogger("adda_services")
+        logger = logging.getLogger("adras_services")
         log_level = self.config["DEFAULT"].get('LOGLEVEL', 'DEBUG')
         # log_level = getattr(logging, self.config["DEFAULT"].get('LOGLEVEL', 'DEBUG'))
         logger.setLevel(log_level)
@@ -86,13 +87,11 @@ class Utilities:
             raise IOError("Failed to load yaml config file {}".format(yaml_file))
         with open(yaml_file, 'r') as stream:
             config = yaml.safe_load(stream)
-            #print('Opened yaml file {}'.format(yaml_file,))
         self.config = config
         return config
 
     def print_dict(self, t, s):
         if not isinstance(t, dict) and not isinstance(t, list):
-            # pass
             if not isinstance(t, float):
                 print("\t" * s + str(t))
         else:
@@ -110,8 +109,6 @@ class Utilities:
     def readConfigYml(self, yamlfilename):
         if not os.path.exists(yamlfilename):
             raise IOError("Failed to find config file %s" % yamlfilename)
-        # config_file = EnvYAML(yamlfilename)
-        # print(config_file['ADDAHOME'])
         with open(yamlfilename, 'r') as stream:
             config_file = yaml.safe_load(stream)
         return config_file
@@ -123,8 +120,8 @@ class Utilities:
         try:
             rundir = os.environ[inconfig.replace('$', '')]  # Yaml call to be subsequently removed
         except:
-            print('Chosen basedir invalid: '+str(inconfig['DEFAULT']['RDIR']))
-            print('reset to CWD')
+#            print('Chosen basedir invalid: {}'.format(inconfig))
+#            print('reset to CWD')
             rundir = os.getcwd()
         if basedirExtra is not None:
             rundir = rundir+'/'+basedirExtra
@@ -150,7 +147,8 @@ class Utilities:
         return indir
 
     def getSubdirectoryFileName(self, basedir, subdir, fname ):
-        """Check and existance of and construct filenames for 
+        """
+        Check and existence of and construct filenames for
         storing the image data. basedir/subdir/filename 
         subdir is created as needed.
         """
@@ -171,18 +169,19 @@ class Utilities:
             #    print("Successfully created the directory %s " % fulldir)
         return os.path.join(fulldir, fname)
 
-    def writePickle(self, df, rootdir='.',subdir='obspkl',fileroot='filename',iometadata='Nometadata'):
+    def writePickle(self, df, filename=None, rootdir='.', subdir='obspkl', fileroot='filename', iometadata='Nometadata'):
         """ 
         Returns full filename for capture
         """
-        newfilename=None
+        newfilename=filename
         try:
-            mdir = rootdir
-            newfilename = self.getSubdirectoryFileName(mdir, subdir, fileroot+iometadata+'.pkl')
+            if newfilename is None:
+                newfilename = self.getSubdirectoryFileName(rootdir, subdir, fileroot+iometadata)
+            else:
+                pass
             df.to_pickle(newfilename)
-            print('Wrote pickle file {}'.format(newfilename))
         except IOError:
-            raise IOerror("Failed to write PKL file %s" % (newfilename))
+            raise IOError("Failed to write PKL file %s" % (newfilename))
         return newfilename
 
     def writeCsv(self, df, rootdir='.',subdir='obspkl',fileroot='filename',iometadata='Nometadata'):
@@ -192,12 +191,11 @@ class Utilities:
         """
         newfilename=None
         try:
-            mdir = rootdir
-            newfilename = self.getSubdirectoryFileName(mdir, subdir, fileroot+iometadata+'.csv')
+            newfilename = self.getSubdirectoryFileName(rootdir, subdir, fileroot+iometadata+'.csv')
             df.to_csv(newfilename)
             print('Wrote CSV file {}'.format(newfilename))
         except IOError:
-            raise IOerror("Failed to write file %s" % (newfilename))
+            raise IOError("Failed to write file %s" % (newfilename))
         return newfilename
 
     def writeDictToJson(self, dictdata, rootdir='.',subdir='errorfile',fileroot='filename',iometadata='Nometadata'):
@@ -212,7 +210,7 @@ class Utilities:
                 json.dump(dictdata, fp)
             utilities.log.info('Wrote JSON file {}'.format(newfilename))
         except IOError:
-            raise IOerror("Failed to write file %s" % (newfilename))
+            raise IOError("Failed to write file %s" % (newfilename))
         return newfilename
 
 
@@ -232,94 +230,9 @@ class Utilities:
             with open(filepath, 'w') as fp:
                 json.dump(data, fp)
         except IOError:
-            raise IOerror("Failed to write JSON file %s" % (filepath))
+            raise IOError("Failed to write JSON file %s" % (filepath))
 
-# Below here to be deleted 
-
-    def reg_grid_params(self):
-        # load list of reg grid params
-        return self.config["REGRID"]["RECT"]
-
-    def get_clamp_list(self):
-        # load list of zero-clamp points
-        ffile = os.path.join(os.path.dirname(__file__), "..", "config", self.config['DEFAULT']['ClampList'])
-        if not os.path.exists(ffile):
-            raise IOError("Failed to load clamplist file")
-        df = pd.read_csv(ffile)
-        return df
-
-    def get_station_list(self):
-        sfile = os.path.join(os.path.dirname(__file__), "..", "config", self.config["DEFAULT"]["StationFile"])
-        if not os.path.exists(sfile):
-            raise IOError("Failed to load station list file")
-        df = pd.read_csv(sfile, header=[0, 1], index_col=0)
-        return df
-
-    def get_adcirc_nodes(self):
-        sfile = os.path.join(os.path.dirname(__file__), "..", "config", self.config["ADCIRC"]["NodeList"])
-        if not os.path.exists(sfile):
-            raise IOError("Failed to load ADCIRC node list file")
-        # columns = ["nodenumber", "lon", "lat", "z"]
-        df = pd.read_csv(sfile, header=0, index_col=0,  sep='\s+', engine='python')  # , names=columns)
-        return df
-
-    def print_dict(self, t, s):
-        if not isinstance(t, dict) and not isinstance(t, list):
-            # pass
-            if not isinstance(t, float):
-                print("\t" * s + str(t))
-        else:
-            for key in t:
-                if not isinstance(t, float) and not isinstance(t, list) \
-                        and not isinstance(t, int) and not isinstance(t, unicode):
-                    print("\t" * s + str(key))
-                if not isinstance(t, list):
-                    self.print_dict(t[key], s + 1)
-
-    def convertTimeseriesToDICTdata(self, df, variables=None, product='WL'):
-        """
-        Reformat the df data into an APSVIZ dict with Stations as the main key
-        Create the dict: self.df_merged_dict
-        For this class we can anticipate either ADS/OBS/ERR data  or none 
-        Must convert timestamp index to Strings YYYYMMDD HH:MM:SS
-        """
-        utilities.log.info('Begin processing DICT data format')
-        #variables = ['ADC','OBS','ERR']
-        df.reset_index(inplace=True) # Remove SRC from the multiindex
-        df.set_index(['TIME'], inplace=True)
-        df.index = df.index.strftime('%Y-%m-%d %H:%M:%S')
-        dictdata = {}
-        
-        #if variables != None: # SO a computeError multi variable data set
-        if isinstance(variables, list):
-            for variable in variables:
-                df_all = df[df['SRC']==variable]
-                dataall = df_all.drop('SRC',axis=1).T
-                stations = dataall.index
-                cols = dataall.columns.to_list()
-                for station in stations:
-                    val = dataall.loc[station].to_list()
-                    if station in dictdata.keys():
-                        dictdata[station].update({variable: {'TIME': cols, product:val}})
-                    else:
-                        dictdata[station]={variable: {'TIME': cols, product:val}}
-        else:
-            if variables == None:
-                variables='ADCForecast'
-            df_all = df
-            dataall = df_all.T
-            stations = dataall.index
-            cols = dataall.columns.to_list()
-            for station in stations:
-                val = dataall.loc[station].to_list()
-                if station in dictdata.keys():
-                    dictdata[station].update({variables: {'TIME': cols, product:val}})
-                else:
-                    dictdata[station]={variables: {'TIME': cols, product:val}}
-        merged_dict = dictdata
-        utilities.log.info('Constructed DICT time series data')
-        return merged_dict
 
 #############################################################
-
+# instance the utilities class on import so that logging is immediately available.
 utilities = Utilities()
