@@ -15,7 +15,7 @@ import sys,os
 import yaml
 import logging
 import json
-from argparse import ArgumentParser
+#from argparse import ArgumentParser
 
 LOGGER = None
 
@@ -79,6 +79,35 @@ class Utilities:
 
         return logger
 
+    #############################################################
+    # S3 functions
+    def get_s3_connection(self):
+        """
+        Return an S3 Connection using the authentication in a user's home dir config file.
+        """
+        if self.s3 is not None:
+            # already config'd
+            return self.s3
+
+        aws_access_key_id = self.config['Access key ID']
+        aws_secret_access_key = self.config['Secret access key']
+        self.s3 = S3Connection(aws_access_key_id, aws_secret_access_key)
+        return self.s3
+
+    def upload_to_s3(self, filename):
+        '''
+        Uploads the catalog to S3
+        '''
+        s3 = self.get_s3_connection()
+        bucket_name = self.config['S3_UPLOAD_PATH']
+        file_key = os.path.basename(filename)
+        self.log.debug("Uploading to s3://%s/%s", bucket_name, file_key)
+        bucket = s3.get_bucket(bucket_name)
+        s3_file_key = Key(bucket)
+        s3_file_key.key = file_key
+        s3_file_key.set_contents_from_filename(filename)
+        s3_file_key.set_acl('public-read')
+
 #############################################################
 # YAML
     def load_config(self, yaml_file=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
@@ -87,6 +116,14 @@ class Utilities:
             raise IOError("Failed to load yaml config file {}".format(yaml_file))
         with open(yaml_file, 'r') as stream:
             config = yaml.safe_load(stream)
+        # check to see if user has an aws cred file in $HOME
+        awsfile=os.path.join(os.path.expanduser("~"),'aws_adcirc_credentials.csv')
+        if os.path.exists(awsfile):
+            df = pd.read_csv(awsfile, usecols=['User name', 'Password', 'Access key ID', 'Secret access key', 'Console login link'])
+            temp = {}
+            temp['s3'] = df.to_dict(orient='records')
+            config.update(temp)
+
         self.config = config
         return config
 

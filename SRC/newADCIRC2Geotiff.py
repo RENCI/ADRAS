@@ -458,7 +458,7 @@ def main(args):
         gdf = construct_geopandas(agdict, targetepsg)
         # gdf.to_pickle(f)
         # if filename ias passed in, all other arguments are ignored
-        if not os.path.exists('pklfiles'): os.mkdir('pklfiles')
+        if not os.path.exists('pklfiles'): os.makedirs('pklfiles')
         utilities.writePickle(gdf, filename=f, rootdir=rootdir, fileroot=gdf_pklfile, subdir='', iometadata='')
         utilities.log.info(f'Wrote Geopandas file to {f}')
         utilities.log.info('Construct geopandas object took {} secs'.format(time.time() - t0))
