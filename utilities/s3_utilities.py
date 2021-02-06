@@ -9,7 +9,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-class Utilities():
+class Utilities:
 
     def __init__(self):
         self.config = self.load_config()

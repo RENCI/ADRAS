@@ -1,35 +1,34 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This code originally derived from a jhub notebook 
-# implements an approach for computing geotiffs from ADCIRC FEM output in netCDF.
-
 # If inputing url as a json then we must have filename metadata included as:
 #{"1588269600000": "http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020043018/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/nowcast/maxele.63.nc"}
 # If simply inputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
 
 import os
 import sys
+import re
 import time
+import logging
 import datetime as dt
-import numpy.ma as ma
+#import numpy.ma as ma
 import pandas as pd
-from pylab import *
+import numpy as np
+#from pylab import *
 import matplotlib.tri as Tri
-from matplotlib import pyplot
+import matplotlib.pyplot as plt
 import netCDF4
-
-from utilities.utilities import utilities as utilities
 
 import rasterio as rio
 from rasterio.transform import from_origin
 from rasterio.plot import show
 import geopandas as gpd
 
+from utilities.utilities import utilities as utilities
+
 utilities.log.info(f'Begin TIF generation')
 utilities.log.info(f'netCDF4 Version = {netCDF4.__version__}')
 utilities.log.info(f'Pandas Version = {pd.__version__}')
-utilities.log.info(f'Matplotlib Version = {matplotlib.__version__}')
 utilities.log.info(f'rasterio Version = {rio.__version__}')
 utilities.log.info(f'Geopandas Version = {gpd.__version__}')
 
@@ -43,12 +42,13 @@ def checkInputVar(v):
     if v.lower() in allowable_vars: return True
     return False
 
+
 # Deprecated
 def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
     """
     Build a URL for finding ADCIRC information.
     Parameters:
-        datastr: "YYYYmmdd"
+        datestr: "YYYYmmdd"
         hourstr: "hh"
         yearstr: "YYYY"
         input dict.
@@ -65,15 +65,6 @@ def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
          enstag,
          varname)
     return url
-
-
-def validate_url(url):  # TODO
-    pass
-    # status = True  # Innocent until proven guilty
-    # # check for validity
-    # if not status:
-    #     utilities.log.error("Invalid URL:".format(url))
-    # return status
 
 
 def get_adcirc_grid(nc):
@@ -99,7 +90,7 @@ def get_adcirc_slice(nc, v, it=None):
     return advardict
 
 
-def get_interpolation_target(gridname=None, yamlfile=os.path.join( os.path.dirname(__file__), '..', 'config', 'main.yml')):
+def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
     fetch geotiff grid parameters from the yaml
     Returns:
@@ -111,8 +102,10 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join( os.path.dirna
     except:
         utilities.log.error("REGRID: load_config yaml failed")
 
-    if not gridname: gridname = 'DEFAULT'
-    if gridname not in config.keys(): gridname = 'DEFAULT'
+    if not gridname:
+        gridname = 'DEFAULT'
+    if gridname not in config.keys():
+        gridname = 'DEFAULT'
 
     targetgrid = {'Latitude': [config[gridname]['upperleft_la']],
                   'Longitude': [config[gridname]['upperleft_lo']],
@@ -173,7 +166,7 @@ def construct_geopandas(agdict, targetepsg):
 
 
 # project interpolation grid to target crs
-def compute_grid_forgeotiff(targetgrid, adcircepsg, targetepsg):
+def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     """
     Results:
         meshdict. Values for upperleft_x, upperleft_y, x,y,xx,yy,xxm,yym
@@ -272,7 +265,7 @@ def plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict):
     nlev = 11
     vmin = np.floor(np.nanmin(zi_lin))
     vmax = np.ceil(np.nanmax(zi_lin))
-    levels = linspace(0., vmax, nlev+1)
+    levels = np.linspace(0., vmax, nlev+1)
     utilities.log.info('Levels are {}, vmin {}, vmax {}'.format(levels, vmin, vmax))
     #
     v = advardict['data']
@@ -396,7 +389,7 @@ def main(args):
     showPNGPlot = args.showPNGPlot
     writePNG = False
     showGDALPlot = False # Tells GDAL to load the tif and display it
-    filename = '.'.join([varname ,'tiff']) if args.filename is None else args.filename
+    filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
     png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
 
     # Add in option to simply upload a url
@@ -405,8 +398,32 @@ def main(args):
         utilities.log.error(f'Variable {varname} not yet supported.')
 
     utilities.log.info('Start ADCIRC2Geotiff')
-    yaml_file=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')
+    yaml_file = os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')
     main_config = utilities.load_config(yaml_file=yaml_file)
+
+    # if s3path not passed in, disable SEND2AWS
+    if not args.s3path:
+        main_config['DEFAULT']['SEND2AWS'] = False
+
+    if main_config['DEFAULT']['SEND2AWS']:
+
+
+        from utilities.s3_utilities import utilities as s3_utilities
+        s3_resource = s3_utilities.s3
+        logging.debug(s3_resource)
+        logging.debug(s3_utilities.config)
+
+        thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket']
+        thisRegion = s3_utilities.config['region_name']
+
+        logging.info(f'Bucket={thisBucket}')
+        logging.info(f'Region={thisRegion}')
+
+        if not s3_utilities.bucket_exists(thisBucket):
+            res = s3_utilities.create_bucket(thisRegion, thisBucket)
+            logging.info(f'Bucket {thisBucket} created.')
+        else:
+            logging.info(f'Bucket {thisBucket} already exists.')
 
     if args.urljson is not None:
         setGetURL = False
@@ -418,7 +435,7 @@ def main(args):
     elif args.url is not None:
         # If here we still need to build a dict for ADCIRC
         url = args.url
-        dte='manual' # The times will be determined from the real data
+        dte='manual'  # The times will be determined from the real data
         urls={dte:url}
         utilities.log.info('Explicit URL provided {}'.format(urls))
     else:
@@ -457,8 +474,8 @@ def main(args):
     if not os.path.exists(f):
         gdf = construct_geopandas(agdict, targetepsg)
         # gdf.to_pickle(f)
-        # if filename ias passed in, all other arguments are ignored
         if not os.path.exists('pklfiles'): os.makedirs('pklfiles')
+        # if filename ias passed in, all other arguments are ignored
         utilities.writePickle(gdf, filename=f, rootdir=rootdir, fileroot=gdf_pklfile, subdir='', iometadata='')
         utilities.log.info(f'Wrote Geopandas file to {f}')
         utilities.log.info('Construct geopandas object took {} secs'.format(time.time() - t0))
@@ -478,8 +495,8 @@ def main(args):
     # Setup desired grid for geotiff data
 
     t0 = time.time()
-    meshdict = compute_grid_forgeotiff(targetgrid, adcircepsg, targetepsg)
-    utilities.log.info('compute_grid_forgeotiff took {} secs'.format(time.time() - t0))
+    meshdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
+    utilities.log.info('compute_geotiff took {} secs'.format(time.time() - t0))
     xxm, yym = meshdict['xxm'], meshdict['yym']
 
     orig_filename = filename
@@ -517,8 +534,17 @@ def main(args):
         utilities.log.info('Outputting tiff file {}'.format(filename))
         write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
 
+        if main_config['DEFAULT']['SEND2AWS']:
+            resp = s3_utilities.upload(thisBucket, args.s3path, filename)
+            if not resp:
+                logging.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
+            else:
+                logging.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} succeeded.')
+
+            pass
+
         if writePNG:
-            utilities.log.info('Outputting png file {}'.format(i_pngfilename))
+            utilities.log.info('Outputting png file {}'.format(png_filename))
             write_png(filename, png_filename)
 
     if showInterpolatedPlot:
@@ -576,6 +602,9 @@ if __name__ == '__main__':
     # be a set of parameters in the config file that matches the gridname
     parser.add_argument('--gridname', action='store', dest='gridname', default=None,
                         help='String: ADCIRC gridname to use for caching pkl file and getting raster parameters')
+
+    parser.add_argument('--s3path', action='store', dest='s3path', type=str,
+                        help='String: object path in s3 bucket.')
 
     args = parser.parse_args()
     sys.exit(main(args))

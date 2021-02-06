@@ -79,34 +79,6 @@ class Utilities:
 
         return logger
 
-    #############################################################
-    # S3 functions
-    def get_s3_connection(self):
-        """
-        Return an S3 Connection using the authentication in a user's home dir config file.
-        """
-        if self.s3 is not None:
-            # already config'd
-            return self.s3
-
-        aws_access_key_id = self.config['Access key ID']
-        aws_secret_access_key = self.config['Secret access key']
-        self.s3 = S3Connection(aws_access_key_id, aws_secret_access_key)
-        return self.s3
-
-    def upload_to_s3(self, filename):
-        '''
-        Uploads the catalog to S3
-        '''
-        s3 = self.get_s3_connection()
-        bucket_name = self.config['S3_UPLOAD_PATH']
-        file_key = os.path.basename(filename)
-        self.log.debug("Uploading to s3://%s/%s", bucket_name, file_key)
-        bucket = s3.get_bucket(bucket_name)
-        s3_file_key = Key(bucket)
-        s3_file_key.key = file_key
-        s3_file_key.set_contents_from_filename(filename)
-        s3_file_key.set_acl('public-read')
 
 #############################################################
 # YAML
@@ -157,15 +129,11 @@ class Utilities:
         try:
             rundir = os.environ[inconfig.replace('$', '')]  # Yaml call to be subsequently removed
         except:
-#            print('Chosen basedir invalid: {}'.format(inconfig))
-#            print('reset to CWD')
             rundir = os.getcwd()
         if basedirExtra is not None:
             rundir = rundir+'/'+basedirExtra
             if not os.path.exists(rundir):
-                #print("Create high level Cycle dir space at "+rundir)
                 try:
-                    #os.mkdir(rundir)
                     os.makedirs(rundir)
                 except OSError:
                     sys.exit("Creation of the high level run directory %s failed" % rundir)
@@ -175,9 +143,7 @@ class Utilities:
         if basedirExtra is not None:
             indir = indir+'/'+basedirExtra
         if not os.path.exists(indir):
-            #print("Create high level Cycle dir space at "+rundir)
             try:
-                #os.mkdir(rundir)
                 os.makedirs(indir)
             except OSError:
                 sys.exit("Creation of the high level run directory %s failed" % indir)
@@ -189,7 +155,6 @@ class Utilities:
         storing the image data. basedir/subdir/filename 
         subdir is created as needed.
         """
-        # print(basedir)
         if not os.path.exists(basedir):
             try:
                 os.makedirs(basedir)
@@ -197,7 +162,6 @@ class Utilities:
                 sys.exit("Creation of the basedir %s failed" % basedir)
         fulldir = os.path.join(basedir, subdir)
         if not os.path.exists(fulldir):
-            #print("Create datastation dir space at "+fulldir)
             try:
                 os.makedirs(fulldir)
             except OSError:
@@ -250,7 +214,6 @@ class Utilities:
             raise IOError("Failed to write file %s" % (newfilename))
         return newfilename
 
-
     def read_json_file(self, filepath):
         # Read data from JSON file specified by full path
         data = {}
@@ -258,7 +221,7 @@ class Utilities:
             with open(filepath, 'r') as fp:
                 data = json.load(fp)
         except FileNotFoundError:
-            raise FileNotFoundError("Failed to read file %s" % (filepath))               
+            raise FileNotFoundError("Failed to read file %s" % (filepath))
         return data
 
     def write_json_file(self, data, filepath):
@@ -270,6 +233,16 @@ class Utilities:
             raise IOError("Failed to write JSON file %s" % (filepath))
 
 
+def validate_url(url):  # TODO
+    pass
+    # status = True  # Innocent until proven guilty
+    # # check for validity
+    # if not status:
+    #     utilities.log.error("Invalid URL:".format(url))
+    # return status
+
+
 #############################################################
-# instance the utilities class on import so that logging is immediately available.
+# instance the utilities class on import so that logging is
+# immediately available.
 utilities = Utilities()

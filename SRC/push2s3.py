@@ -43,7 +43,10 @@ if __name__ == '__main__':
     parser.add_argument('--filename', action='store', dest='filename', type=str, required=True,
                         help='String: Filename to send.')
     parser.add_argument('--path', action='store', dest='path', type=str, required=True,
-                        help='String: object path.')
+                        help='String: object path in s3 bucket.')
+
+
+
     args = parser.parse_args()
     sys.exit(main(args))
 
