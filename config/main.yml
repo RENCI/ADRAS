@@ -34,6 +34,14 @@ REGRID: &regrid
     ny: 1000
     target_crs: 'epsg:6346'
     adcirc_crs: 'epsg:4326'
+  LA_v20a-WithUpperAtch_chk: 
+    upperleft_lo: -91.5
+    upperleft_la: 31.0
+    res: 50  # resolution in deg
+    nx: 10000
+    ny: 6000
+    target_crs: 'epsg:32617'
+    adcirc_crs: 'epsg:4326'
 
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'
