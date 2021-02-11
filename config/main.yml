@@ -5,7 +5,13 @@ DEFAULT: &default
   LOGGING: true
   LOGLEVEL: INFO
   GRAPHICS: true
+
+S3:
   SEND2AWS: true
+  BucketName: 'hazus'
+  RegionName: 'us-east-2' 
+  AccessKeyID: 'XXXXXXXXXXXXXXXXXXXXXXXXX'
+  SecretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXX'
 
 ADCIRC: &adcirc
   AdcircGrid: 'hsofs'
@@ -38,8 +44,8 @@ REGRID: &regrid
     upperleft_lo: -91.5
     upperleft_la: 31.0
     res: 50  # resolution in deg
-    nx: 10000
-    ny: 6000
+    nx: 1000
+    ny: 600
     target_crs: 'epsg:32617'
     adcirc_crs: 'epsg:4326'
 

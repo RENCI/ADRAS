@@ -403,27 +403,26 @@ def main(args):
 
     # if s3path not passed in, disable SEND2AWS
     if not args.s3path:
-        main_config['DEFAULT']['SEND2AWS'] = False
+        main_config['S3']['SEND2AWS'] = False
 
-    if main_config['DEFAULT']['SEND2AWS']:
-
+    if main_config['S3']['SEND2AWS']:
 
         from utilities.s3_utilities import utilities as s3_utilities
         s3_resource = s3_utilities.s3
-        logging.debug(s3_resource)
-        logging.debug(s3_utilities.config)
+        utilities.log.debug(s3_resource)
+        utilities.log.debug(s3_utilities.config)
 
         thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket']
         thisRegion = s3_utilities.config['region_name']
 
-        logging.info(f'Bucket={thisBucket}')
-        logging.info(f'Region={thisRegion}')
+        utilities.log.info(f'Bucket={thisBucket}')
+        utilities.log.info(f'Region={thisRegion}')
 
         if not s3_utilities.bucket_exists(thisBucket):
             res = s3_utilities.create_bucket(thisRegion, thisBucket)
-            logging.info(f'Bucket {thisBucket} created.')
+            utilities.log.info(f'Bucket {thisBucket} created.')
         else:
-            logging.info(f'Bucket {thisBucket} already exists.')
+            utilities.log.info(f'Bucket {thisBucket} already exists.')
 
     if args.urljson is not None:
         setGetURL = False
@@ -534,7 +533,7 @@ def main(args):
         utilities.log.info('Outputting tiff file {}'.format(filename))
         write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
 
-        if main_config['DEFAULT']['SEND2AWS']:
+        if main_config['S3']['SEND2AWS']:
             resp = s3_utilities.upload(thisBucket, args.s3path, filename)
             if not resp:
                 logging.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
