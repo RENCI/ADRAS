@@ -9,7 +9,7 @@ import os
 import sys
 import re
 import time
-import logging
+#import logging
 import datetime as dt
 #import numpy.ma as ma
 import pandas as pd
@@ -474,7 +474,7 @@ def main(args):
         gdf = construct_geopandas(agdict, targetepsg)
         # gdf.to_pickle(f)
         if not os.path.exists('pklfiles'): os.makedirs('pklfiles')
-        # if filename ias passed in, all other arguments are ignored
+        # if filename is passed in, all other arguments are ignored
         utilities.writePickle(gdf, filename=f, rootdir=rootdir, fileroot=gdf_pklfile, subdir='', iometadata='')
         utilities.log.info(f'Wrote Geopandas file to {f}')
         utilities.log.info('Construct geopandas object took {} secs'.format(time.time() - t0))
@@ -506,7 +506,8 @@ def main(args):
     for utime, url in urls.items():
         iometadata = utime # Grabs the key and uses it to differentiate urls
         # filename = "{}/{}_{}".format(rootdir,iometadata,orig_filename)
-        filename = os.path.join(rootdir, orig_filename)
+        # filename = os.path.join(rootdir, orig_filename)
+        filename = orig_filename
         # png_filename = "{}/{}_{}".format(rootdir,iometadata,orig_png_filename)
         png_filename = os.path.join(rootdir, orig_png_filename)
 
@@ -536,9 +537,9 @@ def main(args):
         if main_config['S3']['SEND2AWS']:
             resp = s3_utilities.upload(thisBucket, args.s3path, filename)
             if not resp:
-                logging.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
+                utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
             else:
-                logging.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} succeeded.')
+                utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} succeeded.')
 
             pass
 
