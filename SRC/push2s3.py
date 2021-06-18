@@ -4,7 +4,6 @@ import os
 import logging
 from utilities.s3_utilities import utilities as s3_utilities
 
-
 def main(args):
 
     if not os.path.exists(args.filename):
@@ -35,7 +34,6 @@ def main(args):
     else:
         logging.info(f'Upload to s3://{thisBucket}:/{args.path}/{args.filename} succeeded.')
 
-
 if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
@@ -45,11 +43,6 @@ if __name__ == '__main__':
     parser.add_argument('--path', action='store', dest='path', type=str, required=True,
                         help='String: object path in s3 bucket.')
 
-
-
     args = parser.parse_args()
     sys.exit(main(args))
-
-
-
 

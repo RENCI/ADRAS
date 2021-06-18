@@ -1,4 +1,6 @@
 *~ 
+*.pyc
+__*__
 log 
 *tiff 
 pklfiles/

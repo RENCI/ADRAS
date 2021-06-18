@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 #from pylab import *
 import matplotlib.tri as Tri
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import netCDF4
 
 import rasterio as rio
@@ -36,36 +36,10 @@ utilities.log.info(f'Geopandas Version = {gpd.__version__}')
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
 ensname = 'namforecast'
 
-
 def checkInputVar(v):
     allowable_vars = ['zeta_max', 'vel_max', 'inun_max']
     if v.lower() in allowable_vars: return True
     return False
-
-
-# Deprecated
-def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
-    """
-    Build a URL for finding ADCIRC information.
-    Parameters:
-        datestr: "YYYYmmdd"
-        hourstr: "hh"
-        yearstr: "YYYY"
-        input dict.
-    Returns:
-        url as a full path string
-    """
-    # dstr = dt.datetime.strftime(d, "%Y%m%d%H")
-    url = dict_cfg['baseurl']+dict_cfg['dodsCpart'] % \
-        (yearstr,
-         datestr+hourstr,
-         dict_cfg['AdcircGrid'],
-         dict_cfg['Machine'],
-         dict_cfg['Instance'],
-         enstag,
-         varname)
-    return url
-
 
 def get_adcirc_grid(nc):
     agdict = {}
@@ -77,7 +51,6 @@ def get_adcirc_grid(nc):
     agdict['depth'] = nc.variables['depth'][:]
     return agdict
 
-
 def get_adcirc_slice(nc, v, it=None):
     advardict = {}
     var = nc.variables[v]
@@ -88,7 +61,6 @@ def get_adcirc_slice(nc, v, it=None):
     var_d[var_d.mask] = np.nan
     advardict['data'] = var_d
     return advardict
-
 
 def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
@@ -113,7 +85,6 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
                   'nx': config[gridname]['nx'],
                   'ny': config[gridname]['ny']}
     return targetgrid, config[gridname]['adcirc_crs'], config[gridname]['target_crs']
-
 
 def fetch_XY_fromGeopandas(gdf):
     """
@@ -141,7 +112,6 @@ def computeInundation(advardict, agdict):
     # return inundation depth masked out over "open water" (>1)
     return np.where(agdict['depth'] > 1, np.nan, inun)
 
-
 # Define geopandas processors
 # project grid coords, before making Triangulation object
 def construct_geopandas(agdict, targetepsg):
@@ -163,7 +133,6 @@ def construct_geopandas(agdict, targetepsg):
     utilities.log.info(f'Time to create GDF was {time.time()-t0}')
     # utilities.log.debug('GDF data set {}'.format(gdf))
     return gdf
-
 
 # project interpolation grid to target crs
 def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
@@ -203,43 +172,6 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
             'xxm': xxm,
             'yym': yym}
 
-
-#  Not used anymore
-def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
-    """
-    Assembles several method into an aggregate method to grab parameters
-    from the yaml and construct a url. This is skipped if the user
-    specified a URL on input.
-    """
-    geo_yml= utilities.load_config(geo_yamlfile)
-    varnamedict = geo_yml['VARFILEMAP']
-    varfile = varnamedict[varname]
-    utilities.log.info('map dict {}'.format(varnamedict))
-    # Specify time parameters of interest
-    timedict = geo_yml['TIME']
-    doffset = timedict['doffset']
-    hoffset = timedict['hoffset']
-
-    # Set time for url
-    thisdate = dt.datetime.utcnow() + dt.timedelta(days=doffset) + dt.timedelta(hours=hoffset)
-    cyc = "%02d" % (6 * int(thisdate.hour / 6))     # Hour/cycle specification
-    dstr = dt.datetime.strftime(thisdate, "%Y%m%d")
-    ystr = dt.datetime.strftime(thisdate, "%Y")  # NOTE slight API change to get_url
-
-    # Fetch url
-    urldict = geo_yml['ADCIRC']
-    utilities.log.info('url dict {}'.format(urldict))
-
-    # TODO: we will also need to elevate "namforecast" to be a default/input parameter, since this
-    # can take several different values that depend in the ASGS configuration.
-    # However, namforecast is a reasonable default
-    url = get_url(urldict, varfile, dstr, str(cyc), ystr, ensname)
-    utilities.log.info('Validated url {}'.format(url))
-    utilities.log.info('Datetime {}'.format(dstr))
-    utilities.log.debug('Constructed URL {}'.format(url))
-    return url, dstr, cyc
-
-
 # get ADCIRC grid parts;  this need only be done once, as it can be time-consuming over the network
 def extract_url_grid(url):
     """
@@ -251,51 +183,6 @@ def extract_url_grid(url):
     agdict = get_adcirc_grid(nc)
     return nc, agdict
 
-
-# Assemble some optional plot methods
-def plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict):
-    """
-    A rough plotting routine generally used for validation studies.
-    The real data results are the tif fle that gets generated later
-    """
-    xm0, ym0 = meshdict['uplx'], meshdict['uply']
-    x, y = meshdict['x'], meshdict['y']
-    xx, yy = meshdict['xx'], meshdict['yy']
-    xxm, yym = meshdict['xxm'], meshdict['yym']
-    nlev = 11
-    vmin = np.floor(np.nanmin(zi_lin))
-    vmax = np.ceil(np.nanmax(zi_lin))
-    levels = np.linspace(0., vmax, nlev+1)
-    utilities.log.info('Levels are {}, vmin {}, vmax {}'.format(levels, vmin, vmax))
-    #
-    v = advardict['data']
-    utilities.log.debug('nanmin {}, nammix {}'.format(np.nanmin(v),np.nanmax(v)))
-    #
-    cmap = plt.cm.get_cmap('jet', 8)
-    # Start the plots
-    fig, ax = plt.subplots(1, 2, figsize=(20, 20), sharex=True, sharey=True)
-    # tcf = ax[0].tricontourf(tri, v,cmap=plt.cm.jet,levels=levels)
-    if True:
-        # fig, ax = plt.subplots(1, 2, figsize=(20, 20), sharex=True, sharey=True)
-        tcf = ax[0].tripcolor(tri, v, cmap=cmap, vmin=vmin, vmax=vmax, shading='flat')
-        ax[0].set_aspect('equal')
-        ax[0].plot(xx[0, ], yy[0, ], color='k', linewidth=.25)
-        ax[0].plot(xx[-1, ], yy[-1, ], color='k', linewidth=.25)
-        ax[0].plot(xx[:, 0], yy[:, 0], color='k', linewidth=.25)
-        ax[0].plot(xx[:, -1], yy[:, -1], color='k', linewidth=.25)
-        fig.colorbar(tcf, ax=ax[0], orientation='horizontal')
-        ax[0].set_title('ADCIRC {}'.format(varname), fontsize=14)
-    pcm = ax[1].pcolormesh(xxm, yym, zi_lin, cmap=cmap,  shading='faceted', vmin=vmin, vmax=vmax)
-    ax[1].set_aspect('equal')
-    ax[1].plot(xx[0, ], yy[0, ], color='k')
-    ax[1].plot(xx[-1, ], yy[-1, ], color='k')
-    ax[1].plot(xx[:, 0], yy[:, 0], color='k')
-    ax[1].plot(xx[:, -1], yy[:, -1], color='k')
-    ax[1].set_xlim([min(x), max(x)])
-    ax[1].set_ylim([min(y), max(y)])
-    fig.colorbar(pcm, ax=ax[1], orientation='horizontal')
-    ax[1].set_title('Interpolated ADCIRC {}'.format(varname), fontsize=14)
-    plt.show()
 
 
 def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
@@ -324,47 +211,6 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
         utilities.log.error('Failed to write TIF file to {}'.format(filename))
     dst.close()
 
-
-def write_png(filenametif, filenamepng):
-    """
-    Construct the new PNG file  from the tif file
-    Translate will automatically create and save the new file,
-    """
-    from osgeo import gdal
-    scale = '-scale min_val max_val'
-    options_list = [
-        '-ot Byte',
-        '-of PNG',
-        scale
-    ]
-    options_string = " ".join(options_list)
-    gdal.Translate(filenamepng,
-           filenametif,
-           options=options_string)
-    utilities.log.info('Storing a PNG with the name {}'.format(filenamepng))
-
-
-def plot_tif(filename):
-    """
-    Read TIF file that has been previously generated
-    """
-    dataset = rio.open(filename)
-    band1 = dataset.read(1, masked=True)
-    show(band1, cmap='jet')
-    msk = dataset.read_masks(1)
-
-
-def plot_png(filename):
-    """
-    Read TIF file that has been previously generated
-    """
-    import matplotlib.image as mpimg
-
-    img = mpimg.imread(filename)
-    plt.imshow(img)
-    plt.show()
-
-
 def fetchGridName(nc):
     """
     Return a (hopefully) unique grid name, based on the content of
@@ -375,7 +221,6 @@ def fetchGridName(nc):
 
 #################################################################
 # urlinput='http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020042912/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc'
-
 
 def main(args):
     """
@@ -540,28 +385,11 @@ def main(args):
                 utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
             else:
                 utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} succeeded.')
-
             pass
 
         if writePNG:
             utilities.log.info('Outputting png file {}'.format(png_filename))
             write_png(filename, png_filename)
-
-    if showInterpolatedPlot:
-        plot_triangular_vs_interpolated(meshdict, varname, tri, zi_lin, advardict)
-
-    if showRasterizedPlot:
-        plot_tif(filename)
-
-    if showPNGPlot:
-        plot_png(png_filename)
-
-    if showGDALPlot:
-        # Can we reread the file using GDAL ?
-        from osgeo import gdal
-        ds = gdal.Open(filename).ReadAsArray()
-        im = plt.imshow(ds)
-        plt.show()
 
     utilities.log.info('Finished')
 

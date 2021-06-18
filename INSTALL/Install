@@ -1,8 +1,0 @@
-
-# This approach works fine on Lynch.
-# This approach worked for me. gdal and rasterio can fail to work together 
-
-conda create -name adras -y python=3.7.3 gdal rasterio pyyaml pandas numpy matplotlib netCDF4 geopandas
-source activate adras
-
-conda deactivate

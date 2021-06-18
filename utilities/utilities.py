@@ -170,34 +170,14 @@ class Utilities:
             #    print("Successfully created the directory %s " % fulldir)
         return os.path.join(fulldir, fname)
 
-    def writePickle(self, df, filename=None, rootdir='.', subdir='obspkl', fileroot='filename', iometadata='Nometadata'):
+    def writePickle(self, df, filename=None):
         """ 
-        Returns full filename for capture
         """
-        newfilename=filename
         try:
-            if newfilename is None:
-                newfilename = self.getSubdirectoryFileName(rootdir, subdir, fileroot+iometadata)
-            else:
-                pass
-            df.to_pickle(newfilename)
+            df.to_pickle(filename)
         except IOError:
-            raise IOError("Failed to write PKL file %s" % (newfilename))
-        return newfilename
-
-    def writeCsv(self, df, rootdir='.',subdir='obspkl',fileroot='filename',iometadata='Nometadata'):
-        """
-        Write out current self.excludeList to disk as a csv
-        output to rootdir/obspkl/.
-        """
-        newfilename=None
-        try:
-            newfilename = self.getSubdirectoryFileName(rootdir, subdir, fileroot+iometadata+'.csv')
-            df.to_csv(newfilename)
-            print('Wrote CSV file {}'.format(newfilename))
-        except IOError:
-            raise IOError("Failed to write file %s" % (newfilename))
-        return newfilename
+            raise IOError("Failed to write PKL file %s" % (filename))
+        return 0
 
     def writeDictToJson(self, dictdata, rootdir='.',subdir='errorfile',fileroot='filename',iometadata='Nometadata'):
         """
