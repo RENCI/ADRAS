@@ -40,7 +40,11 @@ temp=$1
 if [ ${temp:0:4} == "http" ] ; then
     # assume its a download url, without run.properties at the end
     RUNPROPERTIES="run.properties"
-    wget "$temp/$RUNPROPERTIES" --output-document="$RUNPROPERTIES"
+    wget "$temp/$RUNPROPERTIES" --output-document="$RUNPROPERTIES"  2> /dev/null
+    if [ $? -ne 0 ] ; then
+        echo "wget of $temp/run.properties failed."
+        exit 1
+   fi
 else
     RUNPROPERTIES="$temp"
 fi

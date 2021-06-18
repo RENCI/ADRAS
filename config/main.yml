@@ -1,0 +1,28 @@
+# A slightly different format than used for our typical ADCIRC thredds calls
+
+DEFAULT: &default
+  RDIR: $RUNTIMEDIR
+  LOGGING: true
+  LOGLEVEL: INFO
+  GRAPHICS: true
+
+S3:
+  SEND2AWS: true
+  BucketName: 'hazus'
+  RegionName: 'us-east-2' 
+  AccessKeyID: 'XXXXXXXXXXXXXXXXXXXXXXXXX'
+  SecretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXX'
+
+VARFILEMAP: &varfilemap
+  zeta_max: 'maxele.63.nc'
+  vel_max: 'maxvel.63.nc'
+  inun_max: 'maxinundepth.63.nc'
+  zeta: 'fort.63.nc'
+
+GRAPHICS: &graphics
+  CMAP: "bwr"
+  NCOL: 20
+  VMIN: -0.5
+  VMAX: 0.5
+  MAPRES: "i"
+
