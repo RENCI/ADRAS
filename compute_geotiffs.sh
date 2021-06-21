@@ -16,12 +16,16 @@ export ADRASHOME=$PYTHONPATH
 #source $HOME/miniconda2/etc/profile.d/conda.sh
 #conda activate geotiff_p2
 PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python"  # `which python`
+log="log.hazus"
+
+printf "\n\n\n******************************************\n"  >> $log
+echo "Compute_geotiffs started at " `date -u`  >> $log
 
 if [[ $DEBUG == "true" ]] ; then
-    echo "\$PYTHONPATH =" $PYTHONPATH
-    echo "\$GDAL_DATA  =" $GDAL_DATA
-    echo "\$PYTHON     =" $PYTHON
-    echo "\$PKLDIR     =" $PKLDIR
+    echo "\$PYTHONPATH =" $PYTHONPATH  >> $log
+    echo "\$GDAL_DATA  =" $GDAL_DATA  >> $log
+    echo "\$PYTHON     =" $PYTHON  >> $log
+    echo "\$PKLDIR     =" $PKLDIR  >> $log
 fi
 
 source ./rasterParameters.sh
@@ -33,8 +37,10 @@ other="None"
 
 # parse the commandline argument
 if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
-   echo "Need only path to run properties file or downloadurl file on command line"
-   exit 1
+    echo "Need only path to run properties file or downloadurl file on command line" >> $log
+    echo "Compute_geotiffs terminated at " `date -u`  >> $log
+    echo "\n\******************************************\n"  >> $log
+    exit 1
 fi
 temp=$1
 if [ ${temp:0:4} == "http" ] ; then
@@ -48,12 +54,12 @@ if [ ${temp:0:4} == "http" ] ; then
 else
     RUNPROPERTIES="$temp"
 fi
-if [[ $DEBUG == "true" ]] ; then
-   echo "\$RUNPROPERTIES=$RUNPROPERTIES"
-   echo "Loading properties."
-fi
 
 # load run.properties file into associative array
+if [[ $DEBUG == "true" ]] ; then
+   echo "\$RUNPROPERTIES=$RUNPROPERTIES"  >> $log
+   echo "Loading properties."  >> $log
+fi
 declare -A properties
 loadProperties $RUNPROPERTIES
 
@@ -103,15 +109,20 @@ machine=${properties['hpc.hpcenvshort']}
 url=${properties['downloadurl']}
 url=${url/fileServer/dodsC}"/maxele.63.nc"
 
+if [ ! -d "$PKLDIR" ]; then
+    echo "\nmaking pkldir $PKLDIR " >> $log
+    mkdir -p "$PKLDIR"
+fi
+
 if [[ $DEBUG == "true" ]] ; then
-   echo "gridname=$gridname"
-   echo "gridnameabbrev=$gridnameabbrev"
-   echo "wavemodel=$wavemodel"
-   echo "datetime,adv=$datetime, $adv"
-   echo "operator=$operator"
-   echo "ensname, weathertype, windmodel=$ensname, $weathertype, $windmodel"
-   echo "machine=$machine"
-   echo "url=$url"
+   printf "\ngridname=$gridname" >> $log
+   echo "gridnameabbrev=$gridnameabbrev" >> $log
+   echo "wavemodel=$wavemodel" >> $log
+   echo "datetime,adv=$datetime, $adv" >> $log
+   echo "operator=$operator" >> $log
+   echo "ensname, weathertype, windmodel=$ensname, $weathertype, $windmodel" >> $log
+   echo "machine=$machine" >> $log
+   echo "url=$url" >> $log
 fi
 
 # flush a temporary yaml file of the raster parameters
@@ -127,30 +138,41 @@ echo "    ny: $ny" >> $RFILE
 echo "    target_crs: '$target_crs'" >> $RFILE
 echo "    adcirc_crs: '$adcirc_crs'" >> $RFILE
 
-varname="inun_max"
-prodvarname="inunmax"
+if [[ $DEBUG == "true" ]] ; then
+    printf "\nRaster parameters are: " >> $log
+    cat $RFILE >> $log
+fi
 
 ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
 ulla=`echo "scale=0; $upperleft_la*10/1" | bc`
 rasterparams=`printf "%d.%06d.%06d.%d.%d" $res $ullo $ulla $nx $ny`
 
 s3path="$year/$weathertype/$datetime/$adv/$windmodel"
-productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
+
+varnames=( "inun_max" "zeta_max" ) 
+prodvarnames=( "inunmax" "wlmax" )
+
+k=-1
+for v in ${varnames[@]}; do
+    k=$((k+1))
+    prodvarname=${prodvarnames[$k]}
+
+    productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
            $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
            $operator $machine $other $rasterparams`
+    echo $k, $v, $prodvarname, $productId >> $log
 
-if [[ $DEBUG == "true" ]] ; then
-    echo "s3 path = $s3path"
-    echo "s3 product id = $productId"
-fi
+    if [[ $DEBUG == "true" ]] ; then
+        echo "s3 path = $s3path" >> $log
+        echo "s3 product id = $productId" >> $log
+    fi
 
-if [ ! -d "$PKLDIR" ]; then
-    mkdir -p "$PKLDIR"
-fi
+    com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff_p2.py --pkldir=$PKLDIR --varname=$v \
+         --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
+         --rasterconfigfile=$RFILE"
+    echo $com >> $log
+    $com  >> $log 2>&1
 
-com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff_p2.py --pkldir=$PKLDIR --varname=$varname \
-     --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
-     --rasterconfigfile=$RFILE"
-echo $com
-$com
-
+done
+echo "Compute_geotiffs finished at " `date -u` >> $log
+printf "\n\******************************************\n" >> $log

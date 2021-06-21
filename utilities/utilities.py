@@ -61,13 +61,13 @@ class Utilities:
 
         # LogFile = self.config['LOG_FILE']
         # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
-        LogFile = 'log'
+        LogFile = 'log.hazus'
         # print('Use a log filename of '+LogFile)
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(funcName)s : %(module)s : %(name)s : %(message)s ')
         dirname = os.path.dirname(LogFile)
         if dirname and not os.path.exists(dirname):
             os.makedirs(dirname)
-        file_handler = logging.FileHandler(LogFile, mode='w')
+        file_handler = logging.FileHandler(LogFile, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -78,7 +78,6 @@ class Utilities:
         # logger.addHandler(stream_handler)
 
         return logger
-
 
 #############################################################
 # YAML
