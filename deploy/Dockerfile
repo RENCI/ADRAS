@@ -1,10 +1,10 @@
 ##############
 # Docker file for the creation of the adcirc support tools.
 #
-# to create image: docker build -t adras:latest .
+# to create image: docker build -t adcirc_supp:latest .
 # to push image:
-#       docker tag adras:latest renciorg/adras:latest
-#       docker push renciorg/adras:latest
+#       docker tag adcirc_supp:latest renciorg/adcirc_supp:latest
+#       docker push renciorg/adcirc_supp:latest
 ##############
 FROM continuumio/miniconda3
 
@@ -14,8 +14,8 @@ LABEL maintainer="bblanton@renci.org"
 # make sure the container is up-to-date
 RUN apt-get update
 
-# Start off getting Python
-RUN conda install  -y python=2.7.15
+# Initial python install
+RUN conda install  -y python=3.7
 
 # update conda and set the download channel
 RUN conda update conda && \
@@ -24,31 +24,42 @@ RUN conda update conda && \
 # tell conda what the shell is
 RUN conda init bash
 
-# make a directory for repo and go there
+# make d directory for the repos and go there
 RUN mkdir /repo
 WORKDIR /repo
 
-# get the repos: Must be public or provide user/pass
-# Until the repo is public you must supply your github username:password
-# 
-RUN git clone --branch hazus https://username:password@github.com/RENCI/ADRAS.git
-               
+# get the repos
+RUN git clone --branch hazus https://github.com/RENCI/ADRAS.git
+
 # move to the install directory
 WORKDIR ADRAS/deploy
 
 # install the conda requirements
-RUN conda install --yes --file requirements.txt
-                                
+RUN conda install --yes --file conda_requirements.txt
+
+# install the pip requirements
+#RUN pip install -r pip_requirements.txt
+
+# change to the noaa directory
+#WORKDIR /repo/noaa_coops
+
+# run the noaa seteup
+#RUN python setup.py install --user
+
 # change to the pipelines directory                        
 WORKDIR /repo/ADRAS
-                                   
+
 # make a temporary directory for the output.
 # this should eventually point a common PV
 RUN mkdir temp
 
 # set the python path
-ENV PYTHONPATH=/repo/ADRAS
+ENV PYTHONPATH=/repo/ADCIRCSupportTools
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
 
+##########
+# at this point the container is ready to accept the launch command.
+# see apsviz_job.yaml for the job that launches this container.
+##########
