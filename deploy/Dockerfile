@@ -13,6 +13,7 @@ LABEL maintainer="bblanton@renci.org"
 
 # make sure the container is up-to-date
 RUN apt-get update
+RUN apt-get install vim bc
 
 # Initial python install
 RUN conda install  -y python=3.7

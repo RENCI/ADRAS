@@ -8,14 +8,17 @@ DEBUG=true
 
 #export GDAL_DATA=/usr/share/gdal/
 #export GDAL_DATA=/opt/miniconda2/share/gdal/
-export PYTHONPATH=$HOME/GitHub/RENCI/ADRAS
-PKLDIR="$HOME/GitHub/RENCI/ADRAS/pklfiles"
+#export PYTHONPATH=$HOME/GitHub/RENCI/ADRAS
+export PYTHONPATH=/repo/ADRAS
+#PKLDIR="$HOME/GitHub/RENCI/ADRAS/pklfiles"
+PKLDIR="/repo/ADRAS/pklfiles"
 export ADRASHOME=$PYTHONPATH
 #export VENV="$HOME/geotiff_p2"
 #source $VENV/bin/activate 
 #source $HOME/miniconda2/etc/profile.d/conda.sh
 #conda activate geotiff_p2
-PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python"  # `which python`
+#PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python"  # `which python`
+PYTHON=`which python`
 log="log.hazus"
 
 printf "\n\n\n******************************************\n"  >> $log

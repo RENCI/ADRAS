@@ -8,3 +8,4 @@ xarray
 pyyaml
 seaborn
 gdal
+boto3
