@@ -61,8 +61,14 @@ ENV PYTHONPATH=/repo/ADRAS
 ENV RUNTIMEDIR=/data
 
 # lastly, get the aws credentials file
-RUN mkdir ~/.aws
-COPY ~/.aws/credentials ~/.aws/credentials
+RUN mkdir -p /repo/aws
+#RUN cp /Users/bblanton/.aws/config /repo/aws/config
+#RUN cp /Users/bblanton/.aws/credentials /repo/aws/credentials
+COPY aws_config /repo/aws/config
+COPY aws_credentials /repo/aws/credentials
+ENV AWS_CONFIG_FILE=/repo/aws/config
+ENV AWS_CREDENTIALS_FILE=/repo/aws/credentials
+
 ##########
 # at this point the container is ready to accept the launch command.
 # see apsviz_job.yaml for the job that launches this container.

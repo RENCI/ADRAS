@@ -18,16 +18,16 @@ class Utilities:
         #config['Access key ID'] = 'XXXXXXXXXXXXXXXXXXXXXXXXX,'
         #config['Secret access key'] = 'XXXXXXXXXXXXXXXXXXXXXXX'
         config = {}
-        f = os.path.join(os.path.expanduser("~"), 'aws_adcirc_credentials.csv')
-        if os.path.exists(f):
-            df = pd.read_csv(f)
-            config = df.to_dict()
-        else:
-           print('Failed to load aws cred file. Terminal.')
-           sys.exit(1)
+        #f = os.path.join(os.path.expanduser("~"), 'aws_adcirc_credentials.csv')
+        #if os.path.exists(f):
+        #    df = pd.read_csv(f)
+        #    config = df.to_dict()
+        #else:
+        #   print('Failed to load aws cred file. Terminal.')
+        #   sys.exit(1)
 
-#        config['S3_UPLOAD_Main_Bucket'] = 'hazus'
-#        config['region_name'] = 'us-east-2'
+        config['S3_UPLOAD_Main_Bucket'] = 'hazus'
+        config['region_name'] = 'us-east-2'
         return config
 
     def bucket_exists(self, bucket):

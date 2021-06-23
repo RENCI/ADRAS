@@ -18,7 +18,9 @@ export ADRASHOME=$PYTHONPATH
 #source $HOME/miniconda2/etc/profile.d/conda.sh
 #conda activate geotiff_p2
 #PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python"  # `which python`
-PYTHON=`which python`
+#PYTHON=`which python`
+PYTHON="/opt/conda/bin/python"
+
 log="log.hazus"
 
 printf "\n\n\n******************************************\n"  >> $log
@@ -178,4 +180,4 @@ for v in ${varnames[@]}; do
 
 done
 echo "Compute_geotiffs finished at " `date -u` >> $log
-printf "\n\******************************************\n" >> $log
+printf "\n******************************************\n" >> $log

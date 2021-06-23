@@ -251,8 +251,8 @@ def main(args):
         utilities.log.debug(s3_resource)
         utilities.log.debug(s3_utilities.config)
 
-        thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket'][0]
-        thisRegion = s3_utilities.config['region_name'][0]
+        thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket']
+        thisRegion = s3_utilities.config['region_name']
 
         utilities.log.info('Bucket={}'.format(thisBucket))
         utilities.log.info('Region={}'.format(thisRegion))
