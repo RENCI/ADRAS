@@ -12,8 +12,8 @@ FROM continuumio/miniconda3
 LABEL maintainer="bblanton@renci.org"
 
 # make sure the container is up-to-date
-RUN apt-get update
-RUN apt-get install vim bc
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install vim bc
 
 # Initial python install
 RUN conda install  -y python=3.7
@@ -52,14 +52,17 @@ WORKDIR /repo/ADRAS
 
 # make a temporary directory for the output.
 # this should eventually point a common PV
-RUN mkdir temp
+RUN mkdir work
 
 # set the python path
-ENV PYTHONPATH=/repo/ADCIRCSupportTools
+ENV PYTHONPATH=/repo/ADRAS
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
 
+# lastly, get the aws credentials file
+RUN mkdir ~/.aws
+COPY ~/.aws/credentials ~/.aws/credentials
 ##########
 # at this point the container is ready to accept the launch command.
 # see apsviz_job.yaml for the job that launches this container.
