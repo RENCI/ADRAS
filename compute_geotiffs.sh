@@ -1,36 +1,46 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------------------
 # compute_geotiffs.sh: computes inundation geotiffs
 #------------------------------------------------------------------------
-THIS="output/compute_geotiffs.sh"
+# THIS="output/compute_geotiffs.sh"
+#set -x
+set -u
+
+if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
+        echo "Must run in Bash version >=4.\n"
+        exit 1
+fi
 
 DEBUG=true
 
-#export GDAL_DATA=/usr/share/gdal/
-#export GDAL_DATA=/opt/miniconda2/share/gdal/
-#export PYTHONPATH=$HOME/GitHub/RENCI/ADRAS
-export PYTHONPATH=/repo/ADRAS
-#PKLDIR="$HOME/GitHub/RENCI/ADRAS/pklfiles"
-PKLDIR="/repo/ADRAS/pklfiles"
-export ADRASHOME=$PYTHONPATH
-#export VENV="$HOME/geotiff_p2"
-#source $VENV/bin/activate 
-#source $HOME/miniconda2/etc/profile.d/conda.sh
-#conda activate geotiff_p2
-#PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python"  # `which python`
-#PYTHON=`which python`
-PYTHON="/opt/conda/bin/python"
-
 log="log.hazus"
 
-printf "\n\n\n******************************************\n"  >> $log
+printf "\n\n\n******************************************\n"  > $log
 echo "Compute_geotiffs started at " `date -u`  >> $log
 
+PKLDIR="${PKLDIR:-$HOME/GitHub/RENCI/ADRAS/pklfiles}"
+#PKLDIR="/repo/ADRAS/pklfiles"
+if [ ! -d ${PKLDIR} ] ; then
+	echo "PKLDIR ${PKLDIR} DNE.  Terminal." | tee -a $log
+	exit 1
+fi
+PYTHONPATH="${PYTHONPATH:-$HOME/GitHub/RENCI/ADRAS}"
+#export PYTHONPATH=/repo/ADRAS
+if [ ! -d ${PYTHONPATH} ] ; then
+	echo "PYTHONPATH ${PYTHONPATH} DNE.  Terminal." | tee -a $log
+	exit 1
+fi
+
+#export GDAL_DATA=/opt/miniconda2/share/gdal/
+export ADRASHOME=$PYTHONPATH
+#PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python" 
+PYTHON=`which python`
+
 if [[ $DEBUG == "true" ]] ; then
-    echo "\$PYTHONPATH =" $PYTHONPATH  >> $log
-    echo "\$GDAL_DATA  =" $GDAL_DATA  >> $log
-    echo "\$PYTHON     =" $PYTHON  >> $log
-    echo "\$PKLDIR     =" $PKLDIR  >> $log
+    echo "\$PYTHONPATH =" $PYTHONPATH  | tee -a $log
+    echo "\$GDAL_DATA  =" $GDAL_DATA   | tee -a $log
+    echo "\$PYTHON     =" $PYTHON  | tee -a $log
+    echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
 source ./rasterParameters.sh
@@ -42,9 +52,9 @@ other="None"
 
 # parse the commandline argument
 if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
-    echo "Need only path to run properties file or downloadurl file on command line" >> $log
-    echo "Compute_geotiffs terminated at " `date -u`  >> $log
-    echo "\n\******************************************\n"  >> $log
+    echo "Need only path to run properties file or downloadurl file on command line" | tee -a $log
+    echo "Compute_geotiffs terminated at " `date -u`  | tee -a $log
+    echo "\n\******************************************\n"  | tee -a $log
     exit 1
 fi
 temp=$1
@@ -53,7 +63,7 @@ if [ ${temp:0:4} == "http" ] ; then
     RUNPROPERTIES="run.properties"
     wget "$temp/$RUNPROPERTIES" --output-document="$RUNPROPERTIES"  2> /dev/null
     if [ $? -ne 0 ] ; then
-        echo "wget of $temp/run.properties failed."
+        echo "wget of $temp/run.properties failed." | tee -a $log
         exit 1
    fi
 else
@@ -62,9 +72,11 @@ fi
 
 # load run.properties file into associative array
 if [[ $DEBUG == "true" ]] ; then
-   echo "\$RUNPROPERTIES=$RUNPROPERTIES"  >> $log
-   echo "Loading properties."  >> $log
+   echo "\$RUNPROPERTIES=$RUNPROPERTIES" | tee -a $log
+   echo "Loading properties."  | tee -a $log
 fi
+
+bash --version
 declare -A properties
 loadProperties $RUNPROPERTIES
 
@@ -115,19 +127,19 @@ url=${properties['downloadurl']}
 url=${url/fileServer/dodsC}"/maxele.63.nc"
 
 if [ ! -d "$PKLDIR" ]; then
-    echo "\nmaking pkldir $PKLDIR " >> $log
+    echo "\nmaking pkldir $PKLDIR " | tee -a $log
     mkdir -p "$PKLDIR"
 fi
 
 if [[ $DEBUG == "true" ]] ; then
-   printf "\ngridname=$gridname" >> $log
-   echo "gridnameabbrev=$gridnameabbrev" >> $log
-   echo "wavemodel=$wavemodel" >> $log
-   echo "datetime,adv=$datetime, $adv" >> $log
-   echo "operator=$operator" >> $log
-   echo "ensname, weathertype, windmodel=$ensname, $weathertype, $windmodel" >> $log
-   echo "machine=$machine" >> $log
-   echo "url=$url" >> $log
+   printf "\ngridname=$gridname" | tee -a $log
+   echo "gridnameabbrev=$gridnameabbrev" | tee -a $log
+   echo "wavemodel=$wavemodel" | tee -a $log
+   echo "datetime,adv=$datetime, $adv" | tee -a $log
+   echo "operator=$operator" | tee -a $log
+   echo "ensname, weathertype, windmodel=$ensname, $weathertype, $windmodel" | tee -a $log
+   echo "machine=$machine" | tee -a $log
+   echo "url=$url" | tee -a $log
 fi
 
 # flush a temporary yaml file of the raster parameters
@@ -144,8 +156,8 @@ echo "    target_crs: '$target_crs'" >> $RFILE
 echo "    adcirc_crs: '$adcirc_crs'" >> $RFILE
 
 if [[ $DEBUG == "true" ]] ; then
-    printf "\nRaster parameters are: " >> $log
-    cat $RFILE >> $log
+    printf "\nRaster parameters are: " | tee -a $log
+    cat $RFILE | tee -a $log
 fi
 
 ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
@@ -165,19 +177,19 @@ for v in ${varnames[@]}; do
     productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
            $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
            $operator $machine $other $rasterparams`
-    echo $k, $v, $prodvarname, $productId >> $log
+    echo $k, $v, $prodvarname, $productId | tee -a $log
 
     if [[ $DEBUG == "true" ]] ; then
-        echo "s3 path = $s3path" >> $log
-        echo "s3 product id = $productId" >> $log
+        echo "s3 path = $s3path" | tee -a $log
+        echo "s3 product id = $productId" | tee -a $log
     fi
 
     com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff_p2.py --pkldir=$PKLDIR --varname=$v \
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE"
-    echo $com >> $log
-    $com  >> $log 2>&1
+    echo $com | tee -a $log
+    $com  | tee -a $log 2>&1
 
 done
-echo "Compute_geotiffs finished at " `date -u` >> $log
-printf "\n******************************************\n" >> $log
+echo "Compute_geotiffs finished at " `date -u` | tee -a $log
+printf "\n******************************************\n" | tee -a $log
