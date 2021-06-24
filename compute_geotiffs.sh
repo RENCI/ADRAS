@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------
 # THIS="output/compute_geotiffs.sh"
 #set -x
-set -u
+#set -u
 
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
         echo "Must run in Bash version >=4.\n"
@@ -42,6 +42,7 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PYTHON     =" $PYTHON  | tee -a $log
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
+export PYTHONPATH
 
 source ./rasterParameters.sh
 source ./properties.sh
@@ -76,7 +77,6 @@ if [[ $DEBUG == "true" ]] ; then
    echo "Loading properties."  | tee -a $log
 fi
 
-bash --version
 declare -A properties
 loadProperties $RUNPROPERTIES
 
