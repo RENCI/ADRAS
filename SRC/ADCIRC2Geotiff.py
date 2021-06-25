@@ -9,19 +9,16 @@ import os
 import sys
 import re
 import time
-#import logging
 import datetime as dt
 #import numpy.ma as ma
 import pandas as pd
 import numpy as np
-#from pylab import *
 import matplotlib.tri as Tri
 #import matplotlib.pyplot as plt
 import netCDF4
 
 import rasterio as rio
 from rasterio.transform import from_origin
-from rasterio.plot import show
 import geopandas as gpd
 
 from utilities.utilities import utilities as utilities
@@ -85,15 +82,6 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
                   'ny': config[gridname]['ny']}
     return targetgrid, config[gridname]['adcirc_crs'], config[gridname]['target_crs']
 
-def fetch_XY_fromGeopandas(gdf):
-    """
-    Simply grab the current lat,lon values from the gdp object
-    """
-    xtemp = gdf['geometry'].x
-    ytemp = gdf['geometry'].y
-    return xtemp, ytemp
-
-
 def computeInundation(advardict, agdict):
     """
     Compute the inundation depth (water amount above ADCIRC's ground level).
@@ -111,9 +99,11 @@ def computeInundation(advardict, agdict):
     # return inundation depth masked out over "open water" (>1)
     return np.where(agdict['depth'] > 1, np.nan, inun)
 
-# Define geopandas processors
-# project grid coords, before making Triangulation object
 def construct_geopandas(agdict, targetepsg):
+    """
+    Define geopandas processors
+    project grid coords, before making Triangulation object
+    """
     utilities.log.info('Computing GeoPandas DF from ADCIRC grid')
     df_Adcirc = pd.DataFrame(
         {'Latitude': agdict['lat'],
@@ -130,12 +120,12 @@ def construct_geopandas(agdict, targetepsg):
     utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
     utilities.log.info('Time to create GDF was {}'.format(time.time()-t0))
-    # utilities.log.debug('GDF data set {}'.format(gdf))
     return gdf
 
-# project interpolation grid to target crs
 def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     """
+    project interpolation grid to target crs
+
     Results:
         meshdict. Values for upperleft_x, upperleft_y, x,y,xx,yy,xxm,yym
     """
@@ -150,7 +140,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf_target = gdf_target.to_crs({'init': targetepsg})
 
-    # compute spatial grid for raster (for viz purposes below)
+    # compute spatial grid for raster 
     upperleft_x = gdf_target['geometry'][0].x
     upperleft_y = gdf_target['geometry'][0].y
     x = np.arange(upperleft_x, upperleft_x+targetgrid['nx']*targetgrid['res'], targetgrid['res'])
@@ -162,6 +152,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     ym = (y[1:] + y[:-1]) / 2
     xxm, yym = np.meshgrid(xm, ym)
     utilities.log.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
+
     return {'uplx': upperleft_x,
             'uply': upperleft_y,
             'x': x,
@@ -171,7 +162,6 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
             'xxm': xxm,
             'yym': yym}
 
-# get ADCIRC grid parts;  this need only be done once, as it can be time-consuming over the network
 def extract_url_grid(url):
     """
     Extract ADCIRC grid parts from THREDDS dataset
@@ -271,9 +261,8 @@ def main(args):
     t0 = time.time()
     nc, agdict = extract_url_grid(url)
     agdict['crs'] = adcircepsg
-    #utilities.log.info(f'Reading URL and Building ADCIRC grid took {time.time()-t0} secs')
 
-    # Fetch grid name for building gdf filename
+    # get grid name for building gdf filename
     gridname = args.gridname
     if not args.gridname:
         gridname = fetchGridName(nc)
@@ -295,7 +284,7 @@ def main(args):
         gdf = pd.read_pickle(f)
 
     # Extract the lat,lon values of the current gdf object
-    xtemp, ytemp = fetch_XY_fromGeopandas(gdf)
+    xtemp, ytemp = gdf['geometry'].x, gdf['geometry'].y
     utilities.log.info('Extracted X and Y from the current (input) GDF')
 
     # Build Triangulate object for interpolating the input geopandas object
