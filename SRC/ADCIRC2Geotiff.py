@@ -26,15 +26,14 @@ import geopandas as gpd
 
 from utilities.utilities import utilities as utilities
 
-utilities.log.info(f'Begin TIF generation')
-utilities.log.info(f'netCDF4 Version = {netCDF4.__version__}')
-utilities.log.info(f'Pandas Version = {pd.__version__}')
-utilities.log.info(f'rasterio Version = {rio.__version__}')
-utilities.log.info(f'Geopandas Version = {gpd.__version__}')
+utilities.log.info('Begin TIF generation')
+utilities.log.info('netCDF4 Version = {}'.format(netCDF4.__version__))
+utilities.log.info('Pandas Version = {}'.format(pd.__version__))
+utilities.log.info('rasterio Version = {}'.format(rio.__version__))
+utilities.log.info('Geopandas Version = {}'.format(gpd.__version__))
 
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
-ensname = 'namforecast'
 
 def checkInputVar(v):
     allowable_vars = ['zeta_max', 'vel_max', 'inun_max']
@@ -126,11 +125,11 @@ def construct_geopandas(agdict, targetepsg):
 
     # init crs is LonLat, WGS84
     adcircepsg = agdict['crs']
-    utilities.log.info(f'Adding {adcircepsg} crs to initial GDF')
+    utilities.log.info('Adding {} crs to initial GDF'.format(adcircepsg))
     gdf.crs = {'init': adcircepsg}
-    utilities.log.info(f'Converting GDF from {adcircepsg} to {targetepsg}')
+    utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
-    utilities.log.info(f'Time to create GDF was {time.time()-t0}')
+    utilities.log.info('Time to create GDF was {}'.format(time.time()-t0))
     # utilities.log.debug('GDF data set {}'.format(gdf))
     return gdf
 
@@ -148,7 +147,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     gdf_target.crs = {'init': adcircepsg}
 
     # convert to "targetepsg"
-    utilities.log.info(f'Converting GDF from {adcircepsg} to {targetepsg}')
+    utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf_target = gdf_target.to_crs({'init': targetepsg})
 
     # compute spatial grid for raster (for viz purposes below)
@@ -182,8 +181,6 @@ def extract_url_grid(url):
     # print(nc.variables.keys())
     agdict = get_adcirc_grid(nc)
     return nc, agdict
-
-
 
 def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
@@ -220,31 +217,28 @@ def fetchGridName(nc):
     return re.sub(r'[^A-Za-z0-9_]+', '', getattr(nc,'agrid'))
 
 #################################################################
-# urlinput='http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020042912/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc'
 
 def main(args):
     """
     Entry point for computing geotiff files from an ADCIRC mnetCDF file
     """
-
     utilities.log.info(args)
     varname = args.varname
-    showInterpolatedPlot = args.showInterpolatedPlot
-    showRasterizedPlot = args.showRasterizedPlot
-    showPNGPlot = args.showPNGPlot
     writePNG = False
-    showGDALPlot = False # Tells GDAL to load the tif and display it
     filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
     png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
 
     # Add in option to simply upload a url
 
     if not checkInputVar(varname):
-        utilities.log.error(f'Variable {varname} not yet supported.')
+        utilities.log.error('Variable {} not yet supported.'.format(varname))
 
     utilities.log.info('Start ADCIRC2Geotiff')
-    yaml_file = os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')
-    main_config = utilities.load_config(yaml_file=yaml_file)
+    main_yaml_file =  os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml') 
+    main_config = utilities.load_config(yaml_file=main_yaml_file)
+
+    raster_yaml_file = args.rconfigfile
+    raster_config = utilities.load_config(yaml_file=raster_yaml_file)
 
     # if s3path not passed in, disable SEND2AWS
     if not args.s3path:
@@ -260,71 +254,44 @@ def main(args):
         thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket']
         thisRegion = s3_utilities.config['region_name']
 
-        utilities.log.info(f'Bucket={thisBucket}')
-        utilities.log.info(f'Region={thisRegion}')
-
+        utilities.log.info('Bucket={}'.format(thisBucket))
+        utilities.log.info('Region={}'.format(thisRegion))
         if not s3_utilities.bucket_exists(thisBucket):
             res = s3_utilities.create_bucket(thisRegion, thisBucket)
-            utilities.log.info(f'Bucket {thisBucket} created.')
+            utilities.log.info('Bucket {} created.'.format(thisBucket))
         else:
-            utilities.log.info(f'Bucket {thisBucket} already exists.')
+            utilities.log.info('Bucket {} already exists.'.format(thisBucket))
 
-    if args.urljson is not None:
-        setGetURL = False
-        if not os.path.exists(args.urljson):
-            utilities.log.error('urljson file not found.')
-            sys.exit(1)
-        utilities.log.info('Read data from supplied urljson')
-        urls = utilities.read_json_file(args.urljson)
-    elif args.url is not None:
-        # If here we still need to build a dict for ADCIRC
-        url = args.url
-        dte='manual'  # The times will be determined from the real data
-        urls={dte:url}
-        utilities.log.info('Explicit URL provided {}'.format(urls))
-    else:
-        utilities.log.error('No Proper URL specified')
+    url = args.url
 
     rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'])
 
-    ################################################################
-    #
-    # We pick the very first url simply to set up the initial/final grids and build an interpolator
-    # Assumes all other urls have the same grid
-    ################################################################
-
-    targetgrid, adcircepsg, targetepsg = get_interpolation_target(gridname=args.gridname)
-    # use the first url to get the ADCIRC grid parts, assumes all urls point to the same
-    # ADCIRC grid...
-    url = list(urls.values())[0]
+    targetgrid, adcircepsg, targetepsg = get_interpolation_target(gridname=args.gridname, yamlfile=raster_yaml_file)
 
     t0 = time.time()
     nc, agdict = extract_url_grid(url)
     agdict['crs'] = adcircepsg
-    utilities.log.info(f'Reading URL and Building ADCIRC grid took {time.time()-t0} secs')
+    #utilities.log.info(f'Reading URL and Building ADCIRC grid took {time.time()-t0} secs')
 
     # Fetch grid name for building gdf filename
     gridname = args.gridname
     if not args.gridname:
         gridname = fetchGridName(nc)
-    utilities.log.info(f'ADCIRC grid name is {gridname}')
+    utilities.log.info('ADCIRC grid name is {}'.format(gridname))
 
     # Construct a geopandas object on the input URL grid
     t0 = time.time()
-    gdf_pklfile = f'{gridname}.gdf.pkl'
+    gdf_pklfile = '{}.gdf.pkl'.format(gridname)
 
     # Need to check in specified dirs
-    f = os.path.join(rootdir, 'pklfiles', gdf_pklfile)
+    f = os.path.join(args.pkldir, gdf_pklfile)
     if not os.path.exists(f):
         gdf = construct_geopandas(agdict, targetepsg)
-        # gdf.to_pickle(f)
-        if not os.path.exists('pklfiles'): os.makedirs('pklfiles')
-        # if filename is passed in, all other arguments are ignored
-        utilities.writePickle(gdf, filename=f, rootdir=rootdir, fileroot=gdf_pklfile, subdir='', iometadata='')
-        utilities.log.info(f'Wrote Geopandas file to {f}')
-        utilities.log.info('Construct geopandas object took {} secs'.format(time.time() - t0))
+        if not os.path.exists(args.pkldir): os.makedirs(args.pkldir)
+        utilities.writePickle(gdf, filename=f)
+        utilities.log.info('Wrote Geopandas file to {}'.format(f))
     else:
-        utilities.log.info(f'{f} exists.  Using it...')
+        utilities.log.info('{} exists.  Using it...'.format(f))
         gdf = pd.read_pickle(f)
 
     # Extract the lat,lon values of the current gdf object
@@ -336,8 +303,7 @@ def main(args):
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
     utilities.log.info('Tri interpolation object took {} secs to compute'.format(time.time()-t0))
 
-    # Setup desired grid for geotiff data
-
+    # Set up grid for geotiff data
     t0 = time.time()
     meshdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
     utilities.log.info('compute_geotiff took {} secs'.format(time.time() - t0))
@@ -346,53 +312,47 @@ def main(args):
     orig_filename = filename
     orig_png_filename = png_filename
 
-    # For now assume only one url was provided
+    # filename = os.path.join(rootdir, orig_filename)
+    filename = orig_filename
+    png_filename = os.path.join(rootdir, orig_png_filename)
 
-    for utime, url in urls.items():
-        iometadata = utime # Grabs the key and uses it to differentiate urls
-        # filename = "{}/{}_{}".format(rootdir,iometadata,orig_filename)
-        # filename = os.path.join(rootdir, orig_filename)
-        filename = orig_filename
-        # png_filename = "{}/{}_{}".format(rootdir,iometadata,orig_png_filename)
-        png_filename = os.path.join(rootdir, orig_png_filename)
+    nc = netCDF4.Dataset(url)
+    if varname == 'inun_max':
+        advardict = get_adcirc_slice(nc, 'zeta_max')
+        # compute inundation and replace advardict['data']
+        advardict['data'] = computeInundation(advardict, agdict)
+    else:
+        advardict = get_adcirc_slice(nc, varname)
 
-        nc = netCDF4.Dataset(url)
-        if varname == 'inun_max':
-            advardict = get_adcirc_slice(nc, 'zeta_max')
-            # compute inundation and replace advardict['data']
-            advardict['data'] = computeInundation(advardict, agdict)
+    vmin = np.nanmin(advardict['data'])
+    vmax = np.nanmax(advardict['data'])
+    utilities.log.info('Min/Max in ADCIRC Slice: {}, {}'.format(vmin,vmax))
+
+    # construct the interpolator
+    t0 = time.time()
+    interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
+    utilities.log.info('Finished linearInterpolator in {} secs'.format(time.time()-t0))
+
+    # zi_lin is the interpolated data that form the rasterized data down below
+    zi_lin = interp_lin(xxm, yym)
+    utilities.log.debug('zi_lin {}'.format(zi_lin))
+
+    utilities.log.info('Outputting tiff file {}'.format(filename))
+    write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
+
+    if main_config['S3']['SEND2AWS']:
+        resp = s3_utilities.upload(thisBucket, args.s3path, filename)
+        if not resp:
+            utilities.log.info('Upload to s3://{}:/{}/{} failed.'.format(thisBucket,args.s3path,args.filename))
         else:
-            advardict = get_adcirc_slice(nc, varname)
-        vmin = np.nanmin(advardict['data'])
-        vmax = np.nanmax(advardict['data'])
-        utilities.log.info(f'Min/Max in ADCIRC Slice: {vmin}/{vmax}')
+            utilities.log.info('Upload to s3://{}:/{}/{} succeeded.'.format(thisBucket,args.s3path,args.filename))
+        pass
 
-        # construct the interpolator
-        t0 = time.time()
-        interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
-        utilities.log.info('Finished linearInterpolator in {} secs'.format(time.time()-t0))
-
-        # zi_lin is the interpolated data that form the rasterized data down below
-        zi_lin = interp_lin(xxm, yym)
-        utilities.log.debug('zi_lin {}'.format(zi_lin))
-
-        utilities.log.info('Outputting tiff file {}'.format(filename))
-        write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
-
-        if main_config['S3']['SEND2AWS']:
-            resp = s3_utilities.upload(thisBucket, args.s3path, filename)
-            if not resp:
-                utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} failed.')
-            else:
-                utilities.log.info(f'Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} succeeded.')
-            pass
-
-        if writePNG:
-            utilities.log.info('Outputting png file {}'.format(png_filename))
-            write_png(filename, png_filename)
+    #if png_filename is not None:
+    #    utilities.log.info('Outputting png file {}'.format(png_filename))
+    #    write_png(filename, png_filename)
 
     utilities.log.info('Finished')
-
 
 if __name__ == '__main__':
 
@@ -400,30 +360,20 @@ if __name__ == '__main__':
     import sys
     parser = ArgumentParser()
 
-    parser.add_argument('--tif_filename', action='store', dest='filename', default=None,
-                        help='String: tiff output file name will be prepended by new path. Must include extension')
-
+    parser.add_argument('--pkldir', action='store', dest='pkldir', default='pklfiles',
+                        help='String: Directory of pre-computed grid pkl files.')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default=None,
-                        help='String: png output file name will be prepended by new path. Must include extension')
-
-    parser.add_argument('--showInterpolatedPlot', action='store_true',
-                        help='Boolean: Display the comparison of Triangular and interpolated plots')
-
-    parser.add_argument('--showRasterizedPlot', action='store_true',
-                        help='Boolean: Display the generated and saved tif plot')
-
-    parser.add_argument('--showPNGPlot', action='store_true',
-                        help='Boolean: Display the generated and saved png plot')
-
+                        help='String: png output file name.')
+    parser.add_argument('--tif_filename', action='store', dest='filename', default=None,
+                        help='String: tiff output file name.')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
                         help='String: zeta_max, vel_max, or inun_max')
-
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
-
     parser.add_argument('--url', action='store', dest='url', default=None,
                         help='String: url.')
-
+    parser.add_argument('--rasterconfigfile', action='store', dest='rconfigfile', default=None,
+                        help='config yml for raster parameters')
     # add a user-supplied grid name to override the computed grid name from the agrid global attr in
     # the ADCIRC netCDF file.  ASGS will know the correct gridname at runtime, so pass it in via --gridname
     # otherwise, it is up to the user to ensure that whatever the gridname determined automatically, there needs to

@@ -7,15 +7,14 @@
 #set -u
 
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
-        echo "Must run in Bash version >=4.\n"
-        exit 1
+	echo "Must run in Bash version >=4.\n"
+	exit 1
 fi
 
 DEBUG=true
-
 log="log.hazus"
 
-printf "\n\n\n******************************************\n"  > $log
+printf "******************************************\n"  > $log
 echo "Compute_geotiffs started at " `date -u`  >> $log
 
 PKLDIR="${PKLDIR:-$HOME/GitHub/RENCI/ADRAS/pklfiles}"
@@ -23,19 +22,25 @@ if [ ! -d ${PKLDIR} ] ; then
 	echo "PKLDIR ${PKLDIR} DNE.  Making it ..." | tee -a $log
 	mkdir -p $PKLDIR
 fi
+
 PYTHONPATH="${PYTHONPATH:-$HOME/GitHub/RENCI/ADRAS}"
 if [ ! -d ${PYTHONPATH} ] ; then
 	echo "PYTHONPATH ${PYTHONPATH} DNE.  Terminal." | tee -a $log
 	exit 1
 fi
-
 export ADRASHOME=$PYTHONPATH
-#PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python" 
-export PYTHON=`which python`
+
+temp=`which python`
+PYTHON="${PYTHON:-$temp}"
+if [ ! -e ${PYTHON} ] ; then
+	echo "PYTHON ${PYTHON} DNE.  Terminal." | tee -a $log
+	exit 1
+fi
+export PYTHON=$PYTHON
 
 if [[ $DEBUG == "true" ]] ; then
     echo "\$PYTHONPATH =" $PYTHONPATH  | tee -a $log
-    echo "\$GDAL_DATA  =" $GDAL_DATA   | tee -a $log
+#    echo "\$GDAL_DATA  =" $GDAL_DATA   | tee -a $log
     echo "\$PYTHON     =" $PYTHON  | tee -a $log
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
@@ -68,10 +73,10 @@ if [[ $DEBUG == "true" ]] ; then
    echo "\$RUNPROPERTIES=$RUNPROPERTIES" | tee -a $log
    echo "Loading properties."  | tee -a $log
 fi
-
 declare -A properties
 loadProperties $RUNPROPERTIES
 
+# process run.properties for needed parameters
 gridname=${properties['adcirc.gridname']}
 case $gridname in
    "ec95d")
@@ -84,8 +89,6 @@ case $gridname in
     gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
   ;;
 esac
-
-rasterParameters $gridname
 
 # get needed parameters out of run.properties array
 if [[ ! -z ${properties[forcing.metclass]} ]] ; then
@@ -119,15 +122,22 @@ url=${properties['downloadurl']}
 url=${url/fileServer/dodsC}"/maxele.63.nc"
 
 if [[ $DEBUG == "true" ]] ; then
-   printf "\ngridname=$gridname" | tee -a $log
-   echo "gridnameabbrev=$gridnameabbrev" | tee -a $log
-   echo "wavemodel=$wavemodel" | tee -a $log
-   echo "datetime,adv=$datetime, $adv" | tee -a $log
-   echo "operator=$operator" | tee -a $log
-   echo "ensname, weathertype, windmodel=$ensname, $weathertype, $windmodel" | tee -a $log
-   echo "machine=$machine" | tee -a $log
-   echo "url=$url" | tee -a $log
+   printf "\n"                             | tee -a $log
+   echo "gridname       = $gridname"       | tee -a $log
+   echo "gridnameabbrev = $gridnameabbrev" | tee -a $log
+   echo "wavemodel      = $wavemodel"      | tee -a $log
+   echo "datetime       = $datetime"       | tee -a $log
+   echo "adv            = $adv"            | tee -a $log
+   echo "operator       = $operator"       | tee -a $log
+   echo "ensname        = $ensname"        | tee -a $log
+   echo "weathertype    = $weathertype"    | tee -a $log
+   echo "windmodel      = $windmodel"      | tee -a $log
+   echo "machine        = $machine"        | tee -a $log
+   echo "url            = $url"            | tee -a $log
 fi
+
+#get raster file parameters
+rasterParameters $gridname
 
 # write a temporary yaml file of the raster parameters
 RFILE="raster.yml"
@@ -142,16 +152,19 @@ echo "    ny: $ny" >> $RFILE
 echo "    target_crs: '$target_crs'" >> $RFILE
 echo "    adcirc_crs: '$adcirc_crs'" >> $RFILE
 
+ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
+ulla=`echo "scale=0; $upperleft_la*10/1" | bc`
+rasterparams=`printf "%d.%06d.%06d.%d.%d" $res $ullo $ulla $nx $ny`
+
 if [[ $DEBUG == "true" ]] ; then
     printf "\nRaster parameters are: \n" | tee -a $log
     cat $RFILE | tee -a $log
 fi
 
-ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
-ulla=`echo "scale=0; $upperleft_la*10/1" | bc`
-rasterparams=`printf "%d.%06d.%06d.%d.%d" $res $ullo $ulla $nx $ny`
-
 s3path="$year/$weathertype/$datetime/$adv/$windmodel"
+if [[ $DEBUG == "true" ]] ; then
+    echo "s3 path = $s3path" | tee -a $log
+fi
 
 varnames=( "inun_max" "zeta_max" ) 
 prodvarnames=( "inunmax" "wlmax" )
@@ -163,21 +176,19 @@ for v in ${varnames[@]}; do
     prodvarname=${prodvarnames[$k]}
 
     productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
-           $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
-           $operator $machine $other $rasterparams`
-    echo $k, $v, $prodvarname, $productId | tee -a $log
+               $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
+               $operator $machine $other $rasterparams`
+    printf "\nProcessing %s %s %s %s ... \n" $k $v $prodvarname $productId | tee -a $log
+    echo "s3 product id = $productId" | tee -a $log
 
-    if [[ $DEBUG == "true" ]] ; then
-        echo "s3 path = $s3path" | tee -a $log
-        echo "s3 product id = $productId" | tee -a $log
-    fi
-
-    com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff_p2.py --pkldir=$PKLDIR --varname=$v \
+    com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff.py --pkldir=$PKLDIR --varname=$v \
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE"
     echo $com | tee -a $log
     $com  | tee -a $log 2>&1
-
+    printf "\n" | tee -a $log
 done
+
 echo "Compute_geotiffs finished at " `date -u` | tee -a $log
-printf "\n******************************************\n" | tee -a $log
+printf "\n******************************************\n\n\n" | tee -a $log
+
