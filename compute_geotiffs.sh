@@ -19,22 +19,19 @@ printf "\n\n\n******************************************\n"  > $log
 echo "Compute_geotiffs started at " `date -u`  >> $log
 
 PKLDIR="${PKLDIR:-$HOME/GitHub/RENCI/ADRAS/pklfiles}"
-#PKLDIR="/repo/ADRAS/pklfiles"
 if [ ! -d ${PKLDIR} ] ; then
-	echo "PKLDIR ${PKLDIR} DNE.  Terminal." | tee -a $log
-	exit 1
+	echo "PKLDIR ${PKLDIR} DNE.  Making it ..." | tee -a $log
+	mkdir -p $PKLDIR
 fi
 PYTHONPATH="${PYTHONPATH:-$HOME/GitHub/RENCI/ADRAS}"
-#export PYTHONPATH=/repo/ADRAS
 if [ ! -d ${PYTHONPATH} ] ; then
 	echo "PYTHONPATH ${PYTHONPATH} DNE.  Terminal." | tee -a $log
 	exit 1
 fi
 
-#export GDAL_DATA=/opt/miniconda2/share/gdal/
 export ADRASHOME=$PYTHONPATH
 #PYTHON="/home/bblanton/miniconda2/envs/geotiff_p2/bin/python" 
-PYTHON=`which python`
+export PYTHON=`which python`
 
 if [[ $DEBUG == "true" ]] ; then
     echo "\$PYTHONPATH =" $PYTHONPATH  | tee -a $log
@@ -42,14 +39,11 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PYTHON     =" $PYTHON  | tee -a $log
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
-export PYTHONPATH
 
 source ./rasterParameters.sh
 source ./properties.sh
 
 ## main starts here
-
-other="None"
 
 # parse the commandline argument
 if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
@@ -58,17 +52,15 @@ if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
     echo "\n\******************************************\n"  | tee -a $log
     exit 1
 fi
-temp=$1
-if [ ${temp:0:4} == "http" ] ; then
+RUNPROPERTIES=$1
+if [ ${RUNPROPERTIES:0:4} == "http" ] ; then
     # assume its a download url, without run.properties at the end
-    RUNPROPERTIES="run.properties"
-    wget "$temp/$RUNPROPERTIES" --output-document="$RUNPROPERTIES"  2> /dev/null
+    wget "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
     if [ $? -ne 0 ] ; then
-        echo "wget of $temp/run.properties failed." | tee -a $log
+        echo "wget of $RUNPROPERTIES/run.properties failed." | tee -a $log
         exit 1
    fi
-else
-    RUNPROPERTIES="$temp"
+   RUNPROPERTIES="run.properties"
 fi
 
 # load run.properties file into associative array
@@ -126,11 +118,6 @@ machine=${properties['hpc.hpcenvshort']}
 url=${properties['downloadurl']}
 url=${url/fileServer/dodsC}"/maxele.63.nc"
 
-if [ ! -d "$PKLDIR" ]; then
-    echo "\nmaking pkldir $PKLDIR " | tee -a $log
-    mkdir -p "$PKLDIR"
-fi
-
 if [[ $DEBUG == "true" ]] ; then
    printf "\ngridname=$gridname" | tee -a $log
    echo "gridnameabbrev=$gridnameabbrev" | tee -a $log
@@ -142,7 +129,7 @@ if [[ $DEBUG == "true" ]] ; then
    echo "url=$url" | tee -a $log
 fi
 
-# flush a temporary yaml file of the raster parameters
+# write a temporary yaml file of the raster parameters
 RFILE="raster.yml"
 rm -rf $RFILE
 echo "REGRID: &regrid" > $RFILE
@@ -169,6 +156,7 @@ s3path="$year/$weathertype/$datetime/$adv/$windmodel"
 varnames=( "inun_max" "zeta_max" ) 
 prodvarnames=( "inunmax" "wlmax" )
 
+other="None"
 k=-1
 for v in ${varnames[@]}; do
     k=$((k+1))
