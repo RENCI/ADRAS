@@ -156,7 +156,7 @@ echo "    target_crs: '$target_crs'" >> $RFILE
 echo "    adcirc_crs: '$adcirc_crs'" >> $RFILE
 
 if [[ $DEBUG == "true" ]] ; then
-    printf "\nRaster parameters are: " | tee -a $log
+    printf "\nRaster parameters are: \n" | tee -a $log
     cat $RFILE | tee -a $log
 fi
 
