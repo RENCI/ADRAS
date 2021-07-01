@@ -8,6 +8,7 @@ rasterParameters () {
     res=100  # resolution in m
     nx=1000
     ny=1000
+	theta=0
     target_crs='epsg:32617'
     adcirc_crs='epsg:4326'
   ;;
@@ -18,6 +19,7 @@ rasterParameters () {
     res=1000  # resolution in m
     nx=500
     ny=500
+	theta=0
     target_crs='epsg:32617'
     adcirc_crs='epsg:4326'
   ;;
@@ -28,6 +30,7 @@ rasterParameters () {
     res=50  # resolution in m
     nx=10000
     ny=6000
+	theta=0
     target_crs='epsg:32614'
     adcirc_crs='epsg:4326'
   ;;
@@ -38,6 +41,7 @@ rasterParameters () {
     res=50  # resolution in m
     nx=10000
     ny=6000
+	theta=0
     target_crs='epsg:32614'
     adcirc_crs='epsg:4326'
   ;;
@@ -49,6 +53,7 @@ rasterParameters () {
     res=50  
     nx=12000
     ny=12000
+	theta=0
     target_crs='epsg:32614'
     adcirc_crs='epsg:4326'
   ;;
@@ -59,6 +64,7 @@ rasterParameters () {
     res=100  # resolution in m
     nx=1000
     ny=1000
+	theta=0
     target_crs='epsg:6346'
     adcirc_crs='epsg:4326'
   ;;
