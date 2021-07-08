@@ -218,8 +218,6 @@ def main(args):
     filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
     png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
 
-    # Add in option to simply upload a url
-
     if not checkInputVar(varname):
         utilities.log.error('Variable {} not yet supported.'.format(varname))
 

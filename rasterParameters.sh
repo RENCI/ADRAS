@@ -35,6 +35,17 @@ rasterParameters () {
     adcirc_crs='epsg:4326'
   ;;
 
+  "EGOMv20b")
+    upperleft_lo=-84
+    upperleft_la=30.5
+    res=50  # resolution in m
+    nx=6000
+    ny=10000
+	theta=0
+    target_crs='epsg:32614'
+    adcirc_crs='epsg:4326'
+  ;;
+
   "NGOMv19b")
     upperleft_lo=-91.5
     upperleft_la=31.0
