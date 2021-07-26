@@ -51,20 +51,12 @@ WORKDIR /repo/ADRAS
 
 # make a temporary directory for the output.
 # this should eventually point a common PV
-RUN mkdir work
+#RUN mkdir work
 
 # set the python path
 ENV PYTHONPATH=/repo/ADRAS
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
-ENV PKLFILES=/data
-
-# lastly, get the aws credentials file
-#RUN mkdir -p /repo/aws
-#COPY aws_config /repo/aws/config
-#COPY aws_credentials /repo/aws/credentials
-#ENV AWS_CONFIG_FILE=/repo/aws/config
-#ENV AWS_SHARED_CREDENTIALS_FILE=/repo/aws/credentials 
-
+ENV PKLDIR=/data/pkldir
 
