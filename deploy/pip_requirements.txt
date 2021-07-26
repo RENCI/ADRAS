@@ -1,0 +1,22 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+gdal==2.3.3
+geopandas==0.6.3
+#geos=3.7.1
+#hdf4
+h5py
+matplotlib
+#mock=3.0.5
+netcdf4
+numpy
+#numpy-base=1.16.6
+pandas
+proj4
+pyproj
+pyyaml
+rasterio
+#shapely=1.6.4
+#sip=4.19.8
+#six=1.15.0
+#yaml=0.1.7
