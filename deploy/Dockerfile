@@ -8,7 +8,6 @@
 ##############
 FROM continuumio/miniconda3
 
-# get some credit
 LABEL maintainer="bblanton@renci.org"
 
 # make sure the container is up-to-date
@@ -59,6 +58,7 @@ ENV PYTHONPATH=/repo/ADRAS
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
+ENV PKLFILES=/data
 
 # lastly, get the aws credentials file
 #RUN mkdir -p /repo/aws
