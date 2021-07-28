@@ -1,0 +1,11 @@
+rasterio=1.2.0
+geopandas=0.8.2
+netCDF4
+matplotlib
+pandas
+numpy
+xarray
+pyyaml
+seaborn
+gdal
+boto3
