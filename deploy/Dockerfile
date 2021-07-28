@@ -33,7 +33,8 @@ RUN git clone --branch hazus https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
 WORKDIR ADRAS/deploy
-
+#WORKDIR /repo/ADRAS
+# RUN ls
 # install the conda requirements
 RUN conda install --yes --file conda_requirements.txt
 
@@ -46,12 +47,7 @@ RUN conda install --yes --file conda_requirements.txt
 # run the noaa seteup
 #RUN python setup.py install --user
 
-# change to the pipelines directory                        
 WORKDIR /repo/ADRAS
-
-# make a temporary directory for the output.
-# this should eventually point a common PV
-#RUN mkdir work
 
 # set the python path
 ENV PYTHONPATH=/repo/ADRAS
