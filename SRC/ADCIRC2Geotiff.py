@@ -22,15 +22,18 @@ from rasterio.transform import from_origin
 import geopandas as gpd
 
 from utilities.utilities import utilities as utilities
+import logging
+from utilities.logging import LoggingUtil 
 
-utilities.log.info('Begin TIF generation')
-utilities.log.info('netCDF4 Version = {}'.format(netCDF4.__version__))
-utilities.log.info('Pandas Version = {}'.format(pd.__version__))
-utilities.log.info('rasterio Version = {}'.format(rio.__version__))
-utilities.log.info('Geopandas Version = {}'.format(gpd.__version__))
+#logger.info('Begin TIF generation')
+#logger.info('netCDF4 Version = {}'.format(netCDF4.__version__))
+#logger.info('Pandas Version = {}'.format(pd.__version__))
+#logger.info('rasterio Version = {}'.format(rio.__version__))
+#logger.info('Geopandas Version = {}'.format(gpd.__version__))
 
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
+
 
 def checkInputVar(v):
     allowable_vars = ['zeta_max', 'vel_max', 'inun_max']
@@ -68,7 +71,7 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
     try:
         config = utilities.load_config(yamlfile)['REGRID']
     except:
-        utilities.log.error("REGRID: load_config yaml failed")
+        logger.error("REGRID: load_config yaml failed")
 
     if not gridname:
         gridname = 'DEFAULT'
@@ -104,7 +107,7 @@ def construct_geopandas(agdict, targetepsg):
     Define geopandas processors
     project grid coords, before making Triangulation object
     """
-    utilities.log.info('Computing GeoPandas DF from ADCIRC grid')
+    #logger.info('Computing GeoPandas DF from ADCIRC grid')
     df_Adcirc = pd.DataFrame(
         {'Latitude': agdict['lat'],
         'Longitude': agdict['lon']})
@@ -115,11 +118,11 @@ def construct_geopandas(agdict, targetepsg):
 
     # init crs is LonLat, WGS84
     adcircepsg = agdict['crs']
-    utilities.log.info('Adding {} crs to initial GDF'.format(adcircepsg))
+    #logger.info('Adding {} crs to initial GDF'.format(adcircepsg))
     gdf.crs = {'init': adcircepsg}
-    utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
+    #logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
-    utilities.log.info('Time to create GDF was {}'.format(time.time()-t0))
+    #logger.info('Time to create GDF was {}'.format(time.time()-t0))
     return gdf
 
 def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
@@ -137,7 +140,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     gdf_target.crs = {'init': adcircepsg}
 
     # convert to "targetepsg"
-    utilities.log.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
+    #logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf_target = gdf_target.to_crs({'init': targetepsg})
 
     # compute spatial grid for raster 
@@ -151,7 +154,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     xm = (x[1:] + x[:-1]) / 2
     ym = (y[1:] + y[:-1]) / 2
     xxm, yym = np.meshgrid(xm, ym)
-    utilities.log.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
+    #logger.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
 
     return {'uplx': upperleft_x,
             'uply': upperleft_y,
@@ -168,7 +171,6 @@ def extract_url_grid(url):
     Results:
     """
     nc = netCDF4.Dataset(url)
-    # print(nc.variables.keys())
     agdict = get_adcirc_grid(nc)
     return nc, agdict
 
@@ -178,7 +180,7 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
     xm0, ym0 = meshdict['uplx'], meshdict['uply']
     transform = from_origin(xm0 - targetgrid['res'] / 2, ym0 + targetgrid['res'] / 2, targetgrid['res'], targetgrid['res'])
-    utilities.log.debug('TIF transform {}'.format(transform))
+    #logger.debug('TIF transform {}'.format(transform))
     nx = targetgrid['nx']
     ny = targetgrid['ny']
     md = {'crs': targetepsg,
@@ -193,9 +195,10 @@ def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     dst = rio.open(filename, 'w', **md)
     try:
         dst.write(zi_lin, 1)
-        utilities.log.info('Wrote TIF file to {}'.format(filename))
+        #logger.info('Wrote TIF file to {}'.format(filename))
     except:
-        utilities.log.error('Failed to write TIF file to {}'.format(filename))
+        #logger.error('Failed to write TIF file to {}'.format(filename))
+        printf(f"Failed to write TIF file to {filename}")
     dst.close()
 
 def fetchGridName(nc):
@@ -212,16 +215,24 @@ def main(args):
     """
     Entry point for computing geotiff files from an ADCIRC mnetCDF file
     """
-    utilities.log.info(args)
+    log_level: int = int(os.getenv('LOG_LEVEL', logging.DEBUG))
+    log_path: str = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+
+    logger = LoggingUtil.init_logging("APSVIZ.adras.hazus", level=log_level, line_format='long', log_file_path=log_path)
+    logger.info(f"Start ADCIRC2Geotiff")
+
     varname = args.varname
+    logger.info(f"varname={varname}")
+
     writePNG = False
     filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
     png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
 
     if not checkInputVar(varname):
-        utilities.log.error('Variable {} not yet supported.'.format(varname))
+        logger.error(f"Variable {varname} not yet supported.")
 
-    utilities.log.info('Start ADCIRC2Geotiff')
     main_yaml_file =  os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml') 
     main_config = utilities.load_config(yaml_file=main_yaml_file)
 
@@ -236,19 +247,19 @@ def main(args):
 
         from utilities.s3_utilities import utilities as s3_utilities
         s3_resource = s3_utilities.s3
-        utilities.log.debug(s3_resource)
-        utilities.log.debug(s3_utilities.config)
+        logger.debug(s3_resource)
+        logger.debug(s3_utilities.config)
 
         thisBucket = s3_utilities.config['S3_UPLOAD_Main_Bucket']
         thisRegion = s3_utilities.config['region_name']
 
-        utilities.log.info('Bucket={}'.format(thisBucket))
-        utilities.log.info('Region={}'.format(thisRegion))
+        logger.info(f"Bucket={thisBucket}")
+        logger.info(f"Region={thisRegion}")
         if not s3_utilities.bucket_exists(thisBucket):
             res = s3_utilities.create_bucket(thisRegion, thisBucket)
-            utilities.log.info('Bucket {} created.'.format(thisBucket))
+            logger.info(f"Bucket {thisBucket} created.")
         else:
-            utilities.log.info('Bucket {} already exists.'.format(thisBucket))
+            logger.info(f"Bucket {thisBucket} already exists.")
 
     url = args.url
 
@@ -264,9 +275,9 @@ def main(args):
     gridname = args.gridname
     if not args.gridname:
         gridname = fetchGridName(nc)
-    utilities.log.info('ADCIRC grid name is {}'.format(gridname))
+    logger.info(f"ADCIRC grid name is {gridname}")
 
-    # Construct a geopandas object on the input URL grid
+    # Construct or load existing geopandas object on the input URL grid
     t0 = time.time()
     gdf_pklfile = '{}.gdf.pkl'.format(gridname)
 
@@ -276,24 +287,24 @@ def main(args):
         gdf = construct_geopandas(agdict, targetepsg)
         if not os.path.exists(args.pkldir): os.makedirs(args.pkldir)
         utilities.writePickle(gdf, filename=f)
-        utilities.log.info('Wrote Geopandas file to {}'.format(f))
+        logger.info(f"Wrote Geopandas file to {f}")
     else:
-        utilities.log.info('{} exists.  Using it...'.format(f))
+        logger.info(f"{f} exists. Using it...")
         gdf = pd.read_pickle(f)
 
     # Extract the lat,lon values of the current gdf object
     xtemp, ytemp = gdf['geometry'].x, gdf['geometry'].y
-    utilities.log.info('Extracted X and Y from the current (input) GDF')
+    logger.info(f"Extracted X and Y from the current (input) GDF")
 
     # Build Triangulate object for interpolating the input geopandas object
     t0 = time.time()
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
-    utilities.log.info('Tri interpolation object took {} secs to compute'.format(time.time()-t0))
+    logger.info(f"Tri interpolation object took {time.time()-t0:6.2f} secs to compute.")
 
     # Set up grid for geotiff data
     t0 = time.time()
     meshdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
-    utilities.log.info('compute_geotiff took {} secs'.format(time.time() - t0))
+    logger.info(f"compute_geotiff_grid took {time.time()-t0:6.2f} secs")
     xxm, yym = meshdict['xxm'], meshdict['yym']
 
     orig_filename = filename
@@ -313,33 +324,32 @@ def main(args):
 
     vmin = np.nanmin(advardict['data'])
     vmax = np.nanmax(advardict['data'])
-    utilities.log.info('Min/Max in ADCIRC Slice: {}, {}'.format(vmin,vmax))
+    logger.info(f"Min/Max in ADCIRC Slice: {vmin:6.2f}, {vmax:6.2f}")
 
     # construct the interpolator
     t0 = time.time()
     interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
-    utilities.log.info('Finished linearInterpolator in {} secs'.format(time.time()-t0))
+    logger.info(f"Finished linearInterpolator in {time.time()-t0:6.2f} secs")
 
     # zi_lin is the interpolated data that form the rasterized data down below
     zi_lin = interp_lin(xxm, yym)
-    utilities.log.debug('zi_lin {}'.format(zi_lin))
 
-    utilities.log.info('Outputting tiff file {}'.format(filename))
+    logger.info(f"Outputting tiff file {filename}")
     write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
 
     if main_config['S3']['SEND2AWS']:
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)
+        msg=f"Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} "
         if not resp:
-            utilities.log.info('Upload to s3://{}:/{}/{} failed.'.format(thisBucket,args.s3path,args.filename))
+            logger.info(f"{msg} failed.")
         else:
-            utilities.log.info('Upload to s3://{}:/{}/{} succeeded.'.format(thisBucket,args.s3path,args.filename))
-        pass
+            logger.info(f"{msg} succeeded.")
 
     #if png_filename is not None:
-    #    utilities.log.info('Outputting png file {}'.format(png_filename))
+    #    logger.info('Outputting png file {}'.format(png_filename))
     #    write_png(filename, png_filename)
 
-    utilities.log.info('Finished')
+    logger.info("Finished")
 
 if __name__ == '__main__':
 
