@@ -29,7 +29,7 @@ RUN mkdir /repo
 WORKDIR /repo
 
 # get the repos
-RUN git clone --branch hazus https://github.com/RENCI/ADRAS.git
+RUN git clone --branch rotation https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
 WORKDIR ADRAS/deploy
