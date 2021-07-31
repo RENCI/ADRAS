@@ -22,3 +22,5 @@ rasterio
 #six=1.15.0
 #yaml=0.1.7
 boto3
+affine
+

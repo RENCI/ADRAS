@@ -20,10 +20,13 @@ import netCDF4
 import rasterio as rio
 from rasterio.transform import from_origin
 import geopandas as gpd
+from affine import Affine
 
 from utilities.utilities import utilities as utilities
 import logging
 from utilities.logging import LoggingUtil 
+
+global logger
 
 #logger.info('Begin TIF generation')
 #logger.info('netCDF4 Version = {}'.format(netCDF4.__version__))
@@ -78,11 +81,13 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
     if gridname not in config.keys():
         gridname = 'DEFAULT'
 
-    targetgrid = {'Latitude': [config[gridname]['upperleft_la']],
+    targetgrid = {'Latitude':  [config[gridname]['upperleft_la']],
                   'Longitude': [config[gridname]['upperleft_lo']],
-                  'res': config[gridname]['res'],
-                  'nx': config[gridname]['nx'],
-                  'ny': config[gridname]['ny']}
+                  'res':       config[gridname]['res'],
+                  'nx':        config[gridname]['nx'],
+                  'ny':        config[gridname]['ny'],
+                  'theta':     config[gridname]['theta']}
+
     return targetgrid, config[gridname]['adcirc_crs'], config[gridname]['target_crs']
 
 def computeInundation(advardict, agdict):
@@ -107,7 +112,7 @@ def construct_geopandas(agdict, targetepsg):
     Define geopandas processors
     project grid coords, before making Triangulation object
     """
-    #logger.info('Computing GeoPandas DF from ADCIRC grid')
+    logger.info('Computing GeoPandas DF from ADCIRC grid')
     df_Adcirc = pd.DataFrame(
         {'Latitude': agdict['lat'],
         'Longitude': agdict['lon']})
@@ -118,19 +123,20 @@ def construct_geopandas(agdict, targetepsg):
 
     # init crs is LonLat, WGS84
     adcircepsg = agdict['crs']
-    #logger.info('Adding {} crs to initial GDF'.format(adcircepsg))
+    logger.info('Adding {} crs to initial GDF'.format(adcircepsg))
     gdf.crs = {'init': adcircepsg}
-    #logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
+    logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf = gdf.to_crs({'init': targetepsg})
-    #logger.info('Time to create GDF was {}'.format(time.time()-t0))
+    logger.info('Time to create GDF was {}'.format(time.time()-t0))
     return gdf
 
 def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     """
-    project interpolation grid to target crs
+    project raster grid to target crs
 
     Results:
-        meshdict. Values for upperleft_x, upperleft_y, x,y,xx,yy,xxm,yym
+        rasdict. Dict of raster grid parameters and coords
+        Values for upperleft_x, upperleft_y, x,y,xx,yy,xxm,yym
     """
     df_target = pd.DataFrame(data=targetgrid)
     gdf_target = gpd.GeoDataFrame(
@@ -140,7 +146,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     gdf_target.crs = {'init': adcircepsg}
 
     # convert to "targetepsg"
-    #logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
+    logger.info('Converting GDF from {} to {}'.format(adcircepsg,targetepsg))
     gdf_target = gdf_target.to_crs({'init': targetepsg})
 
     # compute spatial grid for raster 
@@ -154,16 +160,39 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     xm = (x[1:] + x[:-1]) / 2
     ym = (y[1:] + y[:-1]) / 2
     xxm, yym = np.meshgrid(xm, ym)
-    #logger.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
 
+    # move to origin and columnate
+    mean_x=np.mean(xm)
+    mean_y=np.mean(ym)
+    xx0=(xxm-mean_x).ravel()
+    yy0=(yym-mean_y).ravel()
+
+    # apply rotation
+    ang=targetgrid['theta']*np.pi/180
+    logger.debug(f"rotation ang={ang} radians")
+    r = np.array([[np.cos(ang), -np.sin(ang)], [np.sin(ang), np.cos(ang)]])
+    Z = np.array([xx0, yy0])
+    Zr=r.dot(Z)
+    xxmr=Zr[0,:].reshape(xxm.shape)+mean_x
+    yymr=Zr[1,:].reshape(yym.shape)+mean_y
+
+    logger.debug(f"upperleft_x before = {upperleft_x}")
+    upperleft_x=xxmr[0,0] - targetgrid['res']
+    logger.debug(f"upperleft_x after = {upperleft_x}")
+
+    upperleft_y=yymr[0,0] - targetgrid['res']
+
+    logger.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
     return {'uplx': upperleft_x,
             'uply': upperleft_y,
-            'x': x,
-            'y': y,
-            'xx': xx,
-            'yy': yy,
-            'xxm': xxm,
-            'yym': yym}
+            'x':    x,
+            'y':    y,
+            'xx':   xx,
+            'yy':   yy,
+            'xxm':  xxmr,
+            'yym':  yymr,
+            'nx':   x.shape,
+            'ny':   y.shape}
 
 def extract_url_grid(url):
     """
@@ -174,31 +203,40 @@ def extract_url_grid(url):
     agdict = get_adcirc_grid(nc)
     return nc, agdict
 
-def write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
+def write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
     Construct the new TIF file and store it to disk in filename
     """
-    xm0, ym0 = meshdict['uplx'], meshdict['uply']
-    transform = from_origin(xm0 - targetgrid['res'] / 2, ym0 + targetgrid['res'] / 2, targetgrid['res'], targetgrid['res'])
-    #logger.debug('TIF transform {}'.format(transform))
-    nx = targetgrid['nx']
-    ny = targetgrid['ny']
-    md = {'crs': targetepsg,
-          'driver': 'GTiff',
-          'height': ny,
-          'width': nx,
-          'count': 1,
-          'dtype': zi_lin.dtype,
-          'nodata': -99999,
-          'transform': transform}
+    xm0, ym0 = rasdict['uplx'], rasdict['uply']
+    #transform = from_origin(xm0 - targetgrid['res'] / 2, ym0 + targetgrid['res'] / 2, targetgrid['res'], targetgrid['res'])
+    
+    a=targetgrid['res']
+    b=0
+    c=xm0
+    d=0
+    e=-targetgrid['res']
+    f=ym0
+
+    aft=Affine(a,b,c,b,e,f)*Affine.rotation(-targetgrid['theta'])
+
+    logger.debug(f"TIF transform {aft}")
+
+    md = {'crs':       targetepsg,
+          'driver':    'GTiff',
+          'height':    targetgrid['ny'],
+          'width':     targetgrid['nx'],
+          'count':     1,
+          'dtype':     zi_lin.dtype,
+          'nodata':    -99999,
+          'transform': aft}
+          
     # output a geo-referenced tiff
     dst = rio.open(filename, 'w', **md)
     try:
         dst.write(zi_lin, 1)
-        #logger.info('Wrote TIF file to {}'.format(filename))
+        logger.info(f"Wrote TIF file to {filename}")
     except:
-        #logger.error('Failed to write TIF file to {}'.format(filename))
-        printf(f"Failed to write TIF file to {filename}")
+        logger.error(f"Failed to write TIF file to {filename}")
     dst.close()
 
 def fetchGridName(nc):
@@ -213,13 +251,13 @@ def fetchGridName(nc):
 
 def main(args):
     """
-    Entry point for computing geotiff files from an ADCIRC mnetCDF file
+    Entry point for computing geotiff files from an ADCIRC netCDF file
     """
     log_level: int = int(os.getenv('LOG_LEVEL', logging.DEBUG))
     log_path: str = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
-    if not os.path.exists(log_path):
-        os.mkdir(log_path)
+    if not os.path.exists(log_path): os.mkdir(log_path)
 
+    global logger
     logger = LoggingUtil.init_logging("APSVIZ.adras.hazus", level=log_level, line_format='long', log_file_path=log_path)
     logger.info(f"Start ADCIRC2Geotiff")
 
@@ -271,7 +309,7 @@ def main(args):
     nc, agdict = extract_url_grid(url)
     agdict['crs'] = adcircepsg
 
-    # get grid name for building gdf filename
+    # get grid name for building geopandas (gdf) filename
     gridname = args.gridname
     if not args.gridname:
         gridname = fetchGridName(nc)
@@ -294,7 +332,7 @@ def main(args):
 
     # Extract the lat,lon values of the current gdf object
     xtemp, ytemp = gdf['geometry'].x, gdf['geometry'].y
-    logger.info(f"Extracted X and Y from the current (input) GDF")
+    logger.info(f"Extracted X and Y from the ADCIRC grid GDF")
 
     # Build Triangulate object for interpolating the input geopandas object
     t0 = time.time()
@@ -303,9 +341,18 @@ def main(args):
 
     # Set up grid for geotiff data
     t0 = time.time()
-    meshdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
-    logger.info(f"compute_geotiff_grid took {time.time()-t0:6.2f} secs")
-    xxm, yym = meshdict['xxm'], meshdict['yym']
+    #print(targetgrid)
+    rasdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
+    #print('\n',rasdict.keys())
+    #print('\nnx=',rasdict['nx'])
+    #print('\nny=',rasdict['ny'])
+    #print('\nx=',rasdict['x'])
+    #print('\ny=',rasdict['y'])
+
+    logger.debug(f"compute_geotiff_grid took {time.time()-t0:6.2f} secs")
+    xxm, yym = rasdict['xxm'], rasdict['yym']
+    #print('\nsize xxm =',xxm.shape)
+    #print('\nsize yym =',yym.shape)
 
     orig_filename = filename
     orig_png_filename = png_filename
@@ -333,9 +380,11 @@ def main(args):
 
     # zi_lin is the interpolated data that form the rasterized data down below
     zi_lin = interp_lin(xxm, yym)
+    zi_lin = np.where(np.isnan(zi_lin) , 0, zi_lin)
+    #print('\nsize zi_lin=',zi_lin.shape)
 
     logger.info(f"Outputting tiff file {filename}")
-    write_tif(meshdict, zi_lin, targetgrid, targetepsg, filename)
+    write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename)
 
     if main_config['S3']['SEND2AWS']:
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)

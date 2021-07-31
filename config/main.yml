@@ -7,7 +7,7 @@ DEFAULT: &default
   GRAPHICS: true
 
 S3:
-  SEND2AWS: true
+  SEND2AWS: false
   BucketName: 'hazus'
   RegionName: 'us-east-2' 
 

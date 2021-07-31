@@ -9,3 +9,5 @@ pyyaml
 seaborn
 gdal
 boto3
+affine
+
