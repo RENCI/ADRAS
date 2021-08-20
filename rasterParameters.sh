@@ -13,7 +13,7 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "uriv18" | "uriv18_cl" ) 
+  "uriv18" | "uriv18_cl" | "NAC2014" ) 
     upperleft_lo=-72.7
     upperleft_la=41.75
     # resolution in m
