@@ -1,5 +1,3 @@
-# A slightly different format than used for our typical ADCIRC thredds calls
-
 DEFAULT: &default
   RDIR: $RUNTIMEDIR
   LOGGING: true

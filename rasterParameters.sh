@@ -13,24 +13,38 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "ec95d") 
-    #upperleft_lo=-82.85
-    #upperleft_la=34.
-    #res=1000  # resolution in m
-    #nx=800
-    #ny=100
-    #theta=40
-    #target_crs="epsg:32617"
-    #adcirc_crs="epsg:4326"
-    upperleft_lo=-98.7
-    upperleft_la=29.5
+  "uriv18" | "uriv18_cl" ) 
+    upperleft_lo=-72.7
+    upperleft_la=41.75
     # resolution in m
-    res=5000  
-    nx=110
-    ny=30
-    theta=35
-    target_crs="epsg:32614"
+    res=50  
+    nx=4000
+    ny=1800
+    theta=15
+    target_crs="epsg:32619"
     adcirc_crs="epsg:4326"
+  ;;
+
+
+  "ec95d") 
+    upperleft_lo=-72.7
+    upperleft_la=41.75
+    # resolution in m
+    res=500  
+    nx=400
+    ny=180
+    theta=15
+    target_crs="epsg:32619"
+    adcirc_crs="epsg:4326"
+    #upperleft_lo=-98.7
+    #upperleft_la=29.5
+    ## resolution in m
+    #res=5000  
+    #nx=110
+    #ny=30
+    #theta=35
+    #target_crs="epsg:32614"
+    #adcirc_crs="epsg:4326"
   ;;
 
   "LA_v20a-WithUpperAtch_chk")
@@ -75,6 +89,17 @@ rasterParameters () {
     ny=3000
     theta=35
     target_crs="epsg:32614"
+    adcirc_crs="epsg:4326"
+  ;;
+
+  "PRVI15" | "prvi15" ) 
+    upperleft_lo=-67.30
+    upperleft_la=18.535
+    res=50  # resolution in m
+    nx=3600
+    ny=1500
+    theta=0
+    target_crs="epsg:3920"
     adcirc_crs="epsg:4326"
   ;;
 

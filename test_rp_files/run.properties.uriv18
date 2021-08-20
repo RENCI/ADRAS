@@ -1,0 +1,247 @@
+config.file : /home/ncfs-dev/asgs.master/config/2021/ncfs-dev/ncfs-dev-uriv18_nam.sh
+instancename : uriv18-nam-bob-2021
+operator : ncfs-dev
+adcirc.time.coldstartdate : 2021080100
+path.adcircdir : /home/ncfs-dev/ADCIRC/v53release/work
+path.scriptdir : /home/ncfs-dev/asgs.master
+path.inputdir : /home/ncfs-dev/asgs.master/input/meshes/uriv18
+path.outputdir : /home/ncfs-dev/asgs.master/output
+path.scratchdir : /projects/ncfs-dev/uriv18-nam-bob-2021
+forcing.backgroundmet : on
+forcing.tidefac : on
+forcing.tropicalcyclone : off
+forcing.varflux : off
+forcing.staticoffset : null
+forcing.schedule.cycletimelimit : 99:00:00
+coupling.waves : off
+hpc.hpcenv : hatteras.renci.org
+hpc.hpcenvshort : hatteras
+hpc.queuesys : SLURM
+hpc.joblauncher : srun 
+hpc.submitstring : sbatch
+hpc.executable.qscriptgen : qscript.pl
+hpc.jobs.ncpucapacity : 512
+hpc.walltimeformat : minutes
+hpc.job.default.account : null
+hpc.job.default.queuename : batch
+hpc.job.default.serqueue : batch
+adcirc.file.input.gridfile : uriv18.grd
+adcirc.file.input.unitoffsetfile : null
+adcirc.gridname : uriv18
+adcirc.file.properties.meshproperties : uriv18.grd.properties
+adcirc.file.input.nafile : uriv18.13
+adcirc.file.properties.naproperties : uriv18.13.properties
+adcirc.file.template.controltemplate : fort.15.template
+adcirc.file.properties.controlproperties : fort.15.template.properties
+adcirc.file.elevstations : elev_stations.txt
+adcirc.file.velstations : vel_stations.txt
+adcirc.file.metstations : met_stations.txt
+adcirc.hotstartformat : netcdf
+adcirc.timestepsize : 0.25
+adcirc.hotstartcomp : fulldomain
+file.preppedarchive : prepped_uriv18_uriv18-nam-bob-2021_508.tar.gz
+file.hindcastarchive : prepped_uriv18_hc_uriv18-nam-bob-2021_508.tar.gz
+adcirc.minmax : reset
+notification.emailnotify : no
+notification.executable.notify_script : ncfs_nam_notify.sh
+notification.email.activate_list : "null"
+notification.email.new_advisory_list : "null"
+notification.email.post_init_list : "null"
+notification.email.job_failed_list : "null"
+notification.hpc.email.notifyuser : "null"
+notification.opendap.email.opendapnotify : bblanton@renci.org, rluettich1@gmail.com, dullman@uri.edu, dcrowley@uri.edu, iginis@uri.edu
+notification.email.asgsadmin : ncfs-dev
+monitoring.rmqmessaging.enable : on
+monitoring.rmqmessaging.transmit : on
+monitoring.rmqmessaging.script : /home/ncfs-dev/asgs.master/monitoring/asgs-msgr.py
+monitoring.rmqmessaging.scriptrp : /home/ncfs-dev/asgs.master/monitoring/rp2json.py
+monitoring.rmqmessaging.ncohome : /home/ncfs-dev
+monitoring.rmqmessaging.locationname : RENCI
+monitoring.rmqmessaging.clustername : Hatteras
+monitoring.logging.file.syslog : /home/ncfs-dev/asgs.master/uriv18-nam-bob-2021.asgs-2021-Aug-19-T12:57:20-0400.24119.log
+post.intendedaudience : developers-only
+post.executable.initpost : null_post.sh
+post.executable.postprocess : (  createOPeNDAPFileList.sh opendap_post.sh transmit_rps.sh )
+post.opendap.target : 
+post.opendap.tds : (  renci_tds )
+post.file.sshkey : /home/ncfs-dev/.ssh/id_rsa.pub
+archive.executable.archive : enstorm_pedir_removal.sh
+archive.path.archivebase : /projects/ncfs-dev/
+archive.path.archivedir : /projects/ncfs-dev/
+forecast.scenariopackagesize : 1
+path.rundir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119
+path.fromdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/nowcast
+path.lastsubdir : null
+scenario : namforecast
+forecast.ensemblesize : 1
+asgs.path.fromdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/nowcast
+asgs.path.lastsubdir : null
+asgs.enstorm : namforecast
+enstorm : namforecast
+adcirc.version : v53.04-17-ga629de8-modified
+hostname : hatteras.renci.org
+instance : uriv18-nam-bob-2021
+pseudostorm : no
+intendedAudience : developers-only
+forcing.metclass : synoptic
+forcing.stormname : NA
+forcing.nwp.model : nam
+forcing.nam.schedule.forecast.forecastcycle : "00,06,12,18"
+forcing.nwp.schedule.forecast.forecastselection : latest
+forcing.nam.forecast.download : only-to-run
+forcing.nam.backsite : ftp.ncep.noaa.gov
+forcing.nam.backdir : /pub/data/nccf/com/nam/prod
+forcing.nam.forecastlength : 84
+forcing.nam.reprojection.ptfile : ptFile_oneEighth.txt
+forcing.nam.local.altnamdir : /projects/ncfs/data/asgs5463,/projects/ncfs/data/asgs14174
+config.forcing.nam.schedule.forecast.forecastcycle : "00,06,12,18"
+config.forcing.nam.backsite : ftp.ncep.noaa.gov
+config.forcing.nam.backdir : /pub/data/nccf/com/nam/prod
+config.forcing.nam.forecastlength : 84
+config.forcing.nam.reprojection.ptfile : ptFile_oneEighth.txt
+config.forcing.nam.local.altnamdir : /projects/ncfs/data/asgs5463,/projects/ncfs/data/asgs14174
+forcing.nwp.year : 2021
+path.cycledir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006
+path.scenariodir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast
+monitoring.logging.file.cyclelog : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/cycle.log
+monitoring.logging.file.scenariolog : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast/scenario.log
+asgs.path.advisdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006
+asgs.path.stormdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast
+path.advisdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006
+path.stormdir : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast
+forecast.scenario.number : 0
+forecastValidStart : 20210820060000
+forecastValidEnd : 20210823210000
+track_raw_dat : notrack
+track_raw_fst : notrack
+track_modified : notrack
+year : 2021
+directory storm : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast
+mesh : uriv18
+RunType : Forecast
+ADCIRCgrid : uriv18
+currentcycle : 06
+currentdate : 210820
+advisory : 2021082006
+prodID : SADCuriv18-UNC_WNAMAW12-NCP_20210820T0600_20210820T0600_20210823T1800_06<field>_Z.nc.gz
+InitialHotStartTime : 1663200.00000000
+RunStartTime : 2021082006
+RunEndTime : 2021082318
+ColdStartTime : 2021080100
+WindModel : WNAMAW12-NCP
+Model : PADCIRC
+Water Surface Elevation Stations File Name : fort.61.nc
+Water Surface Elevation Stations Format : netcdf
+Water Surface Elevation File Name : fort.63.nc
+Water Surface Elevation Format : netcdf
+Water Current Velocity File Name : fort.64.nc
+Water Current Velocity Format : netcdf
+Barometric Pressure Stations File Name : fort.71.nc
+Barometric Pressure Stations Format : netcdf
+Wind Velocity Stations File Name : fort.72.nc
+Wind Velocity Stations Format : netcdf
+Barometric Pressure File Name : fort.73.nc
+Barometric Pressure Format : netcdf
+Wind Velocity File Name : fort.74.nc
+Wind Velocity Format : netcdf
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Water Surface Elevation Format : netcdf
+Maximum Current Speed File Name : maxvel.63.nc
+Maximum Current Speed Format : netcdf
+Maximum Wind Speed File Name : maxwvel.63.nc
+Maximum Wind Speed Format : netcdf
+Minimum Barometric Pressure File Name : minpr.63.nc
+Minimum Barometric Pressure Format : netcdf
+asgs : nc
+h0 : 0.1
+sea_surface_height_above_geoid : 0.0
+hpc.job.padcirc.queuename : batch
+hpc.job.padcirc.serqueue : batch
+hpc.job.padcirc.file.qscripttemplate : /home/ncfs-dev/asgs.master/qscript.template
+hpc.job.padcirc.account : null
+hpc.job.padcirc.ncpu : 508
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 4
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : null
+hpc.slurm.job.padcirc.reservation : ncfs
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : null
+cpurequest : 512
+ncpu : 508
+numwriters : 4
+time.adcprep.start : 2021-Aug-20-T04:49:32-0400
+time.adcprep.start : 2021-Aug-20-T04:49:32-0400
+hpc.job.prep15.for.ncpu : 508
+hpc.job.prep15.limit.walltime : 02:00:00
+hpc.job.prep15.account : null
+hpc.job.prep15.file.qscripttemplate : /home/ncfs-dev/asgs.master/qscript.template
+hpc.job.prep15.parallelism : serial
+hpc.job.prep15.serqueue : batch
+hpc.job.prep15.ppn : 1
+hpc.slurm.job.prep15.reservation : ncfs
+hpc.slurm.job.prep15.constraint : null
+hpc.slurm.job.prep15.qos : null
+hpc.job.prep15.subshellpids : ( 26222 26236 26252 )
+hpc.job.prep15.file.qscript : prep15.slurm
+time.hpc.job.prep15.submit : 2021-Aug-20-T04:49:54-0400
+time.hpc.job.prep15.start : 2021-Aug-20-T04:49:55-0400
+hpc.job.prep15.jobid : 4682674
+hpc.job.prep15.nodelist : ( compute-8-0 )
+hpc.job.prep15.hostname : compute-8-0
+hpc.job.prep15.qnnodes : 1
+hpc.job.prep15.qntasks-per-node : 1
+hpc.job.prep15.qntasks : 1
+hpc.job.prep15.joblog : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast/prep15.out
+time.hpc.job.prep15.finish : 2021-Aug-20-T04:50:43-0400
+time.adcprep.finish : 2021-Aug-20-T04:51:18-0400
+hpc.job.padcirc.queuename : batch
+hpc.job.padcirc.serqueue : batch
+hpc.job.padcirc.file.qscripttemplate : /home/ncfs-dev/asgs.master/qscript.template
+hpc.job.padcirc.account : null
+hpc.job.padcirc.ncpu : 508
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 4
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : null
+hpc.slurm.job.padcirc.reservation : ncfs
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : null
+cpurequest : 512
+ncpu : 508
+numwriters : 4
+hpc.job.padcirc.limit.walltime : 07:00:00
+hpc.job.padcirc.file.qscripttemplate : /home/ncfs-dev/asgs.master/qscript.template
+hpc.job.padcirc.file.qscript : padcirc.slurm
+hpc.job.padcirc.subshellpids : ( 7840 7856 7869 7883 )
+time.hpc.job.padcirc.submit : 2021-Aug-20-T04:51:19-0400
+time.hpc.job.padcirc.start : 2021-Aug-20-T04:51:20-0400
+hpc.job.padcirc.jobid : 4682675
+hpc.job.padcirc.nodelist : ( compute-8-[0-15] )
+hpc.job.padcirc.hostname : compute-8-0
+hpc.job.padcirc.qnnodes : 16
+hpc.job.padcirc.qntasks-per-node : 
+hpc.job.padcirc.qntasks : 512
+hpc.job.padcirc.joblog : /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast/padcirc.out
+time.hpc.job.padcirc.finish : 2021-Aug-20-T07:31:57-0400
+time.post.start : 2021-Aug-20-T07:33:05-0400
+post.opendap.files : ( fort.15 fort.22 fort.61.nc fort.63.nc maxele.63.nc run.properties fort.74.nc maxwvel.63.nc sendNotification fort.64.nc fort.68.nc fort.71.nc fort.72.nc fort.73.nc /home/ncfs-dev/asgs.master/config/2021/ncfs-dev/ncfs-dev-uriv18_nam.sh /home/ncfs-dev/asgs.master/uriv18-nam-bob-2021.asgs-2021-Aug-19-T12:57:20-0400.24119.log maxrs.63.nc maxvel.63.nc minpr.63.nc /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/cycle.log /projects/ncfs-dev/uriv18-nam-bob-2021/asgs24119/2021082006/namforecast/scenario.log )
+post.opendap.renci_tds.linkablehosts : ( null )
+post.opendap.renci_tds.copyablehosts : ( hatteras )
+post.opendap.renci_tds.opendaphost : renci_tds
+post.opendap.renci_tds.threddshost : tds.renci.org
+post.opendap.renci_tds.downloadprefix : http://tds.renci.org:8080/thredds/fileServer
+post.opendap.renci_tds.catalogprefix : http://tds.renci.org:8080/thredds/catalog
+post.opendap.renci_tds.opendapbasedir : /projects/ncfs/opendap/data
+notification.opendap.email.opendapmailserver : aws
+post.opendap.renci_tds.opendapsuffix : 2021082006/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast
+post.opendap.renci_tds.opendapdir : /projects/ncfs/opendap/data/2021/nam/2021082006/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast
+downloadurl : http://tds.renci.org:8080/thredds/fileServer/2021/nam/2021082006/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast
+post.opendap.renci_tds.opendappostmethod : copy
+post.opendap.renci_tds.subject : ADCIRC POSTED for 2021082006 0 hatteras.renci.org.uriv18-nam-bob-2021 ncfs-dev

@@ -173,6 +173,8 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     r = np.array([[np.cos(ang), -np.sin(ang)], [np.sin(ang), np.cos(ang)]])
     Z = np.array([xx0, yy0])
     Zr=r.dot(Z)
+
+    # translate back to origin
     xxmr=Zr[0,:].reshape(xxm.shape)+mean_x
     yymr=Zr[1,:].reshape(yym.shape)+mean_y
 
@@ -182,7 +184,9 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
 
     upperleft_y=yymr[0,0] - targetgrid['res']
 
-    logger.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
+    logger.debug('compute_mesh: ul lon {}. ul lat {}'.format(upperleft_x, upperleft_y))
+    logger.debug('compute_mesh: lr lon {}. lr lat {}'.format(xxmr[-1,-1], yymr[-1,-1] ))
+    
     return {'uplx': upperleft_x,
             'uply': upperleft_y,
             'x':    x,
@@ -305,6 +309,7 @@ def main(args):
 
     targetgrid, adcircepsg, targetepsg = get_interpolation_target(gridname=args.gridname, yamlfile=raster_yaml_file)
 
+    logger.info(f"Extracting ADCIRC grid from nc object...")
     t0 = time.time()
     nc, agdict = extract_url_grid(url)
     agdict['crs'] = adcircepsg
@@ -331,28 +336,24 @@ def main(args):
         gdf = pd.read_pickle(f)
 
     # Extract the lat,lon values of the current gdf object
+    logger.info(f"Extracting X and Y from the ADCIRC grid GDF ..")
     xtemp, ytemp = gdf['geometry'].x, gdf['geometry'].y
-    logger.info(f"Extracted X and Y from the ADCIRC grid GDF")
+    logger.debug(f"Extracted X and Y from the ADCIRC grid GDF")
 
     # Build Triangulate object for interpolating the input geopandas object
+    logger.info(f"Computing X and Y triangulation object ...")
     t0 = time.time()
     tri = Tri.Triangulation(xtemp, ytemp, triangles=agdict['ele'])
-    logger.info(f"Tri interpolation object took {time.time()-t0:6.2f} secs to compute.")
+    logger.debug(f"Tri interpolation object took {time.time()-t0:6.2f} secs to compute.")
 
     # Set up grid for geotiff data
+    logger.debug(f"Execing compute_geotiff_grid ...")
     t0 = time.time()
-    #print(targetgrid)
     rasdict = compute_geotiff_grid(targetgrid, adcircepsg, targetepsg)
-    #print('\n',rasdict.keys())
-    #print('\nnx=',rasdict['nx'])
-    #print('\nny=',rasdict['ny'])
-    #print('\nx=',rasdict['x'])
-    #print('\ny=',rasdict['y'])
-
     logger.debug(f"compute_geotiff_grid took {time.time()-t0:6.2f} secs")
+    
+    # extract the raster pixel points
     xxm, yym = rasdict['xxm'], rasdict['yym']
-    #print('\nsize xxm =',xxm.shape)
-    #print('\nsize yym =',yym.shape)
 
     orig_filename = filename
     orig_png_filename = png_filename
@@ -374,14 +375,17 @@ def main(args):
     logger.info(f"Min/Max in ADCIRC Slice: {vmin:6.2f}, {vmax:6.2f}")
 
     # construct the interpolator
+    logger.info(f"Computing linearInterpolator for variable ...")
     t0 = time.time()
     interp_lin = Tri.LinearTriInterpolator(tri, advardict['data'])
-    logger.info(f"Finished linearInterpolator in {time.time()-t0:6.2f} secs")
+    logger.debug(f"Finished linearInterpolator in {time.time()-t0:6.2f} secs")
 
-    # zi_lin is the interpolated data that form the rasterized data down below
+    # interpolate data to raster pixels
     zi_lin = interp_lin(xxm, yym)
-    zi_lin = np.where(np.isnan(zi_lin) , 0, zi_lin)
-    #print('\nsize zi_lin=',zi_lin.shape)
+    #zi_lin = np.where(np.isnan(zi_lin) , 0, zi_lin)
+    ivmin = np.nanmin(zi_lin)
+    ivmax = np.nanmax(zi_lin)
+    logger.info(f"Min/Max in interpolated grid: {ivmin:6.2f}, {ivmax:6.2f}")
 
     logger.info(f"Outputting tiff file {filename}")
     write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename)
