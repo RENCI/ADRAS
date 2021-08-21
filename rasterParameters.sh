@@ -13,6 +13,19 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
+  "hsofs" ) 
+    upperleft_lo=-74.25
+    upperleft_la=41.35
+    # resolution in m
+    res=100  
+    nx=2100
+    ny=900
+    theta=15
+    target_crs="epsg:32619"
+    adcirc_crs="epsg:4326"
+  ;;
+
+
   "uriv18" | "uriv18_cl" | "NAC2014" ) 
     upperleft_lo=-72.7
     upperleft_la=41.75
@@ -24,7 +37,6 @@ rasterParameters () {
     target_crs="epsg:32619"
     adcirc_crs="epsg:4326"
   ;;
-
 
   "ec95d") 
     upperleft_lo=-72.7
