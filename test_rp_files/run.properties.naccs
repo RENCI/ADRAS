@@ -1,0 +1,274 @@
+config.file : /work2/06482/estrabd/stampede2/asgs/config/2021/NAC2014-al082021-stampede.sh
+instancename : NAC2014-al082021-stampede2
+operator : estrabd
+adcirc.time.coldstartdate : 2021072000
+path.adcircdir : /work2/06482/estrabd/stampede2/adcirc-cg-v53release-intel/work
+path.scriptdir : /work2/06482/estrabd/stampede2/asgs
+path.inputdir : /work2/06482/estrabd/stampede2/asgs/input/meshes/naccs
+path.outputdir : /work2/06482/estrabd/stampede2/asgs/output
+path.scratchdir : /work2/06482/estrabd/stampede2/asgs/input/meshes/naccs
+forcing.backgroundmet : off
+forcing.tidefac : on
+forcing.tropicalcyclone : on
+forcing.varflux : off
+forcing.staticoffset : null
+forcing.schedule.cycletimelimit : 99:00:00
+coupling.waves : off
+hpc.hpcenv : stampede2.tacc.utexas.edu
+hpc.hpcenvshort : stampede2
+hpc.queuesys : SLURM
+hpc.joblauncher : ibrun 
+hpc.submitstring : sbatch
+hpc.executable.qscriptgen : qscript.pl
+hpc.jobs.ncpucapacity : 9999
+hpc.walltimeformat : hh:mm:ss
+hpc.job.default.account : TG-DMS080016N
+hpc.job.default.queuename : skx-normal
+hpc.job.default.serqueue : skx-normal
+adcirc.file.input.gridfile : NAC2014_R01_ClosedRivers.grd
+adcirc.file.input.unitoffsetfile : null
+adcirc.gridname : NAC2014
+adcirc.file.properties.meshproperties : NAC2014_R01_ClosedRivers.grd.properties
+adcirc.file.input.nafile : NAC2014_R01.13
+adcirc.file.properties.naproperties : NAC2014_R01.13.properties
+adcirc.file.template.controltemplate : NAC2014_R01.15.template
+adcirc.file.properties.controlproperties : NAC2014_R01.15.template.properties
+adcirc.file.elevstations : cera_stations_20180810.txt
+adcirc.file.velstations : cera_stations_20180810.txt
+adcirc.file.metstations : cera_stations_20180810.txt
+adcirc.hotstartformat : netcdf
+adcirc.timestepsize : 1.0
+adcirc.hotstartcomp : fulldomain
+file.preppedarchive : prepped_NAC2014_NAC2014-al082021-stampede2_959.tar.gz
+file.hindcastarchive : prepped_NAC2014_hc_NAC2014-al082021-stampede2_959.tar.gz
+adcirc.minmax : reset
+notification.emailnotify : no
+notification.executable.notify_script : ut-nam-notify.sh
+notification.email.activate_list : "null"
+notification.email.new_advisory_list : "null"
+notification.email.post_init_list : "null"
+notification.email.job_failed_list : "null"
+notification.hpc.email.notifyuser : "null"
+notification.opendap.email.opendapnotify : asgs.cera.lsu@gmail.com,jason.g.fleming@gmail.com,asgsnotifications@opayq.com,asgsnotes4ian@gmail.com,cera.asgs.tk@gmail.com,janelle.fleming@seahorsecoastal.com
+notification.email.asgsadmin : asgsnotifications@opayq.com
+monitoring.rmqmessaging.enable : on
+monitoring.rmqmessaging.transmit : on
+monitoring.rmqmessaging.script : /work2/06482/estrabd/stampede2/asgs/monitoring/asgs-msgr.py
+monitoring.rmqmessaging.scriptrp : /work2/06482/estrabd/stampede2/asgs/monitoring/rp2json.py
+monitoring.rmqmessaging.ncohome : /work2/06482/estrabd/stampede2/local
+monitoring.rmqmessaging.locationname : TACC
+monitoring.rmqmessaging.clustername : Stampede2
+monitoring.logging.file.syslog : /work2/06482/estrabd/stampede2/asgs/NAC2014-al082021-stampede2.asgs-2021-Aug-19-T13:25:05-0500.215615.log
+post.intendedaudience : general
+post.executable.initpost : null_post.sh
+post.executable.postprocess : (  createMaxCSV.sh includeWind10m.sh createOPeNDAPFileList.sh opendap_post.sh )
+post.opendap.target : 
+post.opendap.tds : (  tacc_tds2 )
+post.file.sshkey : /home1/06482/estrabd/.ssh/id_rsa_stampede2
+archive.executable.archive : enstorm_pedir_removal.sh
+archive.path.archivebase : /corral-tacc/utexas/hurricane/ASGS
+archive.path.archivedir : 2020
+forecast.scenariopackagesize : 2
+path.rundir : /scratch/06482/estrabd/asgs215615
+path.fromdir : /scratch/06482/estrabd/asgs215615/18/nowcast
+path.lastsubdir : null
+scenario : nhcConsensus
+forecast.ensemblesize : 2
+asgs.path.fromdir : /scratch/06482/estrabd/asgs215615/18/nowcast
+asgs.path.lastsubdir : null
+asgs.enstorm : nhcConsensus
+enstorm : nhcConsensus
+adcirc.version : v53.05-modified
+hostname : stampede2.tacc.utexas.edu
+instance : NAC2014-al082021-stampede2
+pseudostorm : no
+intendedAudience : general
+forcing.metclass : tropical
+forcing.stormname : 08
+forcing.tropicalcyclone.vortexmodel : GAHM
+forcing.tropicalcyclone.stormnumber : 08
+forcing.tropicalcyclone.year : 2021
+forcing.tropicalcyclone.pseudostorm : no
+forcing.tropicalcyclone.forecast.trigger : rssembedded
+forcing.tropicalcyclone.forecast.rsssite : www.nhc.noaa.gov
+forcing.tropicalcyclone.forecast.path.fdir : /atcf/afst
+forcing.tropicalcyclone.best.ftpsite : ftp.nhc.noaa.gov
+forcing.tropicalcyclone.best.path.hdir : /atcf/btk
+storm : 08
+stormnumber : 08
+path.cycledir : /scratch/06482/estrabd/asgs215615/18
+path.scenariodir : /scratch/06482/estrabd/asgs215615/18/nhcConsensus
+monitoring.logging.file.cyclelog : /scratch/06482/estrabd/asgs215615/18/cycle.log
+monitoring.logging.file.scenariolog : /scratch/06482/estrabd/asgs215615/18/nhcConsensus/scenario.log
+asgs.path.advisdir : /scratch/06482/estrabd/asgs215615/18
+asgs.path.stormdir : /scratch/06482/estrabd/asgs215615/18/nhcConsensus
+path.advisdir : /scratch/06482/estrabd/asgs215615/18
+path.stormdir : /scratch/06482/estrabd/asgs215615/18/nhcConsensus
+forecast.scenario.number : 1
+modified : n
+track_modified : n
+stormname:HENRI
+stormclass:TROPICAL STORM
+wind:55
+advisory time: 0900 UTC FRI AUG 20 2021
+gusts : 65
+forecastValidStart : 20210820090000
+forcing.tropicalcyclone.stormname:HENRI
+forcing.tropicalcyclone.stormclass:TROPICAL STORM
+forcing.tropicalcyclone.vmax:55
+forcing.tropicalcyclone.advisory.time: 0900 UTC FRI AUG 20 2021
+forcing.tropicalcyclone.gusts : 65
+forcing.tropicalcyclone.forecast.valid.time.start : 20210820090000
+forecastValidEnd : 20210825060000
+forcing.tropicalcyclone.forecast.valid.time.end : 20210825060000
+storm class : TS
+track_raw_dat : bal082021.dat
+track_raw_fst : al082021.fst
+year : 2021
+directory storm : /scratch/06482/estrabd/asgs215615/18/nhcConsensus
+mesh : NAC2014
+RunType : Forecast
+ADCIRCgrid : NAC2014
+currentcycle : 06
+currentdate : 210820
+advisory : 18
+prodID : SADCNAC2014-UNC_vortex-nws20_20210820T0600_20210820T0600_20210825T0600_06<field>_Z.nc.gz
+InitialHotStartTime : 2700000.00000000
+RunStartTime : 2021082006
+RunEndTime : 2021082506
+ColdStartTime : 2021072000
+WindModel : vortex-nws20
+Model : PADCIRC
+Water Surface Elevation Stations File Name : fort.61.nc
+Water Surface Elevation Stations Format : netcdf
+Water Surface Elevation File Name : fort.63.nc
+Water Surface Elevation Format : netcdf
+Water Current Velocity File Name : fort.64.nc
+Water Current Velocity Format : netcdf
+Barometric Pressure Stations File Name : fort.71.nc
+Barometric Pressure Stations Format : netcdf
+Wind Velocity Stations File Name : fort.72.nc
+Wind Velocity Stations Format : netcdf
+Barometric Pressure File Name : fort.73.nc
+Barometric Pressure Format : netcdf
+Wind Velocity File Name : fort.74.nc
+Wind Velocity Format : netcdf
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Water Surface Elevation Format : netcdf
+Maximum Current Speed File Name : maxvel.63.nc
+Maximum Current Speed Format : netcdf
+Maximum Wind Speed File Name : maxwvel.63.nc
+Maximum Wind Speed Format : netcdf
+Minimum Barometric Pressure File Name : minpr.63.nc
+Minimum Barometric Pressure Format : netcdf
+Initially Dry File Name : initiallydry.63.nc
+Initially Dry Format : netcdf
+Inundation Time File Name : inundationtime.63.nc
+Inundation Time Format : netcdf
+Maximum Inundation Depth File Name : maxinundepth.63.nc
+Maximum Inundation Depth Format : netcdf
+Ever Dried File Name : everdried.63.nc
+Ever Dried Format : netcdf
+End Rising Inundation File Name : endrisinginun.63.nc
+End Rising Inundation Format : netcdf
+asgs : ne
+h0 : 0.1
+sea_surface_height_above_geoid : 0.109
+hpc.job.padcirc.queuename : skx-normal
+hpc.job.padcirc.serqueue : skx-normal
+hpc.job.padcirc.file.qscripttemplate : /work2/06482/estrabd/stampede2/asgs/qscript.template
+hpc.job.padcirc.account : TG-DMS080016N
+hpc.job.padcirc.ncpu : 959
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 1
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : 48
+hpc.slurm.job.padcirc.reservation : null
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : vip7000
+cpurequest : 960
+ncpu : 959
+numwriters : 1
+time.adcprep.start : 2021-Aug-20-T05:25:16-0500
+time.adcprep.start : 2021-Aug-20-T05:25:16-0500
+hpc.job.prep15.for.ncpu : 959
+hpc.job.prep15.limit.walltime : 02:00:00
+hpc.job.prep15.account : TG-DMS080016N
+hpc.job.prep15.file.qscripttemplate : /work2/06482/estrabd/stampede2/asgs/qscript.template
+hpc.job.prep15.parallelism : serial
+hpc.job.prep15.serqueue : skx-normal
+hpc.job.prep15.ppn : 1
+hpc.slurm.job.prep15.reservation : null
+hpc.slurm.job.prep15.constraint : null
+hpc.slurm.job.prep15.qos : vip7000
+hpc.job.prep15.subshellpids : ( 365611 365616 365620 )
+hpc.job.prep15.file.qscript : prep15.slurm
+time.hpc.job.prep15.submit : 2021-Aug-20-T05:25:39-0500
+time.hpc.job.prep15.start : 2021-Aug-20-T05:25:41-0500
+hpc.job.prep15.jobid : 8323482
+hpc.job.prep15.nodelist : ( c478-042 )
+hpc.job.prep15.hostname : c478-042
+hpc.job.prep15.qnnodes : 1
+hpc.job.prep15.qntasks-per-node : 1
+hpc.job.prep15.qntasks : 1
+hpc.job.prep15.joblog : /scratch/06482/estrabd/asgs215615/18/nhcConsensus/prep15.out
+time.hpc.job.prep15.finish : 2021-Aug-20-T05:26:44-0500
+time.adcprep.finish : 2021-Aug-20-T05:27:23-0500
+hpc.job.padcirc.queuename : skx-normal
+hpc.job.padcirc.serqueue : skx-normal
+hpc.job.padcirc.file.qscripttemplate : /work2/06482/estrabd/stampede2/asgs/qscript.template
+hpc.job.padcirc.account : TG-DMS080016N
+hpc.job.padcirc.ncpu : 959
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 1
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : 48
+hpc.slurm.job.padcirc.reservation : null
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : vip7000
+cpurequest : 960
+ncpu : 959
+numwriters : 1
+hpc.job.padcirc.limit.walltime : 07:00:00
+hpc.job.padcirc.file.qscripttemplate : /work2/06482/estrabd/stampede2/asgs/qscript.template
+hpc.job.padcirc.file.qscript : padcirc.slurm
+hpc.job.padcirc.subshellpids : ( 367721 367726 367730 367734 )
+time.hpc.job.padcirc.submit : 2021-Aug-20-T05:27:24-0500
+time.hpc.job.padcirc.start : 2021-Aug-20-T05:31:27-0500
+hpc.job.padcirc.jobid : 8323483
+hpc.job.padcirc.nodelist : ( c476-042,c477-011,c478-042,c483-[003,062],c485-004,c487-091,c489-001,c492-121,c493-[021,114],c494-[041,063,084],c495-104,c496-113,c497-024,c499-092,c500-001,c504-082 )
+hpc.job.padcirc.hostname : c476-042
+hpc.job.padcirc.qnnodes : 20
+hpc.job.padcirc.qntasks-per-node : 48
+hpc.job.padcirc.qntasks : 960
+hpc.job.padcirc.joblog : /scratch/06482/estrabd/asgs215615/18/nhcConsensus/padcirc.out
+time.hpc.job.padcirc.finish : 2021-Aug-20-T06:58:50-0500
+time.post.start : 2021-Aug-20-T06:59:30-0500
+Maximum Values Point CSV File Name : henri2021adv18nhcConsensusMax.csv.gz
+Maximum Values Point CSV File Format : gzipped ascii csv
+Wind Velocity 10m Stations File Name : wind10m.fort.72.nc
+Wind Velocity 10m Stations Format : netcdf
+Wind Velocity 10m File Name : wind10m.fort.74.nc
+Wind Velocity 10m Format : netcdf
+Maximum Wind Speed 10m File Name : wind10m.maxwvel.63.nc
+Maximum Wind Speed 10m Format : netcdf
+post.opendap.files : ( fort.15 fort.22 fort.61.nc fort.63.nc maxele.63.nc run.properties al082021.fst bal082021.dat wind10m.fort.74.nc wind10m.maxwvel.63.nc sendNotification endrisinginun.63.nc everdried.63.nc fort.64.nc fort.68.nc fort.71.nc fort.72.nc fort.73.nc header.csv initiallydry.63.nc inundationtime.63.nc max_data.csv maxinundepth.63.nc maxrs.63.nc maxvel.63.nc minpr.63.nc /scratch/06482/estrabd/asgs215615/18/cycle.log /scratch/06482/estrabd/asgs215615/18/nhcConsensus/scenario.log /work2/06482/estrabd/stampede2/asgs/config/2021/NAC2014-al082021-stampede.sh /work2/06482/estrabd/stampede2/asgs/NAC2014-al082021-stampede2.asgs-2021-Aug-19-T13:25:05-0500.215615.log fort.74.nc maxwvel.63.nc )
+post.opendap.tacc_tds2.linkablehosts : ( null )
+post.opendap.tacc_tds2.copyablehosts : ( lonestar5 stampede2 frontera )
+post.opendap.tacc_tds2.opendaphost : tacc_tds2
+post.opendap.tacc_tds2.threddshost : chg-1.oden.tacc.utexas.edu
+post.opendap.tacc_tds2.downloadprefix : http://chg-1.oden.tacc.utexas.edu:80/thredds/fileServer/asgs
+post.opendap.tacc_tds2.catalogprefix : http://chg-1.oden.tacc.utexas.edu:80/thredds/catalog/asgs
+post.opendap.tacc_tds2.opendapbasedir : /corral-tacc/utexas/hurricane/ASGS
+notification.opendap.email.opendapmailserver : aws
+post.opendap.tacc_tds2.opendapsuffix : 18/NAC2014/stampede2.tacc.utexas.edu/NAC2014-al082021-stampede2/nhcConsensus
+post.opendap.tacc_tds2.opendapdir : /corral-tacc/utexas/hurricane/ASGS/2021/al08/18/NAC2014/stampede2.tacc.utexas.edu/NAC2014-al082021-stampede2/nhcConsensus
+downloadurl : http://chg-1.oden.tacc.utexas.edu:80/thredds/fileServer/asgs/2021/al08/18/NAC2014/stampede2.tacc.utexas.edu/NAC2014-al082021-stampede2/nhcConsensus
+post.opendap.tacc_tds2.opendappostmethod : copy
+post.opendap.tacc_tds2.subject : ADCIRC POSTED for 2021082006 (TC) 1 stampede2.tacc.utexas.edu.NAC2014-al082021-stampede2 asgsnotifications@opayq.com

@@ -326,14 +326,15 @@ def main(args):
 
     # Need to check in specified dirs
     f = os.path.join(args.pkldir, gdf_pklfile)
-    if not os.path.exists(f):
-        gdf = construct_geopandas(agdict, targetepsg)
-        if not os.path.exists(args.pkldir): os.makedirs(args.pkldir)
-        utilities.writePickle(gdf, filename=f)
-        logger.info(f"Wrote Geopandas file to {f}")
-    else:
-        logger.info(f"{f} exists. Using it...")
-        gdf = pd.read_pickle(f)
+    gdf = construct_geopandas(agdict, targetepsg)
+#    if not os.path.exists(f):
+#        gdf = construct_geopandas(agdict, targetepsg)
+#        if not os.path.exists(args.pkldir): os.makedirs(args.pkldir)
+#        utilities.writePickle(gdf, filename=f)
+#        logger.info(f"Wrote Geopandas file to {f}")
+#    else:
+#        logger.info(f"{f} exists. Using it...")
+#        gdf = pd.read_pickle(f)
 
     # Extract the lat,lon values of the current gdf object
     logger.info(f"Extracting X and Y from the ADCIRC grid GDF ..")

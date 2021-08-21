@@ -95,9 +95,9 @@ rasterParameters () {
   "PRVI15" | "prvi15" ) 
     upperleft_lo=-67.30
     upperleft_la=18.535
-    res=50  # resolution in m
-    nx=3600
-    ny=1500
+    res=5000  # resolution in m
+    nx=36
+    ny=15
     theta=0
     target_crs="epsg:3920"
     adcirc_crs="epsg:4326"
