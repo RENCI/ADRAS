@@ -42,7 +42,8 @@ class Utilities:
 
     def upload(self, thisBucket, path, file):
         try:
-            resp = self.s3.Object(thisBucket, os.path.join(path, file)).upload_file(Filename=file)
+        # bucket.upload_file(file, key, ExtraArgs={'ACL':'public-read'})
+            resp = self.s3.Object(thisBucket, os.path.join(path, file)).upload_file(Filename=file, ExtraArgs={'ACL':'public-read'})
         except ClientError as e:
             return False
         return True
