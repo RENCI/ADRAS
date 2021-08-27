@@ -1,0 +1,303 @@
+config.file : /work2/00976/jgflemin/frontera/asgs/config/2021/asgs_config_LAv21a_al092021_jgf_10kcms.sh
+instancename : LAv21a_al092021_jgf_10kcms
+operator : jgflemin
+adcirc.time.coldstartdate : 2021072200
+path.adcircdir : /work/00976/jgflemin/frontera/adcirc-cg-v53release-issue-549-intel/work
+path.scriptdir : /work2/00976/jgflemin/frontera/asgs
+path.inputdir : /work2/00976/jgflemin/frontera/asgs/input/meshes/LA_v20a
+path.outputdir : /work2/00976/jgflemin/frontera/asgs/output
+path.scratchdir : /work2/00976/jgflemin/frontera/asgs/input/meshes/LA_v20a
+forcing.backgroundmet : off
+forcing.tidefac : on
+forcing.tropicalcyclone : on
+forcing.varflux : off
+forcing.staticoffset : null
+forcing.schedule.cycletimelimit : 99:00:00
+coupling.waves : off
+hpc.hpcenv : frontera.tacc.utexas.edu
+hpc.hpcenvshort : frontera
+hpc.queuesys : SLURM
+hpc.joblauncher : ibrun 
+hpc.submitstring : sbatch
+hpc.executable.qscriptgen : qscript.pl
+hpc.jobs.ncpucapacity : 9999
+hpc.walltimeformat : hh:mm:ss
+hpc.job.default.account : ASC20001
+hpc.job.default.queuename : normal
+hpc.job.default.serqueue : small
+adcirc.file.input.gridfile : LA_v21a-WithUpperAtch_chk.grd
+adcirc.file.input.unitoffsetfile : null
+adcirc.gridname : LAv21a
+adcirc.file.properties.meshproperties : LA_v20a-WithUpperAtch_chk.grd.properties
+adcirc.file.input.nafile : LA_v21a-WithUpperAtch_chk.13
+adcirc.file.properties.naproperties : LA_v20a-WithUpperAtch_chk.13.properties
+adcirc.file.template.controltemplate : LA_v20a-WithUpperAtch.15.template
+adcirc.file.properties.controlproperties : LA_v20a-WithUpperAtch.15.template.properties
+adcirc.file.elevstations : combined_stations_20200929.txt
+adcirc.file.velstations : combined_stations_20200929.txt
+adcirc.file.metstations : combined_stations_20200929.txt
+adcirc.hotstartformat : netcdf
+adcirc.timestepsize : 1.0
+adcirc.hotstartcomp : fulldomain
+file.preppedarchive : prepped_LAv21a_LAv21a_al092021_jgf_10kcms_959.tar.gz
+file.hindcastarchive : prepped_LAv21a_hc_LAv21a_al092021_jgf_10kcms_959.tar.gz
+adcirc.minmax : reset
+notification.emailnotify : no
+notification.executable.notify_script : null_notify.sh
+notification.email.activate_list : "null"
+notification.email.new_advisory_list : "null"
+notification.email.post_init_list : "null"
+notification.email.job_failed_list : "null"
+notification.hpc.email.notifyuser : "null"
+notification.opendap.email.opendapnotify : asgs.cera.lsu@gmail.com
+notification.email.asgsadmin : jason.fleming@seahorsecoastal.com
+monitoring.rmqmessaging.enable : on
+monitoring.rmqmessaging.transmit : on
+monitoring.rmqmessaging.script : /work2/00976/jgflemin/frontera/asgs/monitoring/asgs-msgr.py
+monitoring.rmqmessaging.scriptrp : /work2/00976/jgflemin/frontera/asgs/monitoring/rp2json.py
+monitoring.rmqmessaging.ncohome : /work/00976/jgflemin/frontera/local
+monitoring.rmqmessaging.locationname : TACC
+monitoring.rmqmessaging.clustername : Frontera
+monitoring.logging.file.syslog : /work2/00976/jgflemin/frontera/asgs/LAv21a_al092021_jgf_10kcms.asgs-2021-Aug-26-T11:45:46-0500.215487.log
+post.intendedaudience : general
+post.executable.initpost : null_post.sh
+post.executable.postprocess : (  includeWind10m.sh createOPeNDAPFileList.sh opendap_post.sh transmit_rps.sh )
+post.opendap.target : 
+post.opendap.tds : (  tacc_tds )
+post.file.sshkey : /home1/00976/jgflemin/.ssh/id_rsa_frontera
+archive.executable.archive : enstorm_pedir_removal.sh
+archive.path.archivebase : /corral-tacc/utexas/hurricane/ASGS
+archive.path.archivedir : 2020
+forecast.scenariopackagesize : 4
+path.rundir : /scratch1/00976/jgflemin/asgs215487
+path.fromdir : /scratch1/00976/jgflemin/asgs215487/01/nowcast
+path.lastsubdir : https://fortytwo.cct.lsu.edu/thredds/fileServer/2021/nam/2021082606/LAv21a/qbc.loni.org/LAv21a_nam_akheir_10kcms/namforecast
+scenario : nhcConsensus
+forecast.ensemblesize : 4
+asgs.path.fromdir : /scratch1/00976/jgflemin/asgs215487/01/nowcast
+asgs.path.lastsubdir : https://fortytwo.cct.lsu.edu/thredds/fileServer/2021/nam/2021082606/LAv21a/qbc.loni.org/LAv21a_nam_akheir_10kcms/namforecast
+asgs.enstorm : nhcConsensus
+enstorm : nhcConsensus
+adcirc.version : v53.05-modified
+hostname : frontera.tacc.utexas.edu
+instance : LAv21a_al092021_jgf_10kcms
+pseudostorm : no
+intendedAudience : general
+forcing.metclass : tropical
+forcing.stormname : 09
+forcing.tropicalcyclone.vortexmodel : GAHM
+forcing.tropicalcyclone.stormnumber : 09
+forcing.tropicalcyclone.year : 2021
+forcing.tropicalcyclone.pseudostorm : no
+forcing.tropicalcyclone.forecast.trigger : rssembedded
+forcing.tropicalcyclone.forecast.rsssite : www.nhc.noaa.gov
+forcing.tropicalcyclone.forecast.path.fdir : /atcf/afst
+forcing.tropicalcyclone.best.ftpsite : ftp.nhc.noaa.gov
+forcing.tropicalcyclone.best.path.hdir : /atcf/btk
+storm : 09
+stormnumber : 09
+path.cycledir : /scratch1/00976/jgflemin/asgs215487/01
+path.scenariodir : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus
+monitoring.logging.file.cyclelog : /scratch1/00976/jgflemin/asgs215487/01/cycle.log
+monitoring.logging.file.scenariolog : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus/scenario.log
+asgs.path.advisdir : /scratch1/00976/jgflemin/asgs215487/01
+asgs.path.stormdir : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus
+path.advisdir : /scratch1/00976/jgflemin/asgs215487/01
+path.stormdir : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus
+forecast.scenario.number : 1
+modified : n
+track_modified : n
+stormname:NINE
+stormclass:TROPICAL DEPRESSION
+wind:30
+advisory time: 1500 UTC THU AUG 26 2021
+gusts : 40
+forecastValidStart : 20210826150000
+forcing.tropicalcyclone.stormname:NINE
+forcing.tropicalcyclone.stormclass:TROPICAL DEPRESSION
+forcing.tropicalcyclone.vmax:30
+forcing.tropicalcyclone.advisory.time: 1500 UTC THU AUG 26 2021
+forcing.tropicalcyclone.gusts : 40
+forcing.tropicalcyclone.forecast.valid.time.start : 20210826150000
+forecastValidEnd : 20210831120000
+forcing.tropicalcyclone.forecast.valid.time.end : 20210831120000
+storm class : TD
+track_raw_dat : bal092021.dat
+track_raw_fst : al092021.fst
+year : 2021
+directory storm : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus
+mesh : LAv21a
+RunType : Forecast
+ADCIRCgrid : LAv21a
+currentcycle : 12
+currentdate : 210826
+advisory : 01
+prodID : SADCLAv21a-UNC_vortex-nws20_20210826T1200_20210826T1200_20210831T1200_12<field>_Z.nc.gz
+InitialHotStartTime : 3067200.00000000
+RunStartTime : 2021082612
+RunEndTime : 2021083112
+ColdStartTime : 2021072200
+WindModel : vortex-nws20
+Model : PADCIRC
+Water Surface Elevation Stations File Name : fort.61.nc
+Water Surface Elevation Stations Format : netcdf
+Water Surface Elevation File Name : fort.63.nc
+Water Surface Elevation Format : netcdf
+Water Current Velocity File Name : fort.64.nc
+Water Current Velocity Format : netcdf
+Barometric Pressure Stations File Name : fort.71.nc
+Barometric Pressure Stations Format : netcdf
+Wind Velocity Stations File Name : fort.72.nc
+Wind Velocity Stations Format : netcdf
+Barometric Pressure File Name : fort.73.nc
+Barometric Pressure Format : netcdf
+Wind Velocity File Name : fort.74.nc
+Wind Velocity Format : netcdf
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Water Surface Elevation Format : netcdf
+Maximum Current Speed File Name : maxvel.63.nc
+Maximum Current Speed Format : netcdf
+Maximum Wind Speed File Name : maxwvel.63.nc
+Maximum Wind Speed Format : netcdf
+Minimum Barometric Pressure File Name : minpr.63.nc
+Minimum Barometric Pressure Format : netcdf
+Initially Dry File Name : initiallydry.63.nc
+Initially Dry Format : netcdf
+Inundation Time File Name : inundationtime.63.nc
+Inundation Time Format : netcdf
+Maximum Inundation Depth File Name : maxinundepth.63.nc
+Maximum Inundation Depth Format : netcdf
+Ever Dried File Name : everdried.63.nc
+Ever Dried Format : netcdf
+End Rising Inundation File Name : endrisinginun.63.nc
+End Rising Inundation Format : netcdf
+asgs : la
+mississippiRiverBoundaryStageDischargeRelationshipName : "Mississippi River at Baton Rouge"
+mississippiRiverBoundaryStageGageName : "Mississippi River at Baton Rouge"
+mississippiRiverBoundaryStageGageID : 01160
+mississippiRiverBoundaryStageGageAgency : USACE
+atchafalayaRiverBoundaryStageDischargeRelationshipName : "Atchafalaya River at Simmesport" 
+atchafalayaRiverBoundaryStageGageName : "Atchafalaya River at Simmesport"
+atchafalayaRiverBoundaryStageGageID : 03045 
+atchafalayaRiverBoundaryStageGageAgency : USACE
+atchafalayaRiverBoundaryDischargeGageName : "Atchafalaya River at Simmesport - Discharge"
+atchafalayaRiverBoundaryDischargeGageID : 03045Q 
+atchafalayaRiverBoundaryDischargeGageAgency : USACE
+mississippiRiverBoundaryMeshFilePosition : 1
+mississippiRiverBoundaryType : 52
+mississippiRiverBoundaryNominalWSE : 0.0
+morganzaRiverBoundaryMeshFilePosition : 2
+morganzaRiverBoundaryType : 52
+morganzaRiverBoundaryNominalWSE : 0.0
+atchafalayaRiverBoundaryMeshFilePosition : 3
+atchafalayaRiverBoundaryType : 52
+atchafalayaRiverBoundaryNominalWSE : 0.0
+h0 : 0.1
+mississippiRiverBoundaryStageDischargeRelationshipName : "Mississippi River at Baton Rouge"
+mississippiRiverBoundaryStageGageName : "Mississippi River at Baton Rouge"
+mississippiRiverBoundaryStageGageID : 01160
+mississippiRiverBoundaryStageGageAgency : USACE
+atchafalayaRiverBoundaryStageDischargeRelationshipName : "Atchafalaya River at Simmesport" 
+atchafalayaRiverBoundaryStageGageName : "Atchafalaya River at Simmesport"
+atchafalayaRiverBoundaryStageGageID : 03045 
+atchafalayaRiverBoundaryStageGageAgency : USACE
+atchafalayaRiverBoundaryDischargeGageName : "Atchafalaya River at Simmesport - Discharge"
+atchafalayaRiverBoundaryDischargeGageID : 03045Q 
+atchafalayaRiverBoundaryDischargeGageAgency : USACE
+sea_surface_height_above_geoid : 0.228184
+hpc.job.padcirc.queuename : normal
+hpc.job.padcirc.serqueue : small
+hpc.job.padcirc.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcirc.account : ASC20001
+hpc.job.padcirc.ncpu : 959
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 1
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : 56
+hpc.slurm.job.padcirc.reservation : null
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : vippj_p3000
+cpurequest : 960
+ncpu : 959
+numwriters : 1
+time.adcprep.start : 2021-Aug-26-T12:39:02-0500
+time.adcprep.start : 2021-Aug-26-T12:39:02-0500
+hpc.job.prep15.for.ncpu : 959
+hpc.job.prep15.limit.walltime : 02:00:00
+hpc.job.prep15.account : ASC20001
+hpc.job.prep15.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.prep15.parallelism : serial
+hpc.job.prep15.serqueue : small
+hpc.job.prep15.ppn : 1
+hpc.slurm.job.prep15.reservation : null
+hpc.slurm.job.prep15.constraint : null
+hpc.slurm.job.prep15.qos : vippj_p3000
+hpc.job.prep15.subshellpids : ( 108899 108904 108908 )
+hpc.job.prep15.file.qscript : prep15.slurm
+time.hpc.job.prep15.submit : 2021-Aug-26-T12:39:14-0500
+time.hpc.job.prep15.start : 2021-Aug-26-T12:41:26-0500
+hpc.job.prep15.jobid : 3460621
+hpc.job.prep15.nodelist : ( c208-016 )
+hpc.job.prep15.hostname : c208-016
+hpc.job.prep15.qnnodes : 1
+hpc.job.prep15.qntasks-per-node : 
+hpc.job.prep15.qntasks : 1
+hpc.job.prep15.joblog : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus/prep15.out
+time.hpc.job.prep15.finish : 2021-Aug-26-T12:42:16-0500
+time.adcprep.finish : 2021-Aug-26-T12:42:55-0500
+hpc.job.padcirc.queuename : normal
+hpc.job.padcirc.serqueue : small
+hpc.job.padcirc.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcirc.account : ASC20001
+hpc.job.padcirc.ncpu : 959
+hpc.job.padcirc.parallelism : parallel
+hpc.job.padcirc.numwriters : 1
+hpc.job.limit.hindcastwalltime : 18:00:00
+hpc.job.limit.nowcastwalltime : 07:00:00
+hpc.job.limit.forecastwalltime : 07:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcirc.ppn : 56
+hpc.slurm.job.padcirc.reservation : null
+hpc.slurm.job.padcirc.constraint : null
+hpc.slurm.job.padcirc.qos : vippj_p3000
+cpurequest : 960
+ncpu : 959
+numwriters : 1
+hpc.job.padcirc.limit.walltime : 07:00:00
+hpc.job.padcirc.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcirc.file.qscript : padcirc.slurm
+hpc.job.padcirc.subshellpids : ( 123944 123949 123953 123957 )
+time.hpc.job.padcirc.submit : 2021-Aug-26-T12:42:56-0500
+time.hpc.job.padcirc.start : 2021-Aug-26-T12:42:59-0500
+hpc.job.padcirc.jobid : 3460631
+hpc.job.padcirc.nodelist : ( c136-[103-104],c141-181,c149-113,c170-011,c177-[032,132],c180-113,c186-[141,164],c187-[061,064],c188-[011,013],c190-[041,044,063,072] )
+hpc.job.padcirc.hostname : c136-103
+hpc.job.padcirc.qnnodes : 18
+hpc.job.padcirc.qntasks-per-node : 
+hpc.job.padcirc.qntasks : 960
+hpc.job.padcirc.joblog : /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus/padcirc.out
+time.hpc.job.padcirc.finish : 2021-Aug-26-T13:15:49-0500
+time.post.start : 2021-Aug-26-T13:16:22-0500
+Wind Velocity 10m Stations File Name : wind10m.fort.72.nc
+Wind Velocity 10m Stations Format : netcdf
+Wind Velocity 10m File Name : wind10m.fort.74.nc
+Wind Velocity 10m Format : netcdf
+Maximum Wind Speed 10m File Name : wind10m.maxwvel.63.nc
+Maximum Wind Speed 10m Format : netcdf
+post.opendap.files : ( fort.15 fort.22 fort.61.nc fort.63.nc maxele.63.nc run.properties al092021.fst bal092021.dat wind10m.fort.74.nc wind10m.maxwvel.63.nc sendNotification endrisinginun.63.nc everdried.63.nc fort.64.nc fort.68.nc fort.71.nc fort.72.nc fort.73.nc initiallydry.63.nc inundationtime.63.nc maxinundepth.63.nc maxrs.63.nc maxvel.63.nc minpr.63.nc /scratch1/00976/jgflemin/asgs215487/01/cycle.log /scratch1/00976/jgflemin/asgs215487/01/nhcConsensus/scenario.log /work2/00976/jgflemin/frontera/asgs/config/2021/asgs_config_LAv21a_al092021_jgf_10kcms.sh /work2/00976/jgflemin/frontera/asgs/LAv21a_al092021_jgf_10kcms.asgs-2021-Aug-26-T11:45:46-0500.215487.log fort.74.nc maxwvel.63.nc )
+post.opendap.tacc_tds.linkablehosts : ( null )
+post.opendap.tacc_tds.copyablehosts : ( lonestar5 stampede2 frontera )
+post.opendap.tacc_tds.opendaphost : tacc_tds
+post.opendap.tacc_tds.threddshost : adcircvis.tacc.utexas.edu
+post.opendap.tacc_tds.downloadprefix : http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs
+post.opendap.tacc_tds.catalogprefix : http://adcircvis.tacc.utexas.edu:8080/thredds/catalog/asgs
+post.opendap.tacc_tds.opendapbasedir : /corral-tacc/utexas/hurricane/ASGS
+notification.opendap.email.opendapmailserver : aws
+post.opendap.tacc_tds.opendapsuffix : 01/LAv21a/frontera.tacc.utexas.edu/LAv21a_al092021_jgf_10kcms/nhcConsensus
+post.opendap.tacc_tds.opendapdir : /corral-tacc/utexas/hurricane/ASGS/2021/al09/01/LAv21a/frontera.tacc.utexas.edu/LAv21a_al092021_jgf_10kcms/nhcConsensus
+downloadurl : http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/01/LAv21a/frontera.tacc.utexas.edu/LAv21a_al092021_jgf_10kcms/nhcConsensus
+post.opendap.tacc_tds.opendappostmethod : copy
+post.opendap.tacc_tds.subject : ADCIRC POSTED for 2021082612 (TC) 1 frontera.tacc.utexas.edu.LAv21a_al092021_jgf_10kcms jason.fleming@seahorsecoastal.com

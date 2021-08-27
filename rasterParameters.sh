@@ -13,17 +13,17 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "hsofs" ) 
-    upperleft_lo=-74.25
-    upperleft_la=41.35
-    # resolution in m
-    res=100  
-    nx=2100
-    ny=900
-    theta=15
-    target_crs="epsg:32619"
-    adcirc_crs="epsg:4326"
-  ;;
+#  "hsofs" ) 
+#    upperleft_lo=-74.25
+#    upperleft_la=41.35
+#    # resolution in m
+#    res=100  
+#    nx=2100
+#    ny=900
+#    theta=15
+#    target_crs="epsg:32619"
+#    adcirc_crs="epsg:4326"
+#  ;;
 
   "uriv18" | "uriv18_cl" | "NAC2014" ) 
     upperleft_lo=-72.7
@@ -37,16 +37,16 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "ec95d") 
-    upperleft_lo=-72.7
-    upperleft_la=41.75
-    # resolution in m
-    res=500  
-    nx=400
-    ny=180
-    theta=15
-    target_crs="epsg:32619"
-    adcirc_crs="epsg:4326"
+#  "ec95d") 
+#    upperleft_lo=-72.7
+#    upperleft_la=41.75
+#    # resolution in m
+#    res=500  
+#    nx=400
+#    ny=180
+#    theta=15
+#    target_crs="epsg:32619"
+#    adcirc_crs="epsg:4326"
     #upperleft_lo=-98.7
     #upperleft_la=29.5
     ## resolution in m
@@ -58,13 +58,13 @@ rasterParameters () {
     #adcirc_crs="epsg:4326"
   ;;
 
-  "LA_v20a-WithUpperAtch_chk" | "LAv20a" | "LAv21a" )
+  "LA_v20a-WithUpperAtch_chk" | "LAv20a" | "LAv21a" | "hsofs" )
     upperleft_lo=-94.25
-    upperleft_la=30.85
+    upperleft_la=30.5
     res=50  # resolution in m
     nx=10000
-    ny=4000
-    theta=20
+    ny=3900
+    theta=0
     target_crs="epsg:32614"
     adcirc_crs="epsg:4326"
   ;;
@@ -115,13 +115,21 @@ rasterParameters () {
   ;;
 
   *)
-    upperleft_lo=-77.09
-    upperleft_la=35.7
-    res=100  # resolution in m
-    nx=1000
-    ny=1000
+    #upperleft_lo=-77.09
+    #upperleft_la=35.7
+    #res=100  # resolution in m
+    #nx=1000
+    #ny=1000
+    #theta=0
+    #target_crs="epsg:6346"
+    #adcirc_crs="epsg:4326"
+    upperleft_lo=-94.25
+    upperleft_la=30.5
+    res=50  # resolution in m
+    nx=10000
+    ny=3900
     theta=0
-    target_crs="epsg:6346"
+    target_crs="epsg:32614"
     adcirc_crs="epsg:4326"
   ;;
 
