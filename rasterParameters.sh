@@ -58,7 +58,7 @@ rasterParameters () {
     #adcirc_crs="epsg:4326"
   ;;
 
-  "LA_v20a-WithUpperAtch_chk" | "LAv21a" )
+  "LA_v20a-WithUpperAtch_chk" | "LAv20a" | "LAv21a" )
     upperleft_lo=-94.25
     upperleft_la=30.85
     res=50  # resolution in m
