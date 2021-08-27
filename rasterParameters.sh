@@ -25,7 +25,6 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-
   "uriv18" | "uriv18_cl" | "NAC2014" ) 
     upperleft_lo=-72.7
     upperleft_la=41.75
@@ -59,8 +58,8 @@ rasterParameters () {
     #adcirc_crs="epsg:4326"
   ;;
 
-  "LA_v20a-WithUpperAtch_chk")
-    upperleft_lo=-91.5
+  "LA_v20a-WithUpperAtch_chk" | "LAv21a" )
+    upperleft_lo=-94.25
     upperleft_la=30.85
     res=50  # resolution in m
     nx=10000
