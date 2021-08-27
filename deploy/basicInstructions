@@ -1,6 +1,6 @@
 
 # Build an image
-sudo docker build -t adras:latest .
+sudo docker build --no-cache -t adras:latest .
 
 # Reset the tag ID
 docker image tag adras:latest renciorg/adras:latest
