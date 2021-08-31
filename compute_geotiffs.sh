@@ -2,7 +2,6 @@
 #------------------------------------------------------------------------
 # compute_geotiffs.sh: computes inundation geotiffs
 #------------------------------------------------------------------------
-# THIS="output/compute_geotiffs.sh"
 #set -x
 #set -u
 
@@ -10,6 +9,7 @@ if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
 	echo "Must run in Bash version >=4.\n"
 	exit 1
 fi
+RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
 
 DEBUG=true
 log="log.hazus"
@@ -45,6 +45,8 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
+#wget $RasterPartameterFileUrl  -O realtimeparams.sh
+#source ./realtimeparams.sh
 source ./rasterParameters.sh
 source ./properties.sh
 
@@ -193,5 +195,5 @@ for v in ${varnames[@]}; do
 done
 
 echo "Compute_geotiffs finished at " `date -u` | tee -a $log
-printf "\n******************************************\n\n\n" | tee -a $log
+printf "\n******************************************\n\n" | tee -a $log
 
