@@ -260,6 +260,6 @@ post.opendap.tacc_tds2.opendapbasedir : /corral-tacc/utexas/hurricane/ASGS
 notification.opendap.email.opendapmailserver : aws
 post.opendap.tacc_tds2.opendapsuffix : 2021062306/TX2008/frontera.tacc.utexas.edu/TX2008-nam-frontera/namforecast
 post.opendap.tacc_tds2.opendapdir : /corral-tacc/utexas/hurricane/ASGS/2021/nam/2021062306/TX2008/frontera.tacc.utexas.edu/TX2008-nam-frontera/namforecast
-downloadurl : http://chg-1.oden.tacc.utexas.edu:80/thredds/fileServer/asgs/2021/nam/2021062306/TX2008/frontera.tacc.utexas.edu/TX2008-nam-frontera/namforecast
+downloadurl : http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/nam/2021062306/TX2008/frontera.tacc.utexas.edu/TX2008-nam-frontera/namforecast
 post.opendap.tacc_tds2.opendappostmethod : copy
 post.opendap.tacc_tds2.subject : ADCIRC POSTED for 2021062306 1 frontera.tacc.utexas.edu.TX2008-nam-frontera asgsnotifications@opayq.com

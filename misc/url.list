@@ -1,0 +1,17 @@
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/nhcOfcl/
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/veerRight100/
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/veerLeft100/
+#https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2021/al03/08/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/nhcConsensus/
+#https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2021/al03/08/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/veerRight50/
+
+#https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2021/al03/08/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/veerLeft50/
+#http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/08/LAv20a/frontera.tacc.utexas.edu/LAv20a_al092021_jgf_10kcms/nhcConsensus
+#http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/08/LAv20a/frontera.tacc.utexas.edu/LAv20a_al092021_jgf_10kcms/veerRight50
+#http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/08/LAv20a/frontera.tacc.utexas.edu/LAv20a_al092021_jgf_10kcms/veerLeft50
+
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/nhcOfcl/
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/veerRight100/
+#http://tds.renci.org:8080/thredds/fileServer/2021/al09/08/hsofs/hatteras.renci.org/hsofs-al09-bob/veerLeft100/
+
+https://fortytwo.cct.lsu.edu/thredds/fileServer/2021/al09/09/LA_v20a-WithUpperAtch_chk/qbc.loni.org/LAv20a_al092021_akheir_10kcms/nhcConsensus/
+https://fortytwo.cct.lsu.edu/thredds/fileServer/2021/al09/09/LA_v20a-WithUpperAtch_chk/qbc.loni.org/LAv20a_al092021_akheir_10kcms/veerRight100/

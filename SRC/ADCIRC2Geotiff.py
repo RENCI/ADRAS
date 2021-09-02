@@ -393,7 +393,7 @@ def main(args):
 
     if main_config['S3']['SEND2AWS']:
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)
-        msg=f"Upload to s3://{thisBucket}:/{args.s3path}/{args.filename} "
+        msg=f"Upload to s3://{thisBucket}/{args.s3path}/{args.filename} "
         if not resp:
             logger.info(f"{msg} failed.")
         else:
