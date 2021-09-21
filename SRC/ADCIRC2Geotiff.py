@@ -286,6 +286,7 @@ def utm2WGS84(infile):
                   src_crs=dataset.crs,
                   dst_transform=new_transform,
                   dst_crs=new_crs,
+                  dst_nodata=np.nan,
                   resampling=Resampling.nearest)
     
     #Write reprojected data to tiff file
