@@ -602,7 +602,7 @@ def main(args):
     write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename)
 
     logger.info(f"Create color png map from tiff {filename}")
-    createColorMap(filename,0.0,ivmax)
+    createColorMap(filename,ivmin,ivmax)
 
     if main_config['S3']['SEND2AWS']:
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)
