@@ -169,10 +169,10 @@ if [[ $DEBUG == "true" ]] ; then
     echo "s3 path = $s3path" | tee -a $log
 fi
 
-varnames=( "inun_max" "zeta_max" ) 
-prodvarnames=( "inunmax" "wlmax" )
-#varnames=( "zeta_max" ) 
-#prodvarnames=( "wlmax" )
+#varnames=( "inun_max" "zeta_max" ) 
+#prodvarnames=( "inunmax" "wlmax" )
+varnames=( "zeta_max" ) 
+prodvarnames=( "wlmax" )
 
 other="None"
 k=-1

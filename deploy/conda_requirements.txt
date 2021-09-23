@@ -13,3 +13,4 @@ affine
 colour
 cartopy
 contextily
+Pillow

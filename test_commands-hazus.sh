@@ -8,6 +8,9 @@ echo $PYTHONPATH
 #url='http://tds.renci.org:8080/thredds/fileServer/2021/nam/2021082006/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast/'
 #url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/01/LAv21a/frontera.tacc.utexas.edu/LAv21a_al092021_jgf_10kcms/nhcConsensus/'
 #url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/05/LAv20a/frontera.tacc.utexas.edu/LAv20a_al092021_jgf_10kcms/veerRight50/'
-url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/05/LAv20a/stampede2.tacc.utexas.edu/LAv20a_al092021_bde/nhcConsensus/'
+#url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/al09/05/LAv20a/stampede2.tacc.utexas.edu/LAv20a_al092021_bde/nhcConsensus/'
+#url='http://tds.renci.org:8080/thredds/fileServer/2021/nam/2021092312/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/'
+url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/'
+
 bash compute_geotiffs.sh  $url
 

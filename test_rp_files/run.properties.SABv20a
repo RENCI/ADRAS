@@ -1,0 +1,312 @@
+config.file : /work2/00976/jgflemin/frontera/asgs/config/2021/asgs_config_SABv20a_nam_jgf_status.sh
+instancename : SABv20a_nam_jgf_status
+operator : jgflemin
+adcirc.time.coldstartdate : 2021062500
+path.adcircdir : /work/00976/jgflemin/frontera/adcirc-cg-v53release-issue-549-intel/work
+path.scriptdir : /work2/00976/jgflemin/frontera/asgs
+path.inputdir : /work2/00976/jgflemin/frontera/asgs/input/meshes/SABv20a
+path.outputdir : /work2/00976/jgflemin/frontera/asgs/output
+path.scratchdir : /work2/00976/jgflemin/frontera/asgs/input/meshes/SABv20a
+forcing.backgroundmet : on
+forcing.tidefac : on
+forcing.tropicalcyclone : off
+forcing.varflux : off
+forcing.staticoffset : null
+forcing.schedule.cycletimelimit : 99:00:00
+coupling.waves : on
+hpc.hpcenv : frontera.tacc.utexas.edu
+hpc.hpcenvshort : frontera
+hpc.queuesys : SLURM
+hpc.joblauncher : ibrun 
+hpc.submitstring : sbatch
+hpc.executable.qscriptgen : qscript.pl
+hpc.jobs.ncpucapacity : 9999
+hpc.walltimeformat : hh:mm:ss
+hpc.job.default.account : ASC20001
+hpc.job.default.queuename : normal
+hpc.job.default.serqueue : small
+adcirc.file.input.gridfile : SABv20a.14
+adcirc.file.input.unitoffsetfile : null
+adcirc.gridname : SABv20a
+adcirc.file.properties.meshproperties : SABv20a.14.properties
+adcirc.file.input.nafile : SABv20a.13
+adcirc.file.properties.naproperties : SABv20a.13.properties
+adcirc.file.template.controltemplate : SABv20a.15.template
+adcirc.file.properties.controlproperties : SABv20a.15.template.properties
+adcirc.file.elevstations : hsofs_stations_20180907.txt
+adcirc.file.velstations : hsofs_stations_20180907.txt
+adcirc.file.metstations : hsofs_stations_20180907.txt
+adcirc.hotstartformat : netcdf
+adcirc.timestepsize : 0.5
+adcirc.hotstartcomp : fulldomain
+file.preppedarchive : prepped_SABv20a_SABv20a_nam_jgf_status_4031.tar.gz
+file.hindcastarchive : prepped_SABv20a_hc_SABv20a_nam_jgf_status_4031.tar.gz
+adcirc.minmax : reset
+notification.emailnotify : no
+notification.executable.notify_script : null_notify.sh
+notification.email.activate_list : "null"
+notification.email.new_advisory_list : "null"
+notification.email.post_init_list : "null"
+notification.email.job_failed_list : "null"
+notification.hpc.email.notifyuser : "null"
+notification.opendap.email.opendapnotify : asgs.cera.lsu@gmail.com
+notification.email.asgsadmin : jason.fleming@seahorsecoastal.com
+monitoring.rmqmessaging.enable : on 
+monitoring.rmqmessaging.transmit : on
+monitoring.rmqmessaging.script : /work2/00976/jgflemin/frontera/asgs/monitoring/asgs-msgr.py
+monitoring.rmqmessaging.scriptrp : /work2/00976/jgflemin/frontera/asgs/monitoring/rp2json.py
+monitoring.rmqmessaging.ncohome : /work/00976/jgflemin/frontera/local
+monitoring.rmqmessaging.locationname : TACC
+monitoring.rmqmessaging.clustername : Frontera
+monitoring.logging.file.syslog : /scratch1/00976/jgflemin/SABv20a_nam_jgf_status.asgs-2021-Aug-23-T15:18:08-0500.220808.log
+post.intendedaudience : general
+post.executable.initpost : null_post.sh
+post.executable.postprocess : (  includeWind10m.sh createOPeNDAPFileList.sh opendap_post.sh transmit_rps.sh )
+post.opendap.target : 
+post.opendap.tds : (  tacc_tds )
+post.file.sshkey : /home1/00976/jgflemin/.ssh/id_rsa_frontera
+archive.executable.archive : enstorm_pedir_removal.sh
+archive.path.archivebase : /corral-tacc/utexas/hurricane/ASGS
+archive.path.archivedir : 2020
+forecast.scenariopackagesize : 2
+path.rundir : /scratch1/00976/jgflemin/asgs220808
+path.fromdir : /scratch1/00976/jgflemin/asgs220808/2021092306/nowcast
+path.lastsubdir : /scratch1/00976/jgflemin/asgs303932/2021081506
+scenario : namforecast
+forecast.ensemblesize : 2
+asgs.path.fromdir : /scratch1/00976/jgflemin/asgs220808/2021092306/nowcast
+asgs.path.lastsubdir : /scratch1/00976/jgflemin/asgs303932/2021081506
+asgs.enstorm : namforecast
+enstorm : namforecast
+adcirc.version : v53.05-modified
+hostname : frontera.tacc.utexas.edu
+instance : SABv20a_nam_jgf_status
+pseudostorm : no
+intendedAudience : general
+forcing.metclass : synoptic
+forcing.stormname : NA
+forcing.nwp.model : nam
+forcing.nam.schedule.forecast.forecastcycle : "06"
+forcing.nwp.schedule.forecast.forecastselection : strict
+forcing.nam.forecast.download : only-to-run
+forcing.nam.backsite : ftp.ncep.noaa.gov
+forcing.nam.backdir : /pub/data/nccf/com/nam/prod
+forcing.nam.forecastlength : 84
+forcing.nam.reprojection.ptfile : ptFile_oneEighth.txt
+forcing.nam.local.altnamdir : /projects/ncfs/data/asgs5463,/projects/ncfs/data/asgs14174
+config.forcing.nam.schedule.forecast.forecastcycle : "06"
+config.forcing.nam.backsite : ftp.ncep.noaa.gov
+config.forcing.nam.backdir : /pub/data/nccf/com/nam/prod
+config.forcing.nam.forecastlength : 84
+config.forcing.nam.reprojection.ptfile : ptFile_oneEighth.txt
+config.forcing.nam.local.altnamdir : /projects/ncfs/data/asgs5463,/projects/ncfs/data/asgs14174
+forcing.nwp.year : 2021
+path.swandir : /work/00976/jgflemin/frontera/adcirc-cg-v53release-issue-549-intel/swan
+coupling.waves.swan.reinitializeswan : no
+coupling.waves.swan.swanhscompression : no
+swan.swandt : 1200
+swan.input.file.swantemplate : adcirc_swan_v53_fort.26.template
+swan.input.file.swaninit : swaninit.template
+path.cycledir : /scratch1/00976/jgflemin/asgs220808/2021092306
+path.scenariodir : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast
+monitoring.logging.file.cyclelog : /scratch1/00976/jgflemin/asgs220808/2021092306/cycle.log
+monitoring.logging.file.scenariolog : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast/scenario.log
+asgs.path.advisdir : /scratch1/00976/jgflemin/asgs220808/2021092306
+asgs.path.stormdir : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast
+path.advisdir : /scratch1/00976/jgflemin/asgs220808/2021092306
+path.stormdir : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast
+forecast.scenario.number : 1
+forecastValidStart : 20210923060000
+forecastValidEnd : 20210926210000
+track_raw_dat : notrack
+track_raw_fst : notrack
+track_modified : notrack
+year : 2021
+directory storm : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast
+mesh : SABv20a
+RunType : Forecast
+ADCIRCgrid : SABv20a
+currentcycle : 06
+currentdate : 210923
+advisory : 2021092306
+prodID : SPDSSABv20a-UNC_WNAMAW12-NCP_20210923T0600_20210923T0600_20210926T1800_06<field>_Z.nc.gz
+InitialHotStartTime : 7797600.00000000
+RunStartTime : 2021092306
+RunEndTime : 2021092618
+ColdStartTime : 2021062500
+WindModel : WNAMAW12-NCP
+Model : PADCSWAN
+Water Surface Elevation Stations File Name : fort.61.nc
+Water Surface Elevation Stations Format : netcdf
+adcirc.file.output.fort.61.nc.numdatasets : 1008
+Water Surface Elevation File Name : fort.63.nc
+Water Surface Elevation Format : netcdf
+adcirc.file.output.fort.63.nc.numdatasets : 84
+Water Current Velocity File Name : fort.64.nc
+Water Current Velocity Format : netcdf
+adcirc.file.output.fort.64.nc.numdatasets : 84
+Barometric Pressure Stations File Name : fort.71.nc
+Barometric Pressure Stations Format : netcdf
+adcirc.file.output.fort.71.nc.numdatasets : 1008
+Wind Velocity Stations File Name : fort.72.nc
+Wind Velocity Stations Format : netcdf
+adcirc.file.output.fort.72.nc.numdatasets : 1008
+Barometric Pressure File Name : fort.73.nc
+Barometric Pressure Format : netcdf
+adcirc.file.output.fort.73.nc.numdatasets : 84
+Wind Velocity File Name : fort.74.nc
+Wind Velocity Format : netcdf
+adcirc.file.output.fort.74.nc.numdatasets : 84
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Water Surface Elevation Format : netcdf
+adcirc.file.output.maxele.63.nc.numdatasets : 1
+Maximum Current Speed File Name : maxvel.63.nc
+Maximum Current Speed Format : netcdf
+adcirc.file.output.maxvel.63.nc.numdatasets : 1
+Maximum Wind Speed File Name : maxwvel.63.nc
+Maximum Wind Speed Format : netcdf
+adcirc.file.output.maxwvel.63.nc.numdatasets : 1
+Minimum Barometric Pressure File Name : minpr.63.nc
+Minimum Barometric Pressure Format : netcdf
+adcirc.file.output.minpr.63.nc.numdatasets : 1
+Maximum Wave Radiation Stress File Name : maxrs.63.nc
+Maximum Wave Radiation Stress Format : netcdf
+adcirc.file.output.maxrs.63.nc.numdatasets : 1
+Mean Wave Direction File Name : swan_DIR.63.nc
+Mean Wave Direction Format : netcdf
+adcirc.file.output.swan_DIR.63.nc.numdatasets : 84
+Maximum Mean Wave Direction File Name : swan_DIR_max.63.nc
+Maximum Mean Wave Direction Format : netcdf
+adcirc.file.output.swan_DIR_max.63.nc.numdatasets : 1
+Significant Wave Height File Name : swan_HS.63.nc
+Significant Wave Height Format : netcdf
+adcirc.file.output.swan_HS.63.nc.numdatasets : 84
+Maximum Significant Wave Height File Name : swan_HS_max.63.nc
+Maximum Significant Wave Height Format : netcdf
+adcirc.file.output.swan_HS_max.63.nc.numdatasets : 1
+Mean Wave Period File Name : swan_TMM10.63.nc
+Mean Wave Period Format : netcdf
+adcirc.file.output.swan_TMM10.63.nc.numdatasets : 84
+Maximum Mean Wave Period File Name : swan_TMM10_max.63.nc
+Maximum Mean Wave Period Format : netcdf
+adcirc.file.output.swan_TMM10_max.63.nc.numdatasets : 1
+Peak Wave Period File Name : swan_TPS.63.nc
+Peak Wave Period Format : netcdf
+adcirc.file.output.swan_TPS.63.nc.numdatasets : 84
+Maximum Peak Wave Period File Name : swan_TPS_max.63.nc
+Maximum Peak Wave Period Format : netcdf
+adcirc.file.output.swan_TPS_max.63.nc.numdatasets : 1
+Initially Dry File Name : initiallydry.63.nc
+Initially Dry Format : netcdf
+adcirc.file.output.initiallydry.63.nc.numdatasets : 1
+Inundation Time File Name : inundationtime.63.nc
+Inundation Time Format : netcdf
+adcirc.file.output.inundationtime.63.nc.numdatasets : 1
+Maximum Inundation Depth File Name : maxinundepth.63.nc
+Maximum Inundation Depth Format : netcdf
+adcirc.file.output.maxinundepth.63.nc.numdatasets : 1
+Ever Dried File Name : everdried.63.nc
+Ever Dried Format : netcdf
+adcirc.file.output.everdried.63.nc.numdatasets : 1
+End Rising Inundation File Name : endrisinginun.63.nc
+End Rising Inundation Format : netcdf
+adcirc.file.output.endrisinginun.63.nc.numdatasets : 1
+asgs : fl
+h0 : 0.1
+sea_surface_height_above_geoid : 0.0
+hpc.job.padcswan.queuename : normal
+hpc.job.padcswan.serqueue : small
+hpc.job.padcswan.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcswan.account : ASC20001
+hpc.job.padcswan.ncpu : 4031
+hpc.job.padcswan.parallelism : parallel
+hpc.job.padcswan.numwriters : 1
+hpc.job.limit.hindcastwalltime : 36:00:00
+hpc.job.limit.nowcastwalltime : 24:00:00
+hpc.job.limit.forecastwalltime : 24:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcswan.ppn : 56
+hpc.slurm.job.padcswan.reservation : null
+hpc.slurm.job.padcswan.constraint : null
+hpc.slurm.job.padcswan.qos : vippj_p3000
+cpurequest : 4032
+ncpu : 4031
+numwriters : 1
+time.adcprep.start : 2021-Sep-23-T09:42:12-0500
+time.adcprep.start : 2021-Sep-23-T09:42:12-0500
+hpc.job.prep15.for.ncpu : 4031
+hpc.job.prep15.limit.walltime : 02:00:00
+hpc.job.prep15.account : ASC20001
+hpc.job.prep15.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.prep15.parallelism : serial
+hpc.job.prep15.serqueue : small
+hpc.job.prep15.ppn : 1
+hpc.slurm.job.prep15.reservation : null
+hpc.slurm.job.prep15.constraint : null
+hpc.slurm.job.prep15.qos : vippj_p3000
+hpc.job.prep15.subshellpids : ( 99895 99899 99903 )
+hpc.job.prep15.file.qscript : prep15.slurm
+time.hpc.job.prep15.submit : 2021-Sep-23-T09:42:53-0500
+time.hpc.job.prep15.start : 2021-Sep-23-T09:42:58-0500
+hpc.job.prep15.jobid : 3542196
+hpc.job.prep15.nodelist : ( c211-013 )
+hpc.job.prep15.hostname : c211-013
+hpc.job.prep15.qnnodes : 1
+hpc.job.prep15.qntasks-per-node : 
+hpc.job.prep15.qntasks : 1
+hpc.job.prep15.joblog : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast/prep15.out
+time.hpc.job.prep15.finish : 2021-Sep-23-T09:46:12-0500
+time.adcprep.finish : 2021-Sep-23-T09:48:57-0500
+hpc.job.padcswan.queuename : normal
+hpc.job.padcswan.serqueue : small
+hpc.job.padcswan.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcswan.account : ASC20001
+hpc.job.padcswan.ncpu : 4031
+hpc.job.padcswan.parallelism : parallel
+hpc.job.padcswan.numwriters : 1
+hpc.job.limit.hindcastwalltime : 36:00:00
+hpc.job.limit.nowcastwalltime : 24:00:00
+hpc.job.limit.forecastwalltime : 24:00:00
+hpc.job.limit.adcprepwalltime : 02:00:00
+hpc.job.padcswan.ppn : 56
+hpc.slurm.job.padcswan.reservation : null
+hpc.slurm.job.padcswan.constraint : null
+hpc.slurm.job.padcswan.qos : vippj_p3000
+cpurequest : 4032
+ncpu : 4031
+numwriters : 1
+hpc.job.padcswan.limit.walltime : 24:00:00
+hpc.job.padcswan.file.qscripttemplate : /work2/00976/jgflemin/frontera/asgs/qscript.template
+hpc.job.padcswan.file.qscript : padcswan.slurm
+hpc.job.padcswan.subshellpids : ( 138383 138388 138392 138396 138400 138404 )
+time.hpc.job.padcswan.submit : 2021-Sep-23-T09:48:59-0500
+time.hpc.job.padcswan.start : 2021-Sep-23-T10:15:04-0500
+hpc.job.padcswan.jobid : 3542212
+hpc.job.padcswan.nodelist : ( c102-[091-094,154],c103-[093-094,212-213],c104-[134,164,171,211],c105-[014,033-034],c106-[084,103,211],c107-121,c108-102,c116-133,c119-[163,172],c121-[013,183,191],c126-[044,162],c127-182,c129-033,c130-[001,124,172],c132-[002,071,093,164],c133-124,c143-073,c158-[153-154],c160-[143-144],c164-123,c167-[124,131],c168-[151-153],c169-[074,082,084,091-092],c170-[043-044,051-054,123-124],c174-[033-034],c178-022,c186-[061-064],c187-[132-133] )
+hpc.job.padcswan.hostname : c102-091
+hpc.job.padcswan.qnnodes : 72
+hpc.job.padcswan.qntasks-per-node : 
+hpc.job.padcswan.qntasks : 4032
+hpc.job.padcswan.joblog : /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast/padcswan.out
+time.hpc.job.padcswan.finish : 2021-Sep-23-T11:14:50-0500
+time.post.start : 2021-Sep-23-T11:15:49-0500
+Wind Velocity 10m Stations File Name : wind10m.fort.72.nc
+Wind Velocity 10m Stations Format : netcdf
+Wind Velocity 10m File Name : wind10m.fort.74.nc
+Wind Velocity 10m Format : netcdf
+Maximum Wind Speed 10m File Name : wind10m.maxwvel.63.nc
+Maximum Wind Speed 10m Format : netcdf
+post.opendap.files : ( fort.15 fort.22 fort.61.nc fort.63.nc maxele.63.nc run.properties swan_HS.63.nc swan_HS_max.63.nc swan_TPS.63.nc swan_TPS_max.63.nc wind10m.fort.74.nc wind10m.maxwvel.63.nc sendNotification endrisinginun.63.nc everdried.63.nc fort.64.nc fort.68.nc fort.71.nc fort.72.nc fort.73.nc initiallydry.63.nc inundationtime.63.nc maxinundepth.63.nc maxrs.63.nc maxvel.63.nc minpr.63.nc rads.64.nc /scratch1/00976/jgflemin/asgs220808/2021092306/cycle.log /scratch1/00976/jgflemin/asgs220808/2021092306/namforecast/scenario.log /scratch1/00976/jgflemin/SABv20a_nam_jgf_status.asgs-2021-Aug-23-T15:18:08-0500.220808.log swan_DIR.63.nc swan_DIR_max.63.nc swan_TMM10.63.nc swan_TMM10_max.63.nc /work2/00976/jgflemin/frontera/asgs/config/2021/asgs_config_SABv20a_nam_jgf_status.sh fort.74.nc maxwvel.63.nc )
+post.opendap.tacc_tds.linkablehosts : ( null )
+post.opendap.tacc_tds.copyablehosts : ( lonestar5 stampede2 frontera )
+post.opendap.tacc_tds.opendaphost : tacc_tds
+post.opendap.tacc_tds.threddshost : adcircvis.tacc.utexas.edu
+post.opendap.tacc_tds.downloadprefix : http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs
+post.opendap.tacc_tds.catalogprefix : http://adcircvis.tacc.utexas.edu:8080/thredds/catalog/asgs
+post.opendap.tacc_tds.opendapbasedir : /corral-tacc/utexas/hurricane/ASGS
+notification.opendap.email.opendapmailserver : aws
+post.opendap.tacc_tds.opendapsuffix : 2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast
+post.opendap.tacc_tds.opendapdir : /corral-tacc/utexas/hurricane/ASGS/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast
+downloadurl : http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast
+post.opendap.tacc_tds.opendappostmethod : copy
+post.opendap.tacc_tds.subject : ADCIRC POSTED for 2021092306 1 frontera.tacc.utexas.edu.SABv20a_nam_jgf_status jason.fleming@seahorsecoastal.com

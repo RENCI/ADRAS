@@ -358,13 +358,16 @@ def scale_bar(ax, length=None, location=(0.5, 0.05), linewidth=3):
     """
     #Get the limits of the axis in lat long
     llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
+
     #Make tmc horizontally centred on the middle of the map,
     #vertically at scale bar location
     sbllx = (llx1 + llx0) / 2
     sblly = lly0 + (lly1 - lly0) * location[1]
     tmc = ccrs.TransverseMercator(sbllx, sblly, approx=True)
+
     #Get the extent of the plotted area in coordinates in metres
     x0, x1, y0, y1 = ax.get_extent(tmc)
+
     #Turn the specified scalebar location into coordinates in metres
     sbx = x0 + (x1 - x0) * location[0]
     sby = y0 + (y1 - y0) * location[1]
@@ -601,12 +604,20 @@ def main(args):
     logger.info(f"Outputting tiff file {filename}")
     write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename)
 
-    logger.info(f"Create color png map from tiff {filename}")
+    llpngfilename = filename.replace('tiff','png')
+    logger.info(f"Create color png map {llpngfilename}")
     createColorMap(filename,ivmin,ivmax)
 
     if main_config['S3']['SEND2AWS']:
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)
         msg=f"Upload to s3://{thisBucket}/{args.s3path}/{args.filename} "
+        if not resp:
+            logger.info(f"{msg} failed.")
+        else:
+            logger.info(f"{msg} succeeded.")
+
+        resp = s3_utilities.upload(thisBucket, args.s3path, llpngfilename)
+        msg=f"Upload to s3://{thisBucket}/{args.s3path}/{llpngfilename} "
         if not resp:
             logger.info(f"{msg} failed.")
         else:
