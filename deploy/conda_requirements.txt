@@ -10,3 +10,7 @@ seaborn
 gdal
 boto3
 affine
+colour
+cartopy
+contextily
+Pillow
