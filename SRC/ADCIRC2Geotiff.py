@@ -411,11 +411,6 @@ def createColorMap(infile,vmin,vmax):
     #Read data
     ds = rio.open(infile[:-4]+'llr.tiff')
 
-    #Get OSM image, and convert it to EPSG 4326
-    w, s, e, n = (ds.bounds.left,ds.bounds.bottom,ds.bounds.right,ds.bounds.top)
-    cximg, cxext = cx.bounds2img(w, s, e, n, ll=True, source=cx.providers.OpenStreetMap.Mapnik)
-    wimg, wext = cx.warp_tiles(cximg, cxext, "EPSG:4326")
-
     #Define map extent, center longitude, and projection
     extent = [ds.bounds.left, ds.bounds.right, ds.bounds.bottom, ds.bounds.top]
     cm_lon = (ds.transform * (ds.width/2, ds.height/2))[0]
@@ -431,11 +426,21 @@ def createColorMap(infile,vmin,vmax):
     fig = plt.figure(figsize=(ysize,xsize))
     ax = plt.axes(projection=proj)
 
-    #Create map image from OSM warped data
-    ax.imshow(wimg, extent=wext)
+    try:
+        #Get OSM image, and convert it to EPSG 4326
+        w, s, e, n = (ds.bounds.left,ds.bounds.bottom,ds.bounds.right,ds.bounds.top)
+        cximg, cxext = cx.bounds2img(w, s, e, n, ll=True, source=cx.providers.OpenStreetMap.Mapnik)
+        wimg, wext = cx.warp_tiles(cximg, cxext, "EPSG:4326")
 
-    #Create map image, with color and transparent background, from raw tiff in epsg 4326 projection
-    ax.imshow(ds.read(1), extent=extent, transform=tran, interpolation='nearest', cmap=cmap, vmin=vmin, vmax=vmax)
+        #Create map image from OSM warped data
+        ax.imshow(wimg, extent=wext)
+
+        #Create map image, with color and transparent background, from raw tiff in epsg 4326 projection
+        ax.imshow(ds.read(1), extent=extent, transform=tran, interpolation='nearest', cmap=cmap, vmin=vmin, vmax=vmax)
+
+    except:
+        #Create map image, with color and transparent background, from raw tiff in epsg 4326 projection
+        ax.imshow(ds.read(1), extent=extent, transform=tran, interpolation='nearest', cmap=cmap, vmin=vmin, vmax=vmax)
 
     #Add gridlines and set alpha to 0
     ax.gridlines(crs=ccrs.PlateCarree(central_longitude = cm_lon), draw_labels=True, linewidth=2,
