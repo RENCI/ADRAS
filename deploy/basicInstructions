@@ -2,9 +2,6 @@
 # Build an image
 sudo docker build --no-cache -t adras:latest .
 
-# Build an image alternative
-sudo docker build --no-cache -t adras:latest -f Dockerfile.color .
-
 # Reset the tag ID
 docker image tag adras:latest renciorg/adras:latest
 
