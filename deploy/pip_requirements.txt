@@ -23,4 +23,5 @@ rasterio
 #yaml=0.1.7
 boto3
 affine
+colour
 

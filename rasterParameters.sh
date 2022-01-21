@@ -13,6 +13,28 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
+  "NCSC_SAB_v1.15" | "ncsc115" )
+    upperleft_lo=-82.45
+    upperleft_la=33.5
+    res=50  # resolution in m
+    nx=12600
+    ny=900
+    theta=40
+    target_crs="epsg:32617"
+    adcirc_crs="epsg:4326"
+  ;;
+
+  "SABv20a" )
+    upperleft_lo=-82.375
+    upperleft_la=31.5
+    res=50  # resolution in m
+    nx=4200
+    ny=720
+    theta=65
+    target_crs="epsg:32617"
+    adcirc_crs="epsg:4326"
+  ;;
+
 #  "hsofs" ) 
 #    upperleft_lo=-74.25
 #    upperleft_la=41.35
@@ -37,26 +59,25 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-#  "ec95d") 
-#    upperleft_lo=-72.7
-#    upperleft_la=41.75
-#    # resolution in m
-#    res=500  
-#    nx=400
-#    ny=180
-#    theta=15
-#    target_crs="epsg:32619"
-#    adcirc_crs="epsg:4326"
-    #upperleft_lo=-98.7
-    #upperleft_la=29.5
-    ## resolution in m
-    #res=5000  
-    #nx=110
-    #ny=30
-    #theta=35
-    #target_crs="epsg:32614"
+  "ec95d") 
+    upperleft_lo=-72.7
+    upperleft_la=41.75
+    # resolution in m
+    res=500  
+    nx=400
+    ny=180
+    theta=15
+    target_crs="epsg:32619"
+    adcirc_crs="epsg:4326"
+    #upperleft_lo=-99
+    #upperleft_la=32
+    #res=1000  # resolution in m
+    #nx=2000
+    #ny=2000
+    #theta=0
+    #target_crs="epsg:6346"
     #adcirc_crs="epsg:4326"
-##  ;;
+  ;;
 
   "LA_v20a-WithUpperAtch_chk" | "LAv20a" | "LAv21a" | "hsofs" )
     upperleft_lo=-94.25
@@ -115,21 +136,13 @@ rasterParameters () {
   ;;
 
   *)
-    #upperleft_lo=-77.09
-    #upperleft_la=35.7
-    #res=100  # resolution in m
-    #nx=1000
-    #ny=1000
-    #theta=0
-    #target_crs="epsg:6346"
-    #adcirc_crs="epsg:4326"
-    upperleft_lo=-94.25
-    upperleft_la=30.5
-    res=50  # resolution in m
-    nx=10000
-    ny=3900
+    upperleft_lo=-77.09
+    upperleft_la=35.7
+    res=100  # resolution in m
+    nx=1000
+    ny=1000
     theta=0
-    target_crs="epsg:32614"
+    target_crs="epsg:6346"
     adcirc_crs="epsg:4326"
   ;;
 

@@ -13,3 +13,9 @@ sudo docker push renciorg/adras:latest
 
 # Start an interactive shell to the image
 sudo docker run -it adras:latest bash
+
+# Alternative way to start and interactive shell to the image
+# Create container, with name, from image
+sudo docker run -it --name adras -d adras:latest bash 
+# Access adras container bash shell
+sudo docker exec -it adras bash
