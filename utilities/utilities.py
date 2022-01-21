@@ -78,12 +78,12 @@ class Utilities:
         with open(yaml_file, 'r') as stream:
             config = yaml.safe_load(stream)
         # check to see if user has an aws cred file in $HOME
-        awsfile=os.path.join(os.path.expanduser("~"),'aws_adcirc_credentials.csv')
-        if os.path.exists(awsfile):
-            df = pd.read_csv(awsfile, usecols=['User name', 'Password', 'Access key ID', 'Secret access key', 'Console login link'])
-            temp = {}
-            temp['s3'] = df.to_dict(orient='records')
-            config.update(temp)
+        #awsfile=os.path.join(os.path.expanduser("~"),'aws_adcirc_credentials.csv')
+        #if os.path.exists(awsfile):
+        #    df = pd.read_csv(awsfile, usecols=['User name', 'Password', 'Access key ID', 'Secret access key', 'Console login link'])
+        #    temp = {}
+        #    temp['s3'] = df.to_dict(orient='records')
+        #    config.update(temp)
 
         self.config = config
         return config
