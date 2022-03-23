@@ -24,19 +24,24 @@ RUN conda update conda && \
 # tell conda what the shell is
 RUN conda init bash
 
+RUN useradd -m -d /home/nru -u 1000 nru
+RUN chmod 777 /home/nru
+USER nru
+
 # make d directory for the repos and go there
-RUN mkdir /repo
-WORKDIR /repo
+RUN mkdir /home/nru/repo
+WORKDIR /home/nru/repo
 
 # get the repos
 #RUN git clone --branch rotation https://github.com/RENCI/ADRAS.git
 RUN git clone https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
-WORKDIR ADRAS/deploy
+WORKDIR /home/nru/ADRAS/deploy
 #WORKDIR /repo/ADRAS
 # RUN ls
 # install the conda requirements
+
 RUN conda install --yes --file conda_requirements.txt
 
 # install the pip requirements
@@ -48,10 +53,10 @@ RUN conda install --yes --file conda_requirements.txt
 # run the noaa seteup
 #RUN python setup.py install --user
 
-WORKDIR /repo/ADRAS
+WORKDIR /home/nru/repo/ADRAS
 
 # set the python path
-ENV PYTHONPATH=/repo/ADRAS
+ENV PYTHONPATH=/home/nru/repo/ADRAS
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
