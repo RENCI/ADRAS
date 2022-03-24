@@ -24,9 +24,11 @@ RUN conda update conda && \
 # tell conda what the shell is
 RUN conda init bash
 
+# create a new user with a home directory
 RUN useradd -m -d /home/nru -u 1000 nru
-RUN chmod 777 /home/nru
-USER nru
+
+# this dir was expected by the running pod. this will insure that it isnt defaulted to something else
+RUN mkdir -p /home/nru/.config/matplotlib
 
 # make d directory for the repos and go there
 RUN mkdir /home/nru/repo
@@ -37,11 +39,11 @@ WORKDIR /home/nru/repo
 RUN git clone https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
-WORKDIR /home/nru/ADRAS/deploy
+WORKDIR /home/nru/repo/ADRAS/deploy
 #WORKDIR /repo/ADRAS
-# RUN ls
-# install the conda requirements
+#RUN ls
 
+# install the conda requirements
 RUN conda install --yes --file conda_requirements.txt
 
 # install the pip requirements
@@ -53,6 +55,13 @@ RUN conda install --yes --file conda_requirements.txt
 # run the noaa seteup
 #RUN python setup.py install --user
 
+# make sure everything is read/write
+RUN chmod 777 -R /home/nru
+
+# switch to the non-root user
+USER nru
+
+# go to the root code directory
 WORKDIR /home/nru/repo/ADRAS
 
 # set the python path
