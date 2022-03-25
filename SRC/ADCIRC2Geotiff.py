@@ -495,6 +495,7 @@ def main(args):
 
     main_yaml_file =  os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml') 
     main_config = utilities.load_config(yaml_file=main_yaml_file)
+    print(main_config)
 
     raster_yaml_file = args.rconfigfile
     raster_config = utilities.load_config(yaml_file=raster_yaml_file)
