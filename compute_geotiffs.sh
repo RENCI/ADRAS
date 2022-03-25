@@ -60,7 +60,7 @@ fi
 RUNPROPERTIES=$1
 if [ ${RUNPROPERTIES:0:4} == "http" ] ; then
     # assume its a download url, without run.properties at the end
-    wget "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
+    wget --no-check-certificate "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
     if [ $? -ne 0 ] ; then
         echo "wget of $RUNPROPERTIES/run.properties failed." | tee -a $log
         exit 1
@@ -94,7 +94,7 @@ esac
 if [[ ! -z ${properties[forcing.metclass]} ]] ; then
    weathertype=${properties[forcing.metclass]}
 else
-   weathertype='unknown'
+   weathertype='tropical'
 fi
 temp=${properties['coupling.waves']} 
 wavemodel=$([ "$temp" == 'on' ] && echo "swan" || echo "None")
