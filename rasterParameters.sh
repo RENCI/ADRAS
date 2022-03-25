@@ -25,7 +25,7 @@ rasterParameters () {
   ;;
 
   "LA_v20a-WithUpperAtch_chk")
-    upperleft_lo=-91.5
+    upperleft_lo=-95.0
     upperleft_la=31.0
     res=50  # resolution in m
     nx=10000
