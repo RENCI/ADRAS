@@ -17,17 +17,7 @@ import logging
 import json
 #from argparse import ArgumentParser
 
-LOGGER = None
-
-# def str2bool(v):
-#     if isinstance(v, bool):
-#        return v
-#     if v.lower() in ('yes', 'true', 't', 'y', '1'):
-#         return True
-#     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-#         return False
-#     else:
-#         raise argparse.ArgumentTypeError('Boolean value expected.')
+#LOGGER = None
 
 
 class Utilities:
@@ -38,13 +28,13 @@ class Utilities:
         """
         Initialize the Utilities class, set up logging
         """
-        global LOGGER
+#        global LOGGER
         self.config = self.load_config()
 
-        if LOGGER is None and self.config["DEFAULT"]["LOGGING"]:
-            log = self.initialize_logging()
-            LOGGER = log
-        self.log = LOGGER
+#        if LOGGER is None and self.config["DEFAULT"]["LOGGING"]:
+#            log = self.initialize_logging()
+#            LOGGER = log
+#        self.log = LOGGER
 
 #############################################################
 # Logging
@@ -62,7 +52,6 @@ class Utilities:
         # LogFile = self.config['LOG_FILE']
         # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
         LogFile = 'log.hazus'
-        # print('Use a log filename of '+LogFile)
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(funcName)s : %(module)s : %(name)s : %(message)s ')
         dirname = os.path.dirname(LogFile)
         if dirname and not os.path.exists(dirname):
@@ -78,6 +67,7 @@ class Utilities:
         # logger.addHandler(stream_handler)
 
         return logger
+
 
 #############################################################
 # YAML

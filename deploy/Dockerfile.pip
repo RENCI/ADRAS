@@ -16,8 +16,8 @@ LABEL maintainer="bblanton@renci.org"
 
 # Initial python install
 #RUN conda install  -y python=2.7.15
-RUN wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh
-RUN bash Miniconda2-latest-Linux-x86_64.sh -b
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -b
 
 # update conda and set the download channel
 #RUN conda update conda && \
@@ -34,34 +34,18 @@ WORKDIR /repo
 RUN git clone --branch hazus https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
-WORKDIR ADRAS/deploy
+WORKDIR ADRAS
 
 # install the conda requirements
 #RUN conda install --yes --file conda_requirements.txt
 
 # install the pip requirements
-#RUN pip install -r pip_requirements.txt
-
-# change to the noaa directory
-#WORKDIR /repo/noaa_coops
-
-# run the noaa seteup
-#RUN python setup.py install --user
-
-# change to the pipelines directory                        
-# WORKDIR /repo/ADRAS
-
-# make a temporary directory for the output.
-# this should eventually point a common PV
-# RUN mkdir temp
+RUN pip install -r pip_requirements.txt
 
 # set the python path
-# ENV PYTHONPATH=/repo/ADRAS
+ENV PYTHONPATH=/repo/ADRAS
 
 # set the location of the output directory
-# ENV RUNTIMEDIR=/data
+ENV RUNTIMEDIR=/data
+ENV PKLDIR=/data/pkldir
 
-##########
-# at this point the container is ready to accept the launch command.
-# see apsviz_job.yaml for the job that launches this container.
-##########
