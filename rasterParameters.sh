@@ -57,6 +57,17 @@ rasterParameters () {
     adcirc_crs='epsg:4326'
   ;;
 
+  "NGOM_RT_v20a_chk")
+    upperleft_lo=-85.8333
+    upperleft_la=30.25
+    res=500  # resolution in m
+    nx=1000
+    ny=600
+	theta=0
+    target_crs='epsg:32614'
+    adcirc_crs='epsg:4326'
+  ;;
+
   "TX2008")
     upperleft_lo=-98.0
     upperleft_la=30.5
