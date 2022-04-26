@@ -6,7 +6,7 @@ DEFAULT: &default
 
 S3:
   SEND2AWS: true
-  BucketName: 'hazus'
+  BucketName: 'adcirc'
   RegionName: 'us-east-2' 
 
 VARFILEMAP: &varfilemap
