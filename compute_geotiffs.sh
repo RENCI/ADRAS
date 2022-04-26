@@ -45,7 +45,7 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
-#wget $RasterPartameterFileUrl  -O realtimeparams.sh
+#wget $RasterParameterFileUrl  -O realtimeparams.sh
 #source ./realtimeparams.sh
 source ./rasterParameters.sh
 source ./properties.sh
@@ -88,15 +88,15 @@ case $gridname in
       gridnameabbrev="ncv999wr"
    ;;
   *)
-      gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
+    gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
   ;;
 esac
 
 # get needed parameters out of run.properties array
 if [[ ! -z ${properties[forcing.metclass]} ]] ; then
-	weathertype=${properties[forcing.metclass]}
+   weathertype=${properties[forcing.metclass]}
 else
-	weathertype='tropical'
+   weathertype='tropical'
 fi
 temp=${properties['coupling.waves']} 
 wavemodel=$([ "$temp" == 'on' ] && echo "swan" || echo "None")
@@ -124,18 +124,18 @@ url=${properties['downloadurl']}
 url=${url/fileServer/dodsC}"/maxele.63.nc"
 
 if [[ $DEBUG == "true" ]] ; then
-	printf "\n"                             | tee -a $log
-	echo "gridname       = $gridname"       | tee -a $log
-	echo "gridnameabbrev = $gridnameabbrev" | tee -a $log
-	echo "wavemodel      = $wavemodel"      | tee -a $log
-	echo "datetime       = $datetime"       | tee -a $log
-	echo "adv            = $adv"            | tee -a $log
-	echo "operator       = $operator"       | tee -a $log
-	echo "ensname        = $ensname"        | tee -a $log
-	echo "weathertype    = $weathertype"    | tee -a $log
-	echo "windmodel      = $windmodel"      | tee -a $log
-	echo "machine        = $machine"        | tee -a $log
-	echo "url            = $url"            | tee -a $log
+   printf "\n"                             | tee -a $log
+   echo "gridname       = $gridname"       | tee -a $log
+   echo "gridnameabbrev = $gridnameabbrev" | tee -a $log
+   echo "wavemodel      = $wavemodel"      | tee -a $log
+   echo "datetime       = $datetime"       | tee -a $log
+   echo "adv            = $adv"            | tee -a $log
+   echo "operator       = $operator"       | tee -a $log
+   echo "ensname        = $ensname"        | tee -a $log
+   echo "weathertype    = $weathertype"    | tee -a $log
+   echo "windmodel      = $windmodel"      | tee -a $log
+   echo "machine        = $machine"        | tee -a $log
+   echo "url            = $url"            | tee -a $log
 fi
 
 #get raster file parameters
@@ -144,10 +144,10 @@ rasterParameters $gridname
 # write a temporary yaml file of the raster parameters
 RFILE="raster.yml"
 rm -rf $RFILE
-echo "REGRID: &regrid"                   > $RFILE
-echo "  $gridname:"                     >> $RFILE
-echo "    upperleft_lo: $upperleft_lo"  >> $RFILE
-echo "    upperleft_la: $upperleft_la"  >> $RFILE
+echo "REGRID: &regrid" > $RFILE
+echo "  $gridname:" >> $RFILE
+echo "    upperleft_lo: $upperleft_lo" >> $RFILE
+echo "    upperleft_la: $upperleft_la" >> $RFILE
 echo "    res: $res  # resolution in m" >> $RFILE
 echo "    theta: $theta"                >> $RFILE
 echo "    nx: $nx"                      >> $RFILE
@@ -171,8 +171,8 @@ fi
 
 varnames=( "inun_max" "zeta_max" ) 
 prodvarnames=( "inunmax" "wlmax" )
-varnames=( "zeta_max" ) 
-prodvarnames=( "wlmax" )
+#varnames=( "zeta_max" ) 
+#prodvarnames=( "wlmax" )
 
 other="None"
 k=-1
@@ -195,5 +195,5 @@ for v in ${varnames[@]}; do
 done
 
 echo "Compute_geotiffs finished at " `date -u` | tee -a $log
-printf "\n******************************************\n\n" | tee -a $log
+printf "\n******************************************\n\n\n" | tee -a $log
 
