@@ -26,7 +26,7 @@ class Utilities:
         #   print('Failed to load aws cred file. Terminal.')
         #   sys.exit(1)
 
-        config['S3_UPLOAD_Main_Bucket'] = 'hazus'
+        config['S3_UPLOAD_Main_Bucket'] = 'adcirc'
         config['region_name'] = 'us-east-2'
         return config
 
