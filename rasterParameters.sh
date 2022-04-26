@@ -58,11 +58,11 @@ rasterParameters () {
   ;;
 
   "NGOM_RT_v20a_chk")
-    upperleft_lo=-85.8333
-    upperleft_la=30.25
-    res=500  # resolution in m
-    nx=1000
-    ny=600
+    upperleft_lo=-85.8
+    upperleft_la=30.75
+    res=25  # resolution in m
+    nx=10000
+    ny=6000
 	theta=0
     target_crs='epsg:32614'
     adcirc_crs='epsg:4326'

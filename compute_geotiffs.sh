@@ -147,10 +147,11 @@ echo "  $gridname:" >> $RFILE
 echo "    upperleft_lo: $upperleft_lo" >> $RFILE
 echo "    upperleft_la: $upperleft_la" >> $RFILE
 echo "    res: $res  # resolution in m" >> $RFILE
-echo "    nx: $nx" >> $RFILE
-echo "    ny: $ny" >> $RFILE
-echo "    target_crs: '$target_crs'" >> $RFILE
-echo "    adcirc_crs: '$adcirc_crs'" >> $RFILE
+echo "    theta: $theta"                >> $RFILE
+echo "    nx: $nx"                      >> $RFILE
+echo "    ny: $ny"                      >> $RFILE
+echo "    target_crs: '$target_crs'"    >> $RFILE
+echo "    adcirc_crs: '$adcirc_crs'"    >> $RFILE
 
 ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
 ulla=`echo "scale=0; $upperleft_la*10/1" | bc`
