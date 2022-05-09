@@ -1,0 +1,13 @@
+adcirc.gridname : NGOM_RT_v20a_chk
+coupling.waves : on
+currentdate : 180920 
+currentcyclea: 18
+forcing.nwp.year : 2018
+forcing.tropicalcyclone.stormnumber : 14
+advisory : 00 
+forcing.tropicalcyclone.year : 2018
+operator :  mvb
+asgs.enstorm : hindcast
+forcing.tropicalcyclone.vortexmodel : OWIscaledv6Cap003
+hpc.hpcenvshort : uga
+downloadurl : /Users/bblanton/Downloads/

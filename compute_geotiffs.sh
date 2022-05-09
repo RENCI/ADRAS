@@ -94,15 +94,15 @@ case $gridname in
       gridnameabbrev="ncv999wr"
    ;;
   *)
-      gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
+    gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
   ;;
 esac
 
 # get needed parameters out of run.properties array
 if [[ ! -z ${properties[forcing.metclass]} ]] ; then
-	weathertype=${properties[forcing.metclass]}
+   weathertype=${properties[forcing.metclass]}
 else
-	weathertype='tropical'
+   weathertype='tropical'
 fi
 temp=${properties['coupling.waves']} 
 wavemodel=$([ "$temp" == 'on' ] && echo "swan" || echo "None")
@@ -150,10 +150,10 @@ rasterParameters $gridname
 # write a temporary yaml file of the raster parameters
 RFILE="raster.yml"
 rm -rf $RFILE
-echo "REGRID: &regrid"                   > $RFILE
-echo "  $gridname:"                     >> $RFILE
-echo "    upperleft_lo: $upperleft_lo"  >> $RFILE
-echo "    upperleft_la: $upperleft_la"  >> $RFILE
+echo "REGRID: &regrid" > $RFILE
+echo "  $gridname:" >> $RFILE
+echo "    upperleft_lo: $upperleft_lo" >> $RFILE
+echo "    upperleft_la: $upperleft_la" >> $RFILE
 echo "    res: $res  # resolution in m" >> $RFILE
 echo "    theta: $theta"                >> $RFILE
 echo "    nx: $nx"                      >> $RFILE
@@ -210,5 +210,5 @@ for v in ${varnames[@]}; do
 done
 
 echo "Compute_geotiffs finished at " `date -u` | tee -a $log
-printf "\n******************************************\n\n" | tee -a $log
+printf "\n******************************************\n\n\n" | tee -a $log
 
