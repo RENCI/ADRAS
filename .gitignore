@@ -3,7 +3,8 @@
 __*__
 log 
 *tiff 
+*png
 pklfiles/
 run.properties
 temp.sh
-
+realtimeparams.sh
