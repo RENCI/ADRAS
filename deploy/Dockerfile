@@ -33,7 +33,7 @@ WORKDIR /home/nru/repo
 
 # get the repos
 #RUN git clone --branch rotation https://github.com/RENCI/ADRAS.git
-RUN git clone https://github.com/RENCI/ADRAS.git
+RUN git clone --branch main https://github.com/RENCI/ADRAS.git
 
 # this dir was expected by the running pod. this will insure that it isnt defaulted to something else
 RUN mkdir -p /home/nru/.config/matplotlib
