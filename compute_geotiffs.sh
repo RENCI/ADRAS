@@ -5,6 +5,8 @@
 #set -x
 #set -u
 
+WGET='wget --no-check-certificate '
+
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
 	echo "Must run in Bash version >=4.\n"
 	exit 1
@@ -45,9 +47,13 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
-#wget $RasterPartameterFileUrl  -O realtimeparams.sh
-#source ./realtimeparams.sh
-source ./rasterParameters.sh
+$WGET $RasterPartameterFileUrl  -O realtimeparams.sh 2> /dev/null
+if [ $? -ne 0 ] ; then
+    source ./realtimeparams.sh
+else
+    echo "$WGET of rasterParameters failed. Using defaults."
+    source ./rasterParameters.sh
+fi
 source ./properties.sh
 
 ## main starts here
@@ -62,9 +68,9 @@ fi
 RUNPROPERTIES=$1
 if [ ${RUNPROPERTIES:0:4} == "http" ] ; then
     # assume its a download url, without run.properties at the end
-    wget --no-check-certificate "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
+    $WGET "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
     if [ $? -ne 0 ] ; then
-        echo "wget of $RUNPROPERTIES/run.properties failed." | tee -a $log
+        echo "$WGET of $RUNPROPERTIES/run.properties failed." | tee -a $log
         exit 1
    fi
    RUNPROPERTIES="run.properties"
@@ -121,7 +127,7 @@ fi
 
 machine=${properties['hpc.hpcenvshort']}
 url=${properties['downloadurl']}
-url=${url/fileServer/dodsC}"/maxele.63.nc"
+urlbase=${url/fileServer/dodsC}
 
 if [[ $DEBUG == "true" ]] ; then
 	printf "\n"                             | tee -a $log
@@ -135,7 +141,7 @@ if [[ $DEBUG == "true" ]] ; then
 	echo "weathertype    = $weathertype"    | tee -a $log
 	echo "windmodel      = $windmodel"      | tee -a $log
 	echo "machine        = $machine"        | tee -a $log
-	echo "url            = $url"            | tee -a $log
+	echo "urlbase        = $urlbase"        | tee -a $log
 fi
 
 #get raster file parameters
@@ -169,16 +175,24 @@ if [[ $DEBUG == "true" ]] ; then
     echo "s3 path = $s3path" | tee -a $log
 fi
 
+filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" )
 varnames=( "inun_max" "zeta_max" "swan_HS_max" )  
-prodvarnames=( "inunmax" "wlmax" "hsign" )
-#varnames=( "zeta_max" ) 
-#prodvarnames=( "wlmax" )
+prodvarnames=( "inunmax" "wlmax" "hsignmax" )
+keynames=( "Maximum Water Surface Elevation File Name"
+           "Maximum Water Surface Elevation File Name"
+           "Maximum Significant Wave Height File Name" ) 
 
 other="None"
 k=-1
 for v in ${varnames[@]}; do
     k=$((k+1))
     prodvarname=${prodvarnames[$k]}
+    filename=${filenames[$k]}
+    keyname=${keynames[$k]}
+    if [[ -z ${properties[$keyname]} ]]; then 
+        echo "rp key for $filename DNE.  Skipping..."
+        continue
+    fi
 
     productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
                $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
@@ -186,6 +200,7 @@ for v in ${varnames[@]}; do
     printf "\nProcessing %s %s %s %s ... \n" $k $v $prodvarname $productId | tee -a $log
     echo "s3 product id = $productId" | tee -a $log
 
+    url=$urlbase/"$filename"
     com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff.py --pkldir=$PKLDIR --varname=$v \
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE"

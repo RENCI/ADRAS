@@ -37,5 +37,6 @@ loadProperties () {
       # remove trailing whitespace characters from value
       value="${value%"${value##*[![:space:]]}"}"
       properties["$key"]="$value" 
+      #echo $key, $value
    done < $propertiesFile
 }

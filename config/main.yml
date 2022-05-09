@@ -6,12 +6,13 @@ DEFAULT: &default
 
 S3:
   SEND2AWS: true
-  BucketName: 'hazus'
+  BucketName: 'adcirc'
   RegionName: 'us-east-2' 
 
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'
   vel_max: 'maxvel.63.nc'
   inun_max: 'maxinundepth.63.nc'
+  hsign_max: 'swan_HS_max.63.nc'
   zeta: 'fort.63.nc'
 
