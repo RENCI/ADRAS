@@ -2,6 +2,8 @@
 PYTHONPATH="${PYTHONPATH:-$HOME/GitHub/RENCI/ADRAS}"
 export PYTHONPATH
 echo $PYTHONPATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/bblanton/lib
+echo $LD_LIBRARY_PATH
 
 #url='https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2020/laura/28/LA_v20a-WithUpperAtch_chk/qbc.loni.org/LAv20a_al132020_jgf/nhcConsensus/'
 #url='https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2021/al03/06/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/nhcConsensus/'
@@ -17,7 +19,8 @@ url='https://fortytwo.cct.lsu.edu/thredds/fileServer/2020/laura/28/LA_v20a-WithU
 #url='http://tds.renci.org:8080/thredds/fileServer/2021/nam/2021092312/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/'
 #url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/'
 #url='http://adcircvis.tacc.utexas.edu:8080/thredds/fileServer/asgs/2021/nam/2021092906/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/'
-url='http://tds.renci.org:80/thredds/fileServer/2022/nam/2022042606/ec95d/bridges2.psc.edu/ec95d-nam-bob-psc/namforecast'
+url='http://tds.renci.org/thredds/fileServer/2022/nam/2022042606/ec95d/bridges2.psc.edu/ec95d-nam-bob-psc/namforecast'
+#url='http://tds.renci.org/thredds/fileServer/2022/nam/2022050912/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-nam-sb/namforecast'
 
 bash compute_geotiffs.sh  $url
 

@@ -13,12 +13,12 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "NCSC_SAB_v1.15" | "ncsc115" )
+  "NCSC_SAB_v1.23" | "ncsc123" )
     upperleft_lo=-82.45
     upperleft_la=33.5
-    res=50  # resolution in m
-    nx=12600
-    ny=900
+    res=500  # resolution in m
+    nx=1260
+    ny=90
     theta=40
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"

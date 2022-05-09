@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# If inputing url as a json then we must have filename metadata included as:
+# If inputting url as a json then we must have filename metadata included as:
 #{"1588269600000": "http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020043018/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/nowcast/maxele.63.nc"}
 # If simply inputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
 
@@ -34,6 +34,8 @@ from colour import Color
 import cartopy.crs as ccrs
 import contextily as cx
 
+#from utilities.adcirc_utilities import Utilities as adcirc_utilities
+import utilities.adcirc_utilities as adcirc_utilities
 from utilities.utilities import utilities as utilities
 import logging
 from utilities.logging import LoggingUtil 
@@ -54,27 +56,6 @@ def checkInputVar(v):
     allowable_vars = ['zeta_max', 'vel_max', 'inun_max']
     if v.lower() in allowable_vars: return True
     return False
-
-def get_adcirc_grid(nc):
-    agdict = {}
-    agdict['lon'] = nc.variables['x'][:]
-    agdict['lat'] = nc.variables['y'][:]
-    # nv is the triangle list
-    agdict['ele'] = nc.variables['element'][:, :] - 1
-    agdict['latmin'] = np.mean(nc.variables['y'][:])  # needed for scaling lon/lat plots
-    agdict['depth'] = nc.variables['depth'][:]
-    return agdict
-
-def get_adcirc_slice(nc, v, it=None):
-    advardict = {}
-    var = nc.variables[v]
-    if re.search('max', v):
-        var_d = var[:]  # the actual data
-    else:
-        var_d = var[it, :]  # the actual data
-    var_d[var_d.mask] = np.nan
-    advardict['data'] = var_d
-    return advardict
 
 def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
@@ -210,14 +191,6 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
             'nx':   x.shape,
             'ny':   y.shape}
 
-def extract_url_grid(url):
-    """
-    Extract ADCIRC grid parts from THREDDS dataset
-    Results:
-    """
-    nc = netCDF4.Dataset(url)
-    agdict = get_adcirc_grid(nc)
-    return nc, agdict
 
 def write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     """
@@ -530,7 +503,7 @@ def main(args):
 
     logger.info(f"Extracting ADCIRC grid from nc object...")
     t0 = time.time()
-    nc, agdict = extract_url_grid(url)
+    nc, agdict = adcirc_utilities.extract_url_grid(url)
     agdict['crs'] = adcircepsg
 
     # get grid name for building geopandas (gdf) filename
@@ -584,11 +557,11 @@ def main(args):
 
     nc = netCDF4.Dataset(url)
     if varname == 'inun_max':
-        advardict = get_adcirc_slice(nc, 'zeta_max')
+        advardict = adcirc_utilities.get_adcirc_slice(nc, 'zeta_max')
         # compute inundation and replace advardict['data']
         advardict['data'] = computeInundation(advardict, agdict)
     else:
-        advardict = get_adcirc_slice(nc, varname)
+        advardict = adcirc_utilities.get_adcirc_slice(nc, varname)
 
     vmin = np.nanmin(advardict['data'])
     vmax = np.nanmax(advardict['data'])
