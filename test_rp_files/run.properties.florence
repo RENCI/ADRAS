@@ -1,0 +1,49 @@
+adcirc.gridname : nc_inundation_v9.99a_w_rivers
+coupling.waves : on
+currentdate : 180920 
+currentcycle: 12
+forcing.nwp.year : 2018
+forcing.tropicalcyclone.stormnumber : 6
+advisory : 00 
+forcing.tropicalcyclone.year : 2018
+operator :  jrt
+asgs.enstorm : hindcast
+forcing.tropicalcyclone.vortexmodel : OWIscaledv6Cap003
+hpc.hpcenvshort : renci
+downloadurl : /home/nru/data/
+Water Surface Elevation Stations File Name : fort.61.nc
+Water Surface Elevation Stations Format : netcdf
+Water Surface Elevation File Name : fort.63.nc
+Water Surface Elevation Format : netcdf
+Water Current Velocity File Name : fort.64.nc
+Water Current Velocity Format : netcdf
+Barometric Pressure Stations File Name : fort.71.nc
+Barometric Pressure Stations Format : netcdf
+Wind Velocity Stations File Name : fort.72.nc
+Wind Velocity Stations Format : netcdf
+Barometric Pressure File Name : fort.73.nc
+Barometric Pressure Format : netcdf
+Wind Velocity File Name : fort.74.nc
+Wind Velocity Format : netcdf
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Water Surface Elevation Format : netcdf
+Maximum Current Speed File Name : maxvel.63.nc
+Maximum Current Speed Format : netcdf
+Maximum Wind Speed File Name : maxwvel.63.nc
+Maximum Wind Speed Format : netcdf
+Minimum Barometric Pressure File Name : minpr.63.nc
+Minimum Barometric Pressure Format : netcdf
+Initially Dry File Name : initiallydry.63.nc
+Initially Dry Format : netcdf
+Inundation Time File Name : inundationtime.63.nc
+Inundation Time Format : netcdf
+Maximum Inundation Depth File Name : maxinundepth.63.nc
+Maximum Inundation Depth Format : netcdf
+Ever Dried File Name : everdried.63.nc
+Ever Dried Format : netcdf
+End Rising Inundation File Name : endrisinginun.63.nc
+End Rising Inundation Format : netcdf
+Significant Wave Height File Name : swan_HS.63.nc
+Significant Wave Height Format : netcdf
+Maximum Significant Wave Height File Name : swan_HS_max.63.nc
+Maximum Significant Wave Height Format : netcdf
