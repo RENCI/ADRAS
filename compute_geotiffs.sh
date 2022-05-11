@@ -1,20 +1,30 @@
 #!/usr/bin/env bash
 #------------------------------------------------------------------------
-# compute_geotiffs.sh: computes inundation geotiffs
+# compute_geotiffs.sh: computes geotiffs of ADCIRC max files
 #------------------------------------------------------------------------
 #set -x
 #set -u
 
+####################################
+
+DEBUG=true
+log="log.hazus"
 WGET='wget --no-check-certificate '
 
+filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" )
+varnames=( "inun_max" "zeta_max" "swan_HS_max" )  
+prodvarnames=( "inunmax" "wlmax" "hsignmax" )
+keynames=( "Maximum Water Surface Elevation File Name"
+           "Maximum Water Surface Elevation File Name"
+           "Maximum Significant Wave Height File Name" ) 
+
+RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
+
+# must be v4+ of bash
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
 	echo "Must run in Bash version >=4.\n"
 	exit 1
 fi
-RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
-
-DEBUG=true
-log="log.hazus"
 
 printf "******************************************\n"  > $log
 echo "Compute_geotiffs started at " `date -u`  >> $log
@@ -47,13 +57,14 @@ if [[ $DEBUG == "true" ]] ; then
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
+RASTERPARAMFILE="./rasterParameters.sh"
 $WGET $RasterPartameterFileUrl  -O realtimeparams.sh 2> /dev/null
 if [ $? -ne 0 ] ; then
-    source ./realtimeparams.sh
+	RASTERPARAMFILE="./realtimeparams.sh"
 else
     echo "$WGET of rasterParameters failed. Using defaults."
-    source ./rasterParameters.sh
 fi
+source $RASTERPARAMFILE
 source ./properties.sh
 
 ## main starts here
@@ -72,8 +83,8 @@ if [ ${RUNPROPERTIES:0:4} == "http" ] ; then
     if [ $? -ne 0 ] ; then
         echo "$WGET of $RUNPROPERTIES/run.properties failed." | tee -a $log
         exit 1
-   fi
-   RUNPROPERTIES="run.properties"
+    fi
+    RUNPROPERTIES="run.properties"
 fi
 
 # load run.properties file into associative array
@@ -84,7 +95,9 @@ fi
 declare -A properties
 loadProperties $RUNPROPERTIES
 
-# process run.properties for needed parameters
+#####################################################
+# get needed parameters out of run.properties array #
+#####################################################
 gridname=${properties['adcirc.gridname']}
 case $gridname in
    "ec95d")
@@ -98,7 +111,6 @@ case $gridname in
   ;;
 esac
 
-# get needed parameters out of run.properties array
 if [[ ! -z ${properties[forcing.metclass]} ]] ; then
    weathertype=${properties[forcing.metclass]}
 else
@@ -144,10 +156,14 @@ if [[ $DEBUG == "true" ]] ; then
 	echo "urlbase        = $urlbase"        | tee -a $log
 fi
 
-#get raster file parameters
+##############################
+# get raster file parameters #
+##############################
 rasterParameters $gridname
 
-# write a temporary yaml file of the raster parameters
+########################################################
+# write a temporary yaml file of the raster parameters #
+########################################################
 RFILE="raster.yml"
 rm -rf $RFILE
 echo "REGRID: &regrid" > $RFILE
@@ -175,12 +191,6 @@ if [[ $DEBUG == "true" ]] ; then
     echo "s3 path = $s3path" | tee -a $log
 fi
 
-filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" )
-varnames=( "inun_max" "zeta_max" "swan_HS_max" )  
-prodvarnames=( "inunmax" "wlmax" "hsignmax" )
-keynames=( "Maximum Water Surface Elevation File Name"
-           "Maximum Water Surface Elevation File Name"
-           "Maximum Significant Wave Height File Name" ) 
 
 other="None"
 k=-1
