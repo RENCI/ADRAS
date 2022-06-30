@@ -12,8 +12,8 @@ log="log.hazus"
 WGET='wget --no-check-certificate '
 
 filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" )
-varnames=( "inun_max" "zeta_max" "swan_HS_max" )  
-prodvarnames=( "inunmax" "wlmax" "hsignmax" )
+varnames=( "zeta_max" "inun_max" "swan_HS_max" )  
+prodvarnames=( "wlmax" "inunmax" "hsignmax" )
 keynames=( "Maximum Water Surface Elevation File Name"
            "Maximum Water Surface Elevation File Name"
            "Maximum Significant Wave Height File Name" ) 
@@ -191,10 +191,10 @@ if [[ $DEBUG == "true" ]] ; then
     echo "s3 path = $s3path" | tee -a $log
 fi
 
-
 other="None"
 k=-1
 for v in ${varnames[@]}; do
+
     k=$((k+1))
     prodvarname=${prodvarnames[$k]}
     filename=${filenames[$k]}
@@ -216,7 +216,9 @@ for v in ${varnames[@]}; do
          --rasterconfigfile=$RFILE"
     echo $com | tee -a $log
     $com  | tee -a $log 2>&1
+
     printf "\n" | tee -a $log
+
 done
 
 echo "Compute_geotiffs finished at " `date -u` | tee -a $log

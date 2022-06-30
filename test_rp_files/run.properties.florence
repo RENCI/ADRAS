@@ -3,14 +3,14 @@ coupling.waves : on
 currentdate : 180920 
 currentcycle: 12
 forcing.nwp.year : 2018
-forcing.tropicalcyclone.stormnumber : 6
+forcing.tropicalcyclone.stormnumber : 06
 advisory : 00 
 forcing.tropicalcyclone.year : 2018
 operator :  jrt
 asgs.enstorm : hindcast
 forcing.tropicalcyclone.vortexmodel : OWIscaledv6Cap003
 hpc.hpcenvshort : renci
-downloadurl : /home/nru/data/
+downloadurl : /projects/storm_surge/COMT/jddratli/v55/OWI/padcswan/gamma5_RmaxR50/UpdateBathyCUDEM_AIWW/UpdateHotStart_02242022 
 Water Surface Elevation Stations File Name : fort.61.nc
 Water Surface Elevation Stations Format : netcdf
 Water Surface Elevation File Name : fort.63.nc
