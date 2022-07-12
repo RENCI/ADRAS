@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# SPDX-FileCopyrightText: 2022 Renaissance Computing Institute. All rights reserved.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: LicenseRef-RENCI
+# SPDX-License-Identifier: MIT
+
 rasterParameters () {
   case $gridname in 
   "nc_inundation_v9.99_w_rivers" | "ncv999wr" | "nc_inundation_v9.99a_w_rivers" | "ncv9.99d" | "nc_inundation_v9.99d" )
