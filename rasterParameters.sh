@@ -5,9 +5,9 @@ rasterParameters () {
   "nc_inundation_v9.99_w_rivers" | "ncv999wr" | "nc_inundation_v9.99a_w_rivers" | "ncv9.99d" | "nc_inundation_v9.99d" )
     upperleft_lo=-78.25
     upperleft_la=37.5
-    res=50 # resolution in m
-    nx=3000
-    ny=10000
+    res=500 # resolution in m
+    nx=300
+    ny=1000
     theta=-55
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
