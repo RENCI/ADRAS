@@ -58,8 +58,9 @@ if [[ $DEBUG == "true" ]] ; then
 fi
 
 RASTERPARAMFILE="./rasterParameters.sh"
-$WGET $RasterPartameterFileUrl  -O realtimeparams.sh 2> /dev/null
-if [ $? -ne 0 ] ; then
+$WGET $RasterPartameterFileUrl  -O realtimeparams.sh # 2> /dev/null
+echo $?
+if [ $? -eq 0 ] ; then
 	RASTERPARAMFILE="./realtimeparams.sh"
 else
     echo "$WGET of rasterParameters failed. Using defaults."
