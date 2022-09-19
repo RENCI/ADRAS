@@ -1,3 +1,11 @@
+<!--
+SPDX-FileCopyrightText: 2022 Renaissance Computing Institute. All rights reserved.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-License-Identifier: LicenseRef-RENCI
+SPDX-License-Identifier: MIT
+-->
+
 # ADRAS
 
 Rasterizer for ADCIRC.  Primarily for computing inundation from maxele and the grid's topo/bathy
