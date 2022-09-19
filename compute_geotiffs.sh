@@ -192,7 +192,7 @@ if [[ $DEBUG == "true" ]] ; then
     echo "s3 path = $s3path" | tee -a $log
 fi
 
-other="None"
+other="mMSL"
 k=-1
 for v in ${varnames[@]}; do
 
@@ -204,7 +204,9 @@ for v in ${varnames[@]}; do
         echo "rp key for $filename DNE.  Skipping..."
         continue
     fi
-
+	if [[ x"$prodvarname" == "xinunmax" ]] ; then
+		other="ftMSL"
+	fi
     productId=`printf "%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.tiff" $datetime $adv \
                $prodvarname $gridnameabbrev $windmodel $wavemodel $ensname \
                $operator $machine $other $rasterparams`
@@ -216,7 +218,7 @@ for v in ${varnames[@]}; do
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE"
     echo $com | tee -a $log
-    $com  | tee -a $log 2>&1
+#    $com  | tee -a $log 2>&1
 
     printf "\n" | tee -a $log
 
