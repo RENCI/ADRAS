@@ -6,7 +6,7 @@
 #       docker tag adcirc_supp:latest renciorg/adcirc_supp:latest
 #       docker push renciorg/adcirc_supp:latest
 ##############
-FROM python:2
+FROM continuumio/miniconda3
 
 # get some credit
 LABEL maintainer="bblanton@renci.org"
@@ -16,8 +16,10 @@ LABEL maintainer="bblanton@renci.org"
 
 # Initial python install
 #RUN conda install  -y python=2.7.15
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-RUN bash Miniconda3-latest-Linux-x86_64.sh -b
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh
+#RUN bash Miniconda3-latest-Linux-x86_64.sh -b
+RUN bash Miniconda3-py38_4.12.0-Linux-x86_64.sh -b
 
 # update conda and set the download channel
 #RUN conda update conda && \
@@ -31,7 +33,7 @@ RUN mkdir /repo
 WORKDIR /repo
 
 # get the repos
-RUN git clone --branch hazus https://github.com/RENCI/ADRAS.git
+RUN git clone --branch main https://github.com/RENCI/ADRAS.git
 
 # move to the install directory
 WORKDIR ADRAS

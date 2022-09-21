@@ -1,27 +1,16 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: linux-64
-gdal
-geopandas
-#geos=3.7.1
-#hdf4
-#h5py
-matplotlib
-#mock=3.0.5
-netCDF4
-numpy
-xarray
-#numpy-base=1.16.6
-pandas
-#proj4
-#pyproj
-pyyaml
-rasterio
-#shapely=1.6.4
-#sip=4.19.8
-#six=1.15.0
-#yaml=0.1.7
-boto3
-affine
-colour
-
+rasterio==1.3.2
+geopandas==0.11.1
+netCDF4==1.6.1
+matplotlib==3.6.0
+pandas==1.5.0
+numpy==1.23.3
+xarray==2022.6.0
+pyyaml==6.0.0
+#seaborn
+gdal==3.5.2
+boto3==1.24.76
+affine==2.3.1
+colour==0.1.5
+cartopy==0.21.0
+contextily==1.2.0
+Pillow==9.2.0
