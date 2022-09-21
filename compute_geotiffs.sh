@@ -225,7 +225,7 @@ for v in ${varnames[@]}; do
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE"
     echo $com | tee -a $log
-#    $com  | tee -a $log 2>&1
+    $com  | tee -a $log 2>&1
 
     printf "\n" | tee -a $log
 
