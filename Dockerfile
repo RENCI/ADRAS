@@ -66,10 +66,11 @@ COPY ./*.sh ./
 ENV PYTHONPATH=/home/nru/ADRAS
 
 # set the log dir. use this for debugging if desired
-#ENV LOG_PATH=/data/logs
+ENV LOG_PATH=/data/logs
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
 ENV PKLDIR=/data/pkldir
 
-# bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
+# example command line
+# source venv/bin/activate && bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
