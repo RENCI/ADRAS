@@ -77,4 +77,4 @@ ENV PKLDIR=/data/pkldir
 ENV LOG_PATH=/data/logs
 
 # example command line
-# compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
+# bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
