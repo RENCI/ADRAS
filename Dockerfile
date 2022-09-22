@@ -53,7 +53,11 @@ RUN mkdir -p /home/nru/ADRAS/logs
 WORKDIR /home/nru/ADRAS
 
 # Copy /venv from the previous stage:
-COPY --from=build /venv venv
+COPY --from=build /venv /venv
+
+# make the virtual environment active
+ENV VIRTUAL_ENV /venv
+ENV PATH /venv/bin:$PATH
 
 # Copy in the rest of the code
 COPY config config
@@ -65,12 +69,12 @@ COPY ./*.sh ./
 # set the python path
 ENV PYTHONPATH=/home/nru/ADRAS
 
-# set the log dir. use this for debugging if desired
-ENV LOG_PATH=/data/logs
-
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
 ENV PKLDIR=/data/pkldir
 
+# set the log dir. use this for debugging if desired
+ENV LOG_PATH=/data/logs
+
 # example command line
-# source venv/bin/activate && bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
+# compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
