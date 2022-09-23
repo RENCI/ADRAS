@@ -2,7 +2,7 @@ name: adras-hazus
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.9
   - python-wget=3.2
   - rasterio=1.3.2
   - geopandas=0.11.1
@@ -19,4 +19,3 @@ dependencies:
   - contextily=1.2.0
   - Pillow=9.2.0
   - gdal=3.5.2
-
