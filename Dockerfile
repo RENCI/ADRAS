@@ -5,11 +5,11 @@
 FROM continuumio/miniconda3 as build
 
 # get some credit
-LABEL maintainer="bblanton@renci.org"
+LABEL maintainer="Brian Blanton (bblanton@renci.org)"
 
 # extra metadata
-LABEL version="1.0"
-LABEL description="ADRAS/HAZUS image with Dockerfile."
+LABEL version="v0.0.1"
+LABEL description="ADRAS/HAZUS Dockerfile."
 
 # update conda
 RUN conda update conda
