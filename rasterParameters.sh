@@ -41,17 +41,17 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-#  "hsofs" ) 
-#    upperleft_lo=-74.25
-#    upperleft_la=41.35
-#    # resolution in m
-#    res=100  
-#    nx=2100
-#    ny=900
-#    theta=15
-#    target_crs="epsg:32619"
-#    adcirc_crs="epsg:4326"
-#  ;;
+  "hsofs" ) 
+    # 2022, al09, GA coast
+    upperleft_lo=-81.1
+    upperleft_la=33.3     
+    theta=-20
+    res=50  # resolution in meters
+    nx=2000
+    ny=7000
+    target_crs="epsg:32619"
+    adcirc_crs="epsg:4326"
+  ;;
 
   "uriv18" | "uriv18_cl" | "NAC2014" ) 
     upperleft_lo=-72.7
@@ -66,15 +66,38 @@ rasterParameters () {
   ;;
 
   "ec95d") 
-    upperleft_lo=-72.7
-    upperleft_la=41.75
-    # resolution in m
-    res=500  
-    nx=400
-    ny=180
-    theta=15
-    target_crs="epsg:32619"
+    upperleft_lo=-85.25       
+    upperleft_la=29.5
+    theta=-50
+    res=50  # resolution in meters
+    nx=9000
+    ny=3000
+    #upperleft_lo=-85.2       
+    #upperleft_la=29.939
+    #theta=-40
+    #res=50  # resolution in meters
+    #nx=7000
+    #ny=3000
+    target_crs="epsg:32614"
     adcirc_crs="epsg:4326"
+
+    #upperleft_lo=-82.9
+    #upperleft_la=30.5
+    #res=5000  # resolution in m
+    #nx=20
+    #ny=100
+    #theta=27.5
+    #target_crs="epsg:32614"
+    #adcirc_crs="epsg:4326"
+    #upperleft_lo=-72.7
+    #upperleft_la=41.75
+    ## resolution in m
+    #res=500  
+    #nx=400
+    #ny=180
+    #theta=15
+    #target_crs="epsg:32619"
+    #adcirc_crs="epsg:4326"
     #upperleft_lo=-99
     #upperleft_la=32
     #res=1000  # resolution in m
@@ -96,18 +119,24 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "EGOMv20b")
-    upperleft_lo=-82.9
-    upperleft_la=30.5
-    res=50  # resolution in m
-    nx=2000
-    ny=10000
-    theta=27.5
+  EGOM*)
+    upperleft_lo=-86.25       
+    upperleft_la=28.4
+    theta=-60
+    res=50  # resolution in meters
+    nx=15000
+    ny=3000
+    #upperleft_lo=-85.25       
+    #upperleft_la=29.5
+    #theta=-50
+    #res=50  # resolution in meters
+    #nx=9000
+    #ny=3000
     target_crs="epsg:32614"
     adcirc_crs="epsg:4326"
   ;;
 
-  "NGOMv19b")
+  NGOM*)
     upperleft_lo=-91.5
     upperleft_la=31.0
     res=50  # resolution in m

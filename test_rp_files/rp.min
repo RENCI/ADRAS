@@ -1,7 +1,7 @@
 adcirc.gridname : NGOM_RT_v20a_chk
 coupling.waves : on
 currentdate : 180920 
-currentcyclea: 18
+currentcycle: 18
 forcing.nwp.year : 2018
 forcing.tropicalcyclone.stormnumber : 14
 advisory : 00 

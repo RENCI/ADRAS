@@ -1,0 +1,15 @@
+adcirc.gridname : EGOM-RT_v20b_chk
+coupling.waves : on
+currentdate : 220925 
+currentcycle: 12
+forcing.nwp.year : 2022
+forcing.tropicalcyclone.stormnumber : 09
+advisory : 15 
+forcing.tropicalcyclone.year : 2022
+operator :  mvb
+asgs.enstorm : coampsforecast
+forcing.tropicalcyclone.vortexmodel : COAMPS
+hpc.hpcenvshort : uga
+Maximum Water Surface Elevation File Name : maxele.63.nc
+Maximum Significant Wave Height File Name : swan_HS_max.63.nc
+downloadurl : https://apsviz-thredds-dev.apps.renci.org/thredds/fileServer/2022/coamps_09L/2022092612/EGOM-RT_v20b_chk/Sapelo2/EGOM_coamps_09L/coampsforecast

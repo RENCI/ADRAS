@@ -6,10 +6,11 @@
 # SPDX-License-Identifier: LicenseRef-RENCI
 # SPDX-License-Identifier: MIT
 
-PYTHONPATH="${PYTHONPATH:-$HOME/GitHub/RENCI/ADRAS}"
+PYTHONPATH=$HOME/GitHub/RENCI/ADRAS
 export PYTHONPATH
 echo $PYTHONPATH
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/bblanton/lib
+#export LD_LIBRARY_PATH=/home/bblanton/lib:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/home/bblanton/lib
 echo $LD_LIBRARY_PATH
 
 #url='https://fortytwo.cct.lsu.edu:443/thredds/fileServer/2020/laura/28/LA_v20a-WithUpperAtch_chk/qbc.loni.org/LAv20a_al132020_jgf/nhcConsensus/'
@@ -32,6 +33,7 @@ echo $LD_LIBRARY_PATH
 #url='http://tds.renci.org/thredds/fileServer/2021/nam/2021060918/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast/'
 url='http://tds.renci.org/thredds/fileServer/2022/nam/2022042606/ec95d/bridges2.psc.edu/ec95d-nam-bob-psc/namforecast'
 #url='http://tds.renci.org/thredds/fileServer/2022/nam/2022050912/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-nam-sb/namforecast'
+#url='https://apsviz-thredds-dev.apps.renci.org/thredds/fileServer/2022/al09/13/EGOM-RT_v20b_chk/Sapelo2/EGOM_nhc_09L/ofcl'
 
 bash compute_geotiffs.sh  $url
 
