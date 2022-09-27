@@ -69,9 +69,9 @@ rasterParameters () {
     upperleft_lo=-85.25       
     upperleft_la=29.5
     theta=-50
-    res=50  # resolution in meters
-    nx=9000
-    ny=3000
+    res=500  # resolution in meters
+    nx=900
+    ny=300
     #upperleft_lo=-85.2       
     #upperleft_la=29.939
     #theta=-40
