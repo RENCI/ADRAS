@@ -52,7 +52,7 @@ rasterParameters () {
     # 2022, al09, WFL coast
     upperleft_lo=-83.5
     upperleft_la=27.0
-    theta=0  # -60
+    theta=-60
     res=50  # resolution in meters
     nx=6000
     ny=1500
@@ -78,9 +78,9 @@ rasterParameters () {
     upperleft_la=33.3     
     #theta=-25
     theta=0
-    res=50  # resolution in meters
-    nx=3000
-    ny=9000
+    res=500  # resolution in meters
+    nx=300
+    ny=900
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;
@@ -97,11 +97,11 @@ rasterParameters () {
   ;;
 
   EGOM*)
-    upperleft_lo=-84.45
-    upperleft_la=27.25
+    upperleft_lo=-83.5
+    upperleft_la=27.0
     theta=-60
     res=50  # resolution in meters
-    nx=9000
+    nx=6000
     ny=1500
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
