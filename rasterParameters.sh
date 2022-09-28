@@ -43,13 +43,20 @@ rasterParameters () {
 
   "hsofs" ) 
     # 2022, al09, GA coast
-    upperleft_lo=-81.1
-    upperleft_la=33.3     
-    theta=-20
+    #upperleft_lo=-81.4
+    #upperleft_la=34.3
+    #theta=-25
+    #res=50  # resolution in meters
+    #nx=3000
+    #ny=11200
+    # 2022, al09, WFL coast
+    upperleft_lo=-83.5
+    upperleft_la=27.0
+    theta=0  # -60
     res=50  # resolution in meters
-    nx=2000
-    ny=7000
-    target_crs="epsg:32619"
+    nx=6000
+    ny=1500
+    target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;
 
@@ -66,46 +73,16 @@ rasterParameters () {
   ;;
 
   "ec95d") 
-    upperleft_lo=-85.25       
-    upperleft_la=29.5
-    theta=-50
-    res=500  # resolution in meters
-    nx=900
-    ny=300
-    #upperleft_lo=-85.2       
-    #upperleft_la=29.939
-    #theta=-40
-    #res=50  # resolution in meters
-    #nx=7000
-    #ny=3000
-    target_crs="epsg:32614"
+    # 2022, al09, GA coast
+    upperleft_lo=-81.8
+    upperleft_la=33.3     
+    #theta=-25
+    theta=0
+    res=50  # resolution in meters
+    nx=3000
+    ny=9000
+    target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
-
-    #upperleft_lo=-82.9
-    #upperleft_la=30.5
-    #res=5000  # resolution in m
-    #nx=20
-    #ny=100
-    #theta=27.5
-    #target_crs="epsg:32614"
-    #adcirc_crs="epsg:4326"
-    #upperleft_lo=-72.7
-    #upperleft_la=41.75
-    ## resolution in m
-    #res=500  
-    #nx=400
-    #ny=180
-    #theta=15
-    #target_crs="epsg:32619"
-    #adcirc_crs="epsg:4326"
-    #upperleft_lo=-99
-    #upperleft_la=32
-    #res=1000  # resolution in m
-    #nx=2000
-    #ny=2000
-    #theta=0
-    #target_crs="epsg:6346"
-    #adcirc_crs="epsg:4326"
   ;;
 
   "LA_v20a-WithUpperAtch_chk" | "LAv20a" | "LAv21a" | "hsofs" )
@@ -120,19 +97,13 @@ rasterParameters () {
   ;;
 
   EGOM*)
-    upperleft_lo=-86.25       
-    upperleft_la=28.4
+    upperleft_lo=-84.45
+    upperleft_la=27.25
     theta=-60
     res=50  # resolution in meters
-    nx=15000
-    ny=3000
-    #upperleft_lo=-85.25       
-    #upperleft_la=29.5
-    #theta=-50
-    #res=50  # resolution in meters
-    #nx=9000
-    #ny=3000
-    target_crs="epsg:32614"
+    nx=9000
+    ny=1500
+    target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;
 
@@ -143,19 +114,8 @@ rasterParameters () {
     nx=10000
     ny=6000
     theta=0
-    target_crs="epsg:32614"
+    target_crs="epsg:32616"
     adcirc_crs="epsg:4326"
-  ;;
-
-  "NGOM_RT_v20a_chk")
-    upperleft_lo=-85.8
-    upperleft_la=30.75
-    res=25  # resolution in m
-    nx=10000
-    ny=6000
-	theta=0
-    target_crs='epsg:32614'
-    adcirc_crs='epsg:4326'
   ;;
 
   "TX2008")
