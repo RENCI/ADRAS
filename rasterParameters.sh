@@ -43,19 +43,19 @@ rasterParameters () {
 
   "hsofs" ) 
     # 2022, al09, GA coast
-    #upperleft_lo=-81.4
-    #upperleft_la=34.3
-    #theta=-25
-    #res=50  # resolution in meters
-    #nx=3000
-    #ny=11200
+    upperleft_lo=-81.4
+    upperleft_la=34.3
+    theta=-25
+    res=100  # resolution in meters
+    nx=1500
+    ny=5600
     # 2022, al09, WFL coast
-    upperleft_lo=-83.5
-    upperleft_la=27.0
-    theta=-60
-    res=50  # resolution in meters
-    nx=6000
-    ny=1500
+    #upperleft_lo=-83.5
+    #upperleft_la=27.0
+    #theta=-60
+    #res=50  # resolution in meters
+    #nx=6000
+    #ny=1500
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;
