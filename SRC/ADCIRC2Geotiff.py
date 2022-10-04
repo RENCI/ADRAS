@@ -250,15 +250,17 @@ def utm2WGS84(infile):
     #Read UTM data and reproject it to new projection
     with rio.open(infile) as dataset:
         new_transform, width, height = calculate_default_transform(
-            dataset.crs, new_crs, 
-            dataset.width, dataset.height, *dataset.bounds)
+            dataset.crs, new_crs, dataset.width, dataset.height, *dataset.bounds)
         profile = dataset.profile.copy()
         profile.update(
             crs=new_crs,
-            transform=new_transform
+            transform=new_transform,
+            nodata=np.nan,
+            height=height,
+            width=width
         )
         imgdata = np.array([dataset.read(i) for i in dataset.indexes])
-        new_imgdata = np.zeros(imgdata.shape)
+        new_imgdata = np.zeros((1,height,width), np.float64)
     
         reproject(source=imgdata,
                   destination=new_imgdata,
