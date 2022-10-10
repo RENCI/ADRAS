@@ -69,12 +69,5 @@ COPY ./*.sh ./
 # set the python path
 ENV PYTHONPATH=/home/nru/ADRAS
 
-# set the location of the output directory
-ENV RUNTIMEDIR=/data
-ENV PKLDIR=/data/pkldir
-
-# set the log dir. use this for debugging if desired
-ENV LOG_PATH=/data/logs
-
 # example command line
 # bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
