@@ -70,4 +70,4 @@ COPY ./*.sh ./
 ENV PYTHONPATH=/home/nru/ADRAS
 
 # example command line
-# bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl
+# bash compute_geotiffs.sh http://tds.renci.org:80/thredds/fileServer/2022/al07/24/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-al07-sb55.01/nhcOfcl /data/265-24-nhcOfc/hazus/pkldir
