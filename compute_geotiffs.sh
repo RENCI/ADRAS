@@ -26,7 +26,11 @@ keynames=( "Maximum Water Surface Elevation File Name"
            "Maximum Significant Wave Height File Name" ) 
 
 RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
-
+Usage ()
+{
+    echo "Usage: compute_geotiff.sh --downloadurl <url to run.properties> --datadir <path to output dir>"
+    exit 2
+}
 # must be v4+ of bash
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
 	echo "Must run in Bash version >=4.\n"
@@ -35,6 +39,54 @@ fi
 
 printf "******************************************\n"  > $log
 echo "Compute_geotiffs started at " `date -u`  >> $log
+
+if [ "$#" -eq 0 ] ; then
+        echo "Must have at least --downloadurl <url> on command line"
+        exit 0
+fi
+
+GETOPT='getopt'
+if [[ `uname` == "Darwin" ]]; then
+        #GETOPT='/usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt'
+        GETOPT='/usr/local/opt/gnu-getopt/bin/getopt'
+fi
+
+OPTS=$($GETOPT -o v -n compute_geotiff --long downloadurl:,datadir:,verbose -n 'parse-options' -- "$@")
+VALID_ARGUMENTS=$?
+if [ "$VALID_ARGUMENTS" != "0" ]; then
+    #echo "here"
+    Usage
+fi
+
+eval set -- "$OPTS"
+
+if [ $? != "0" ]
+then
+    echo "Failed to parse commandline."
+    exit 1
+fi
+downloadurl="run.properties"
+datadir="./"
+VERBOSE=false
+
+while true ; do
+    case "$1" in
+        -v | --verbose)  VERBOSE=true;    shift;;
+        --downloadurl)   downloadurl=$2;  shift 2;;
+        --datadir)       datadir=$2;      shift 2;;
+        --) shift; break;;
+        *) echo "Unexpected option: $1 - this should not happen."
+           Usage ;;
+    esac
+done
+
+if [ "$VERBOSE" == true ]; then
+        echo VERBOSE = $VERBOSE
+        echo runproperties = $downloadurl
+        echo Datadir = $datadir
+        echo "Remaining Args:"
+        echo $@
+fi
 
 PKLDIR="${PKLDIR:-$HOME/GitHub/RENCI/ADRAS/pklfiles}"
 if [ ! -d ${PKLDIR} ] ; then
@@ -59,41 +111,41 @@ export PYTHON=$PYTHON
 
 if [[ $DEBUG == "true" ]] ; then
     echo "\$PYTHONPATH =" $PYTHONPATH  | tee -a $log
-#    echo "\$GDAL_DATA  =" $GDAL_DATA   | tee -a $log
     echo "\$PYTHON     =" $PYTHON  | tee -a $log
     echo "\$PKLDIR     =" $PKLDIR  | tee -a $log
 fi
 
 RASTERPARAMFILE="./rasterParameters.sh"
-$WGET $RasterPartameterFileUrl  -O realtimeparams.sh # 2> /dev/null
-echo $?
-if [ $? -eq 0 ] ; then
-	RASTERPARAMFILE="./realtimeparams.sh"
-else
-    echo "$WGET of rasterParameters failed. Using defaults."
-fi
+#$WGET $RasterPartameterFileUrl  -O realtimeparams.sh # 2> /dev/null
+#echo $?
+#if [ $? -eq 0 ] ; then
+#	RASTERPARAMFILE="./realtimeparams.sh"
+#else
+#    echo "$WGET of rasterParameters failed. Using defaults."
+#fi
 source $RASTERPARAMFILE
 source ./properties.sh
 
 ## main starts here
 
 # parse the commandline argument
-if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
-    echo "Need only path to run properties file or downloadurl file on command line" | tee -a $log
-    echo "Compute_geotiffs terminated at " `date -u`  | tee -a $log
-    echo "\n\******************************************\n"  | tee -a $log
-    exit 1
-fi
-RUNPROPERTIES=$1
+#if [[ $# -lt 1 ]] || [[  $# -gt 1 ]] ; then
+#    echo "Need only path to run properties file or downloadurl file on command line" | tee -a $log
+#    echo "Compute_geotiffs terminated at " `date -u`  | tee -a $log
+#    echo "\n\******************************************\n"  | tee -a $log
+#    exit 1
+#fi
+RUNPROPERTIES=$downloadurl
 if [ ${RUNPROPERTIES:0:4} == "http" ] ; then
     # assume its a download url, without run.properties at the end
-    $WGET "$RUNPROPERTIES/run.properties" --output-document="run.properties" 2> /dev/null
+    $WGET "$RUNPROPERTIES/run.properties" --output-document="run.properties" # 2> /dev/null
     if [ $? -ne 0 ] ; then
         echo "$WGET of $RUNPROPERTIES/run.properties failed." | tee -a $log
         exit 1
     fi
     RUNPROPERTIES="run.properties"
 fi
+echo "\$RUNPROPERTIES=$RUNPROPERTIES" 
 
 # load run.properties file into associative array
 if [[ $DEBUG == "true" ]] ; then
@@ -223,7 +275,7 @@ for v in ${varnames[@]}; do
     url=$urlbase/"$filename"
     com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff.py --pkldir=$PKLDIR --varname=$v \
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
-         --rasterconfigfile=$RFILE"
+         --rasterconfigfile=$RFILE --datadir=$datadir"
     echo $com | tee -a $log
     $com  | tee -a $log 2>&1
 

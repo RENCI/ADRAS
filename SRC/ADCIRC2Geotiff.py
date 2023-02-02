@@ -471,13 +471,14 @@ def main(args):
     writePNG = False
     filename = '.'.join([varname,'tiff']) if args.filename is None else args.filename
     png_filename = '.'.join([varname,'png']) if args.png_filename is None else args.png_filename
+#    filename = args.datadir + '/' + filename
+#    png_filename = args.datadir + '/' + png_filename
 
     if not checkInputVar(varname):
         logger.error(f"Variable {varname} not yet supported.")
 
     main_yaml_file =  os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml') 
     main_config = utilities.load_config(yaml_file=main_yaml_file)
-    #print(main_config)
 
     raster_yaml_file = args.rconfigfile
     raster_config = utilities.load_config(yaml_file=raster_yaml_file)
@@ -487,7 +488,6 @@ def main(args):
         main_config['S3']['SEND2AWS'] = False
 
     if main_config['S3']['SEND2AWS']:
-
         from utilities.s3_utilities import utilities as s3_utilities
         s3_resource = s3_utilities.s3
         logger.debug(s3_resource)
@@ -498,6 +498,7 @@ def main(args):
 
         logger.info(f"Bucket={thisBucket}")
         logger.info(f"Region={thisRegion}")
+        
         if not s3_utilities.bucket_exists(thisBucket):
             res = s3_utilities.create_bucket(thisRegion, thisBucket)
             logger.info(f"Bucket {thisBucket} created.")
@@ -590,13 +591,14 @@ def main(args):
     logger.info(f"Min/Max in interpolated grid: {ivmin:6.2f}, {ivmax:6.2f}")
 
     logger.info(f"Outputting tiff file {filename}")
-    write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename)
+    write_tif(rasdict, zi_lin, targetgrid, targetepsg,  args.datadir + '/' + filename)
 
     llpngfilename = filename.replace('tiff','png')
     logger.info(f"Create color png map {llpngfilename}")
-    createColorMap(filename,ivmin,ivmax)
+    #createColorMap(args.datadir + '/' + filename,ivmin,ivmax)
 
     if main_config['S3']['SEND2AWS']:
+        os.chdir(args.datadir)
         resp = s3_utilities.upload(thisBucket, args.s3path, filename)
         msg=f"Upload to s3://{thisBucket}/{args.s3path}/{args.filename} "
         if not resp:
@@ -604,12 +606,13 @@ def main(args):
         else:
             logger.info(f"{msg} succeeded.")
 
-        resp = s3_utilities.upload(thisBucket, args.s3path, llpngfilename)
-        msg=f"Upload to s3://{thisBucket}/{args.s3path}/{llpngfilename} "
-        if not resp:
-            logger.info(f"{msg} failed.")
-        else:
-            logger.info(f"{msg} succeeded.")
+        if os.path.exists(llpngfilename):
+            resp = s3_utilities.upload(thisBucket, args.s3path, llpngfilename)
+            msg=f"Upload to s3://{thisBucket}/{args.s3path}/{llpngfilename} "
+            if not resp:
+                logger.info(f"{msg} failed.")
+            else:
+                logger.info(f"{msg} succeeded.")
 
     #if png_filename is not None:
     #    logger.info('Outputting png file {}'.format(png_filename))
@@ -623,6 +626,8 @@ if __name__ == '__main__':
     import sys
     parser = ArgumentParser()
 
+    parser.add_argument('--datadir', action='store', dest='datadir', default='./',
+                        help='String: Directory for image output file. ')
     parser.add_argument('--pkldir', action='store', dest='pkldir', default='pklfiles',
                         help='String: Directory of pre-computed grid pkl files.')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default=None,

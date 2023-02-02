@@ -19,7 +19,7 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  "NCSC_SAB_v1.23" | "ncsc123" )
+  NCSC* | ncsc* )
     upperleft_lo=-82.45
     upperleft_la=33.5
     res=500  # resolution in m
@@ -96,7 +96,7 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  EGOM*)
+  EGOM* | egom* )
     upperleft_lo=-83.5
     upperleft_la=27.0
     theta=-60
@@ -107,7 +107,7 @@ rasterParameters () {
     adcirc_crs="epsg:4326"
   ;;
 
-  NGOM*)
+  NGOM* | ngom* )
     upperleft_lo=-91.5
     upperleft_la=31.0
     res=50  # resolution in m

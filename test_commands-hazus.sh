@@ -34,6 +34,8 @@ echo $LD_LIBRARY_PATH
 url='http://tds.renci.org/thredds/fileServer/2022/nam/2022042606/ec95d/bridges2.psc.edu/ec95d-nam-bob-psc/namforecast'
 #url='http://tds.renci.org/thredds/fileServer/2022/nam/2022050912/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-nam-sb/namforecast'
 #url='https://apsviz-thredds-dev.apps.renci.org/thredds/fileServer/2022/al09/13/EGOM-RT_v20b_chk/Sapelo2/EGOM_nhc_09L/ofcl'
+#url='http://tds.renci.org/thredds/fileServer/2022/al09/18/hsofs/hatteras.renci.org/hsofs-al09-bob/nhcOfcl'
+
 
 bash compute_geotiffs.sh  $url
 

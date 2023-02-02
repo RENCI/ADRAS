@@ -269,12 +269,12 @@ post.opendap.renci_tds.linkablehosts : ( null )
 post.opendap.renci_tds.copyablehosts : ( hatteras )
 post.opendap.renci_tds.opendaphost : renci_tds
 post.opendap.renci_tds.threddshost : tds.renci.org
-post.opendap.renci_tds.downloadprefix : http://tds.renci.org:8080/thredds/fileServer
-post.opendap.renci_tds.catalogprefix : http://tds.renci.org:8080/thredds/catalog
+post.opendap.renci_tds.downloadprefix : http://tds.renci.org/thredds/fileServer
+post.opendap.renci_tds.catalogprefix : http://tds.renci.org/thredds/catalog
 post.opendap.renci_tds.opendapbasedir : /projects/ncfs/opendap/data
 notification.opendap.email.opendapmailserver : aws
 post.opendap.renci_tds.opendapsuffix : 2021060918/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast
 post.opendap.renci_tds.opendapdir : /projects/ncfs/opendap/data/2021/nam/2021060918/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast
-downloadurl : http://tds.renci.org:8080/thredds/fileServer/2021/nam/2021060918/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast
+downloadurl : http://tds.renci.org/thredds/fileServer/2021/nam/2021060918/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast
 post.opendap.renci_tds.opendappostmethod : copy
 post.opendap.renci_tds.subject : ADCIRC POSTED for 2021060918 0 hatteras.renci.org.ec95d-nam-bob-rptest 
