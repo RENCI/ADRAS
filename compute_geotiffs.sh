@@ -18,12 +18,13 @@ DEBUG=true
 log="log.hazus"
 WGET='wget --no-check-certificate '
 
-filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" )
-varnames=( "zeta_max" "inun_max" "swan_HS_max" )  
-prodvarnames=( "wlmax" "inunmax" "hsignmax" )
+filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" "maxwvel.63.nc" )
+varnames=( "zeta_max" "inun_max" "swan_HS_max" "wind_max")  
+prodvarnames=( "wlmax" "inunmax" "hsignmax" "windspdmax")
 keynames=( "Maximum Water Surface Elevation File Name"
            "Maximum Water Surface Elevation File Name"
-           "Maximum Significant Wave Height File Name" ) 
+           "Maximum Significant Wave Height File Name" 
+           "Maximum Wind Speed File Name") 
 
 RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
 Usage ()

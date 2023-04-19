@@ -60,7 +60,7 @@ global logger
 
 
 def checkInputVar(v):
-    allowable_vars = ['zeta_max', 'vel_max', 'inun_max']
+    allowable_vars = ['zeta_max', 'vel_max', 'inun_max' 'wind_max']
     if v.lower() in allowable_vars: return True
     return False
 
@@ -83,10 +83,10 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
 
     targetgrid = {'Latitude':  [config[gridname]['upperleft_la']],
                   'Longitude': [config[gridname]['upperleft_lo']],
-                  'res':       config[gridname]['res'],
-                  'nx':        config[gridname]['nx'],
-                  'ny':        config[gridname]['ny'],
-                  'theta':     config[gridname]['theta']}
+                  'res':        config[gridname]['res'],
+                  'nx':         config[gridname]['nx'],
+                  'ny':         config[gridname]['ny'],
+                  'theta':      config[gridname]['theta']}
 
     return targetgrid, config[gridname]['adcirc_crs'], config[gridname]['target_crs']
 
