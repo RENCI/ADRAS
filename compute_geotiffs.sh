@@ -19,8 +19,8 @@ log="log.hazus"
 WGET='wget --no-check-certificate '
 
 filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" "maxwvel.63.nc" )
-varnames=( "zeta_max" "inun_max" "swan_HS_max" "wind_max")  
-prodvarnames=( "wlmax" "inunmax" "hsignmax" "windspdmax")
+varnames=( "inun_max" ) #  "zeta_max" "swan_HS_max" "wind_max")  
+prodvarnames=( "inunmax" "wlmax" "hsignmax" "windspdmax")
 keynames=( "Maximum Water Surface Elevation File Name"
            "Maximum Water Surface Elevation File Name"
            "Maximum Significant Wave Height File Name" 
@@ -264,6 +264,9 @@ for v in ${varnames[@]}; do
         echo "rp key for $filename DNE.  Skipping..."
         continue
     fi
+	if [[ x"$prodvarname" == "xwindspdmax" ]] ; then
+		other="mps"
+	fi
 	if [[ x"$prodvarname" == "xinunmax" ]] ; then
 		other="ftMSL"
 	fi
@@ -277,7 +280,9 @@ for v in ${varnames[@]}; do
     com="$PYTHON $ADRASHOME/SRC/ADCIRC2Geotiff.py --pkldir=$PKLDIR --varname=$v \
          --gridname=$gridname --url=$url --tif_filename=$productId --s3path=$s3path \
          --rasterconfigfile=$RFILE --datadir=$datadir"
+
     echo $com | tee -a $log
+
     $com  | tee -a $log 2>&1
 
     printf "\n" | tee -a $log

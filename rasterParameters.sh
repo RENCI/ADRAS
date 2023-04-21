@@ -100,9 +100,12 @@ rasterParameters () {
     upperleft_lo=-83.5
     upperleft_la=27.0
     theta=-60
-    res=50  # resolution in meters
-    nx=6000
-    ny=1500
+    #res=50  # resolution in meters
+    #nx=6000
+    #ny=1500
+    res=500  # resolution in meters
+    nx=600
+    ny=150
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;

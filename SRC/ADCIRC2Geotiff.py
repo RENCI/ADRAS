@@ -457,6 +457,7 @@ def main(args):
     """
     Entry point for computing geotiff files from an ADCIRC netCDF file
     """
+
     log_level: int = int(os.getenv('LOG_LEVEL', logging.DEBUG))
     log_path: str = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
     if not os.path.exists(log_path): os.mkdir(log_path)
@@ -476,6 +477,7 @@ def main(args):
 
     if not checkInputVar(varname):
         logger.error(f"Variable {varname} not yet supported.")
+        sys.exit(1)
 
     main_yaml_file =  os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml') 
     main_config = utilities.load_config(yaml_file=main_yaml_file)
