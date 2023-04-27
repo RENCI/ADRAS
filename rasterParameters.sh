@@ -20,12 +20,18 @@ rasterParameters () {
   ;;
 
   NCSC* | ncsc* )
+    #upperleft_lo=-82.45
+    #upperleft_la=33.5
+    #res=500  # resolution in m
+    #nx=1260
+    #ny=90
+    #theta=40
     upperleft_lo=-82.45
     upperleft_la=33.5
-    res=500  # resolution in m
-    nx=1260
-    ny=90
-    theta=40
+    res=5000  # resolution in m
+    nx=126
+    ny=9
+    theta=0
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;
@@ -100,12 +106,12 @@ rasterParameters () {
     upperleft_lo=-83.5
     upperleft_la=27.0
     theta=-60
-    #res=50  # resolution in meters
-    #nx=6000
-    #ny=1500
-    res=500  # resolution in meters
-    nx=600
-    ny=150
+    res=50  # resolution in meters
+    nx=6000
+    ny=1500
+    #res=500  # resolution in meters
+    #nx=600
+    #ny=150
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;

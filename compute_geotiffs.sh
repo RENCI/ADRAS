@@ -18,20 +18,23 @@ DEBUG=true
 log="log.hazus"
 WGET='wget --no-check-certificate '
 
-filenames=( "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" "maxwvel.63.nc" )
-varnames=( "inun_max" ) #  "zeta_max" "swan_HS_max" "wind_max")  
-prodvarnames=( "inunmax" "wlmax" "hsignmax" "windspdmax")
+filenames=( "maxele.63.nc" "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" "maxwvel.63.nc" )
+varnames=( "depth" "inun_max" "zeta_max" "swan_HS_max" "wind_max")  
+prodvarnames=( "depth" "inunmax" "wlmax" "hsignmax" "windspdmax")
 keynames=( "Maximum Water Surface Elevation File Name"
+           "Maximum Water Surface Elevation File Name"
            "Maximum Water Surface Elevation File Name"
            "Maximum Significant Wave Height File Name" 
            "Maximum Wind Speed File Name") 
 
 RasterPartameterFileUrl='https://raw.githubusercontent.com/RENCI/ADRAS/main/rasterParameters.sh'
+
 Usage ()
 {
     echo "Usage: compute_geotiff.sh --downloadurl <url to run.properties> --datadir <path to output dir>"
     exit 2
 }
+
 # must be v4+ of bash
 if [  ${BASH_VERSION:0:1} -lt 4 ] ; then
 	echo "Must run in Bash version >=4.\n"

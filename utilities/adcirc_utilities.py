@@ -29,7 +29,8 @@ def get_adcirc_grid(nc):
 def get_adcirc_slice(nc, v, it=None):
     advardict = {}
     var = nc.variables[v]
-    if re.search('max', v):
+#    if re.search('max', v):
+    if len(var.dimensions) == 1 :
         var_d = var[:]  # the actual data
     else:
         var_d = var[it, :]  # the actual data

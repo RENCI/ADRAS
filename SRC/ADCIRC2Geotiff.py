@@ -58,9 +58,9 @@ global logger
 # define url functionality 
 # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
 
+allowable_vars = ['depth', 'zeta_max', 'vel_max', 'inun_max', 'wind_max']
 
 def checkInputVar(v):
-    allowable_vars = ['zeta_max', 'vel_max', 'inun_max' 'wind_max']
     if v.lower() in allowable_vars: return True
     return False
 
@@ -104,6 +104,7 @@ def computeInundation(advardict, agdict):
     d = np.where(d > 0, 0, d)
     # conv m to ft
     inun = (v + d) * 3.2808
+    #return inun
     # return inundation depth masked out over "open water" (>1)
     return np.where(agdict['depth'] > 1, np.nan, inun)
 
