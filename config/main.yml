@@ -11,11 +11,12 @@ DEFAULT: &default
   GRAPHICS: true
 
 S3:
-  SEND2AWS: true
+  SEND2AWS: false
   BucketName: 'adcirc'
   RegionName: 'us-east-2' 
 
 VARFILEMAP: &varfilemap
+  depth: 'maxele.63.nc'
   zeta_max: 'maxele.63.nc'
   vel_max: 'maxvel.63.nc'
   inun_max: 'maxinundepth.63.nc'

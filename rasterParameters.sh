@@ -26,13 +26,14 @@ rasterParameters () {
     #nx=1260
     #ny=90
     #theta=40
-    upperleft_lo=-82.45
-    upperleft_la=33.5
-    res=5000  # resolution in m
-    nx=126
-    ny=9
+    upperleft_lo=-81
+    upperleft_la=32
+    res="1"  # resolution in m
+    nx=10
+    ny=10
     theta=0
-    target_crs="epsg:32617"
+    #target_crs="epsg:32617"
+    target_crs="epsg:4326"
     adcirc_crs="epsg:4326"
   ;;
 
@@ -80,14 +81,14 @@ rasterParameters () {
 
   "ec95d") 
     # 2022, al09, GA coast
-    upperleft_lo=-81.8
-    upperleft_la=33.3     
-    #theta=-25
+    upperleft_lo=-80.5
+    upperleft_la=32    
+    res=1  # resolution in m
+    nx=10
+    ny=10
     theta=0
-    res=500  # resolution in meters
-    nx=300
-    ny=900
-    target_crs="epsg:32617"
+    #target_crs="epsg:32617"
+    target_crs="epsg:4326"
     adcirc_crs="epsg:4326"
   ;;
 

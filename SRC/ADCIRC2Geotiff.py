@@ -66,7 +66,7 @@ def checkInputVar(v):
 
 def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirname(__file__), '..', 'config', 'main.yml')):
     """
-    fetch geotiff grid parameters from the yaml
+    get geotiff grid parameters from the yaml
     Returns:
         targetgrid dict
         target crs 
@@ -151,11 +151,19 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     gdf_target = gdf_target.to_crs({'init': targetepsg})
 
     # compute spatial grid for raster 
-    upperleft_x = gdf_target['geometry'][0].x
-    upperleft_y = gdf_target['geometry'][0].y
-    x = np.arange(upperleft_x, upperleft_x+targetgrid['nx']*targetgrid['res'], targetgrid['res'])
-    y = np.arange(upperleft_y, upperleft_y-targetgrid['ny']*targetgrid['res'], -targetgrid['res'])
+    center_x = gdf_target['geometry'][0].x
+    center_y = gdf_target['geometry'][0].y
+    #x = np.arange(upperleft_x, upperleft_x+targetgrid['nx']*targetgrid['res'], targetgrid['res'])
+    #y = np.arange(upperleft_y, upperleft_y-targetgrid['ny']*targetgrid['res'], -targetgrid['res'])
+
+    dlx=targetgrid['nx']*targetgrid['res']/2
+    dly=targetgrid['ny']*targetgrid['res']/2
+    logger.info(f'dlx={dlx}, dly={dly}')
+    x = np.arange(center_x-dlx, center_x+dlx, targetgrid['res'])
+    y = np.arange(center_y+dly, center_y-dly, -targetgrid['res'])
     xx, yy = np.meshgrid(x, y)
+    print(x)
+    print(y)
 
     # get centroid coords
     xm = (x[1:] + x[:-1]) / 2
@@ -163,10 +171,8 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     xxm, yym = np.meshgrid(xm, ym)
 
     # move to origin and columnate
-    mean_x=np.mean(xm)
-    mean_y=np.mean(ym)
-    xx0=(xxm-mean_x).ravel()
-    yy0=(yym-mean_y).ravel()
+    xx0=(xxm-center_x).ravel()
+    yy0=(yym-center_y).ravel()
 
     # apply rotation
     ang=targetgrid['theta']*np.pi/180
@@ -176,20 +182,20 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     Zr=r.dot(Z)
 
     # translate back to origin
-    xxmr=Zr[0,:].reshape(xxm.shape)+mean_x
-    yymr=Zr[1,:].reshape(yym.shape)+mean_y
+    xxmr=Zr[0,:].reshape(xxm.shape)+center_x
+    yymr=Zr[1,:].reshape(yym.shape)+center_y
 
-    logger.debug(f"upperleft_x before = {upperleft_x}")
-    upperleft_x=xxmr[0,0] - targetgrid['res']
-    logger.debug(f"upperleft_x after = {upperleft_x}")
+    #logger.debug(f"upperleft_x before = {upperleft_x}")
+    #upperleft_x=xxmr[0,0] - targetgrid['res']
+    #logger.debug(f"upperleft_x after = {upperleft_x}")
 
-    upperleft_y=yymr[0,0] - targetgrid['res']
+    #upperleft_y=yymr[0,0] - targetgrid['res']
 
-    logger.debug('compute_mesh: ul lon {}. ul lat {}'.format(upperleft_x, upperleft_y))
-    logger.debug('compute_mesh: lr lon {}. lr lat {}'.format(xxmr[-1,-1], yymr[-1,-1] ))
+    #logger.debug('compute_mesh: ul lon {}. ul lat {}'.format(upperleft_x, upperleft_y))
+    #logger.debug('compute_mesh: lr lon {}. lr lat {}'.format(xxmr[-1,-1], yymr[-1,-1] ))
     
-    return {'uplx': upperleft_x,
-            'uply': upperleft_y,
+    return {'uplx': center_x,
+            'uply': center_y,
             'x':    x,
             'y':    y,
             'xx':   xx,
@@ -236,7 +242,7 @@ def write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
         logger.error(f"Failed to write TIF file to {filename}")
     dst.close()
 
-def fetchGridName(nc):
+def getGridName(nc):
     """
     Return a (hopefully) unique grid name, based on the content of
     the netCDF file global attribute agrid, stripping out all spec chars
@@ -510,7 +516,7 @@ def main(args):
 
     url = args.url
 
-    rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'])
+    rootdir = utilities.getBasedir(main_config['DEFAULT']['RDIR'])
 
     targetgrid, adcircepsg, targetepsg = get_interpolation_target(gridname=args.gridname, yamlfile=raster_yaml_file)
 
@@ -522,7 +528,7 @@ def main(args):
     # get grid name for building geopandas (gdf) filename
     gridname = args.gridname
     if not args.gridname:
-        gridname = fetchGridName(nc)
+        gridname = getGridName(nc)
     logger.info(f"ADCIRC grid name is {gridname}")
 
     # Construct or load existing geopandas object on the input URL grid
@@ -532,6 +538,7 @@ def main(args):
     # Need to check in specified dirs
     f = os.path.join(args.pkldir, gdf_pklfile)
     gdf = construct_geopandas(agdict, targetepsg)
+
 #    if not os.path.exists(f):
 #        gdf = construct_geopandas(agdict, targetepsg)
 #        if not os.path.exists(args.pkldir): os.makedirs(args.pkldir)
@@ -560,6 +567,8 @@ def main(args):
     
     # extract the raster pixel points
     xxm, yym = rasdict['xxm'], rasdict['yym']
+    print(xxm)
+    print(yym)
 
     orig_filename = filename
     orig_png_filename = png_filename
