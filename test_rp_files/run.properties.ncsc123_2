@@ -1,0 +1,14 @@
+adcirc.gridname : NCSC_SAB_v1.23.grd
+coupling.waves : on
+currentdate : 230427
+currentcycle: 00 
+forcing.nwp.year : 2023
+forcing.metclass : synoptic
+pdvisory : 2023042700
+operator :  sb
+asgs.enstorm : namforecast
+hpc.hpcenvshort : hatteras
+Maximum Water Surface Elevation File Name : maxele.63.nc
+#Maximum Significant Wave Height File Name : swan_HS_max.63.nc
+downloadurl : http://tds.renci.org:80/thredds/fileServer/2023/nam/2023042700/NCSC_SAB_v1.23/hatteras.renci.org/ncsc123-nam-sb55.01/namforecast
+
