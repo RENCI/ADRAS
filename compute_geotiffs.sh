@@ -19,7 +19,7 @@ log="log.hazus"
 WGET='wget --no-check-certificate '
 
 filenames=( "maxele.63.nc" "maxele.63.nc" "maxele.63.nc" "swan_HS_max.63.nc" "maxwvel.63.nc" )
-varnames=( "depth" ) # "inun_max" "zeta_max" "swan_HS_max" "wind_max")  
+varnames=( "depth" "inun_max" "zeta_max" ) # "swan_HS_max" "wind_max")  
 prodvarnames=( "depth" "inunmax" "wlmax" "hsignmax" "windspdmax")
 keynames=( "Maximum Water Surface Elevation File Name"
            "Maximum Water Surface Elevation File Name"
