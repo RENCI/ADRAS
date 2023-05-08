@@ -71,7 +71,7 @@ then
 fi
 downloadurl="run.properties"
 datadir="./"
-VERBOSE=false
+VERBOSE=true
 
 while true ; do
     case "$1" in
@@ -152,10 +152,10 @@ fi
 echo "\$RUNPROPERTIES=$RUNPROPERTIES" 
 
 # load run.properties file into associative array
-if [[ $DEBUG == "true" ]] ; then
-   echo "\$RUNPROPERTIES=$RUNPROPERTIES" | tee -a $log
-   echo "Loading properties."  | tee -a $log
-fi
+#if [[ $DEBUG == "true" ]] ; then
+#   echo "\$RUNPROPERTIES=$RUNPROPERTIES" | tee -a $log
+#   echo "Loading properties."  | tee -a $log
+#fi
 declare -A properties
 loadProperties $RUNPROPERTIES
 
@@ -232,8 +232,8 @@ RFILE="raster.yml"
 rm -rf $RFILE
 echo "REGRID: &regrid" > $RFILE
 echo "  $gridname:" >> $RFILE
-echo "    upperleft_lo: $upperleft_lo" >> $RFILE
-echo "    upperleft_la: $upperleft_la" >> $RFILE
+echo "    center_lo: $center_lo" >> $RFILE
+echo "    center_la: $center_la" >> $RFILE
 echo "    res: $res  # resolution in m" >> $RFILE
 echo "    theta: $theta"                >> $RFILE
 echo "    nx: $nx"                      >> $RFILE
@@ -241,8 +241,8 @@ echo "    ny: $ny"                      >> $RFILE
 echo "    target_crs: '$target_crs'"    >> $RFILE
 echo "    adcirc_crs: '$adcirc_crs'"    >> $RFILE
 
-ullo=`echo "scale=0; $upperleft_lo*10/1" | bc`
-ulla=`echo "scale=0; $upperleft_la*10/1" | bc`
+ullo=`echo "scale=0; $center_lo*10/1" | bc`
+ulla=`echo "scale=0; $center_la*10/1" | bc`
 rasterparams=`printf "%d.%06d.%06d.%d.%d" $res $ullo $ulla $nx $ny`
 
 if [[ $DEBUG == "true" ]] ; then

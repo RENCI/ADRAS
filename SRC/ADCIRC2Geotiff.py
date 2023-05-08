@@ -81,8 +81,8 @@ def get_interpolation_target(gridname=None, yamlfile=os.path.join(os.path.dirnam
     if gridname not in config.keys():
         gridname = 'DEFAULT'
 
-    targetgrid = {'Latitude':  [config[gridname]['upperleft_la']],
-                  'Longitude': [config[gridname]['upperleft_lo']],
+    targetgrid = {'Center_Latitude':  [config[gridname]['center_la']],
+                  'Center_Longitude': [config[gridname]['center_lo']],
                   'res':        config[gridname]['res'],
                   'nx':         config[gridname]['nx'],
                   'ny':         config[gridname]['ny'],
@@ -141,7 +141,7 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     """
     df_target = pd.DataFrame(data=targetgrid)
     gdf_target = gpd.GeoDataFrame(
-        df_target, geometry=gpd.points_from_xy(df_target.Longitude, df_target.Latitude))
+        df_target, geometry=gpd.points_from_xy(df_target.Center_Longitude, df_target.Center_Latitude))
 
     # init projection is LonLat, WGS84
     gdf_target.crs = {'init': adcircepsg}
@@ -153,26 +153,21 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     # compute spatial grid for raster 
     center_x = gdf_target['geometry'][0].x
     center_y = gdf_target['geometry'][0].y
-    #x = np.arange(upperleft_x, upperleft_x+targetgrid['nx']*targetgrid['res'], targetgrid['res'])
-    #y = np.arange(upperleft_y, upperleft_y-targetgrid['ny']*targetgrid['res'], -targetgrid['res'])
 
-    dlx=targetgrid['nx']*targetgrid['res']/2
-    dly=targetgrid['ny']*targetgrid['res']/2
-    logger.info(f'dlx={dlx}, dly={dly}')
-    x = np.arange(center_x-dlx, center_x+dlx, targetgrid['res'])
-    y = np.arange(center_y+dly, center_y-dly, -targetgrid['res'])
+    # length in x,y
+    lxo2=targetgrid['nx']*targetgrid['res']/2
+    lyo2=targetgrid['ny']*targetgrid['res']/2
+    logger.info(f'lxo2={lxo2}, lyo2={lyo2}')
+    logger.info(f'cenx={center_x}, ceny={center_y}')
+
+    # compute mesh of cell centers
+    x = np.arange(-np.floor(targetgrid['nx'] / 2),  np.floor(targetgrid['nx'] / 2) + 1)     * targetgrid['res'] + center_x
+    y = np.arange( np.floor(targetgrid['ny'] / 2), -np.floor(targetgrid['ny'] / 2) - 1, -1) * targetgrid['res'] + center_y
     xx, yy = np.meshgrid(x, y)
-    print(x)
-    print(y)
-
-    # get centroid coords
-    xm = (x[1:] + x[:-1]) / 2
-    ym = (y[1:] + y[:-1]) / 2
-    xxm, yym = np.meshgrid(xm, ym)
 
     # move to origin and columnate
-    xx0=(xxm-center_x).ravel()
-    yy0=(yym-center_y).ravel()
+    xx0=(xx-center_x).ravel()
+    yy0=(yy-center_y).ravel()
 
     # apply rotation
     ang=targetgrid['theta']*np.pi/180
@@ -182,20 +177,13 @@ def compute_geotiff_grid(targetgrid, adcircepsg, targetepsg):
     Zr=r.dot(Z)
 
     # translate back to origin
-    xxmr=Zr[0,:].reshape(xxm.shape)+center_x
-    yymr=Zr[1,:].reshape(yym.shape)+center_y
+    xxmr=Zr[0,:].reshape(xx.shape)+center_x
+    yymr=Zr[1,:].reshape(yy.shape)+center_y
 
-    #logger.debug(f"upperleft_x before = {upperleft_x}")
-    #upperleft_x=xxmr[0,0] - targetgrid['res']
-    #logger.debug(f"upperleft_x after = {upperleft_x}")
-
-    #upperleft_y=yymr[0,0] - targetgrid['res']
-
-    #logger.debug('compute_mesh: ul lon {}. ul lat {}'.format(upperleft_x, upperleft_y))
-    #logger.debug('compute_mesh: lr lon {}. lr lat {}'.format(xxmr[-1,-1], yymr[-1,-1] ))
-    
-    return {'uplx': center_x,
-            'uply': center_y,
+    return {'uplx': xxmr[0,0],
+            'uply': yymr[0,0],
+            'cenx': center_x,
+            'ceny': center_y,
             'x':    x,
             'y':    y,
             'xx':   xx,
@@ -211,23 +199,21 @@ def write_tif(rasdict, zi_lin, targetgrid, targetepsg, filename='test.tif'):
     Construct the new TIF file and store it to disk in filename
     """
     xm0, ym0 = rasdict['uplx'], rasdict['uply']
-    #transform = from_origin(xm0 - targetgrid['res'] / 2, ym0 + targetgrid['res'] / 2, targetgrid['res'], targetgrid['res'])
-    
+
+    # specify transform
     a=targetgrid['res']
     b=0
-    c=xm0
+    c=xm0 - a/2
     d=0
     e=-targetgrid['res']
-    f=ym0
-
+    f=ym0 + a/2
     aft=Affine(a,b,c,b,e,f)*Affine.rotation(-targetgrid['theta'])
-
     logger.debug(f"TIF transform {aft}")
 
     md = {'crs':       targetepsg,
           'driver':    'GTiff',
-          'height':    targetgrid['ny'],
-          'width':     targetgrid['nx'],
+          'height':    zi_lin.shape[0],
+          'width':     zi_lin.shape[1],
           'count':     1,
           'dtype':     zi_lin.dtype,
           'nodata':    -99999,
@@ -301,7 +287,6 @@ def get_discrete_cmap(vmin, vmax, bar):
     else:
         print('You need to specify if color map is for a color bar True, or not False.')
 
-    #print(hexlist)
     cmp = mpl.colors.ListedColormap(hexlist)
 
     return cmp
@@ -567,8 +552,6 @@ def main(args):
     
     # extract the raster pixel points
     xxm, yym = rasdict['xxm'], rasdict['yym']
-    print(xxm)
-    print(yym)
 
     orig_filename = filename
     orig_png_filename = png_filename
@@ -597,6 +580,9 @@ def main(args):
 
     # interpolate data to raster pixels
     zi_lin = interp_lin(xxm, yym)
+    temp = pd.DataFrame({'lon': xxm.ravel(), 'lat': yym.ravel(), 'val': zi_lin.ravel(), })
+    temp.to_csv('test.csv')
+
     #zi_lin = np.where(np.isnan(zi_lin) , 0, zi_lin)
     ivmin = np.nanmin(zi_lin)
     ivmax = np.nanmax(zi_lin)

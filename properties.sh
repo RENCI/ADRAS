@@ -12,8 +12,8 @@ loadProperties () {
 propertiesFile=$1
 
    while read -r keyValuePair ; do 
-      colonPosition=`expr index "$keyValuePair" ":" `
-	  #colonPosition=`echo "$keyValuePair" | sed -n "s/[":"].*//p" | wc -c`
+      #colonPosition=`expr index "$keyValuePair" ":" `
+	  colonPosition=`echo "$keyValuePair" | sed -n "s/[":"].*//p" | wc -c`
       key=${keyValuePair:0:$colonPosition-1}
       value=${keyValuePair:$colonPosition}
       # remove leading whitespace characters from key
