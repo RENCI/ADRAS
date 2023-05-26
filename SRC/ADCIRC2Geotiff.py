@@ -522,7 +522,7 @@ def main(args):
 
     # Need to check in specified dirs
     f = os.path.join(args.pkldir, gdf_pklfile)
-    gdf = construct_geopandas(agdict, targetepsg)
+#    gdf = construct_geopandas(agdict, targetepsg)
 
     if not os.path.exists(f):
         gdf = construct_geopandas(agdict, targetepsg)
