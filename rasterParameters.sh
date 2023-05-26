@@ -103,8 +103,8 @@ rasterParameters () {
   ;;
 
   EGOM* | egom* )
-    center_lo=-81.975
-    center_la=26.68
+    center_lo=-81.885
+    center_la=26.40
     theta=-60
     res=5  # resolution in meters
     nx=6000
