@@ -103,12 +103,12 @@ rasterParameters () {
   ;;
 
   EGOM* | egom* )
-    center_lo=-81.97
-    center_la=26.467
+    center_lo=-83.05 
+    center_la=29.15
     theta=-60
-    res=50  # resolution in meters
-    nx=4000
-    ny=1500
+    res=500  # resolution in meters
+    nx=400
+    ny=150
     target_crs="epsg:32617"
     adcirc_crs="epsg:4326"
   ;;

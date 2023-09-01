@@ -46,8 +46,9 @@ fi
 
 GETOPT='getopt'
 if [[ `uname` == "Darwin" ]]; then
-        #GETOPT='/usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt'
-        GETOPT='/usr/local/opt/gnu-getopt/bin/getopt'
+    #GETOPT='/usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt'
+    #GETOPT='/usr/local/opt/gnu-getopt/bin/getopt'
+	GETOPT='/opt/homebrew/opt/gnu-getopt/bin/getopt'
 fi
 
 OPTS=$($GETOPT -o v -n compute_geotiff --long downloadurl:,datadir:,verbose -n 'parse-options' -- "$@")
@@ -157,7 +158,7 @@ loadProperties $RUNPROPERTIES
 #####################################################
 # get needed parameters out of run.properties array #
 #####################################################
-gridname=${properties['adcirc.gridname']}
+gridname=${properties['suite.adcirc.gridname']}
 case $gridname in
    "ec95d")
       gridnameabbrev=$gridname
@@ -166,52 +167,56 @@ case $gridname in
       gridnameabbrev="ncv999wr"
    ;;
   *)
-    gridnameabbrev=$(echo $gridname | sed 's/_//g' | sed 's/\.//g')
+    gridnameabbrev=$(echo $gridname | sed "s/[^[:alnum:]]//g")
   ;;
 esac
 
-if [[ ! -z ${properties[forcing.metclass]} ]] ; then
-   weathertype=${properties[forcing.metclass]}
-else
-   weathertype='tropical'
-fi
-temp=${properties['coupling.waves']} 
-wavemodel=$([ "$temp" == 'on' ] && echo "swan" || echo "None")
+weathertype=${properties['forcing.metclass']}
+
+temp=${properties['forcing.waves']} 
+wavemodel=$([ "x$temp" == 'x1' ] && echo "swan" || echo "None")
+year=2023
 if [ $weathertype == "synoptic" ] ; then
-    datetime="20"${properties['currentdate']} 
-    adv=${properties['currentcycle']}"Z"
-    year=${properties['forcing.nwp.year']}
+    datetime="20"${properties['time.currentdate']} 
+    adv=${properties['time.currentcycle']}"Z"
+    #adv=${properties['forcing.stormnumber']}
+    year=${datetime:0:4}
 else
-    datetime="al"${properties['forcing.tropicalcyclone.stormnumber']} 
+    datetime="al"${properties['forcing.stormnumber']} 
     adv=${properties['advisory']}
     year=${properties['forcing.tropicalcyclone.year']}
 fi
-temp=${properties['operator']}
-operator=$([ "$temp" == 'ncfs-dev' ] && echo "bob" || echo "$temp")
-ensname=${properties['asgs.enstorm']}
+projcode=${properties['suite.project_code']}
+#operator=$([ "$temp" == 'ncfs-dev' ] && echo "bob" || echo "$temp")
+operator=${properties['suite.physical_location']}
+ensname=${properties['forcing.ensemblename']}
 
 if [[ ! -z ${properties[forcing.nwp.model]} ]] ; then
    windmodel=${properties[forcing.nwp.model]}
 else
    windmodel=${properties[forcing.tropicalcyclone.vortexmodel]}
 fi
+windmodel="coamps"
 
-machine=${properties['hpc.hpcenvshort']}
-url=${properties['downloadurl']}
+machine=${properties['suite.cluster_name']}
+machine=$(echo $machine | sed "s/[^[:alnum:]]//g")
+url=${properties['output.downloadurl']}
 urlbase=${url/fileServer/dodsC}
 
 if [[ $DEBUG == "true" ]] ; then
 	printf "\n"                             | tee -a $log
+	echo "machine        = $machine"        | tee -a $log
+	echo "operator       = $operator"       | tee -a $log
 	echo "gridname       = $gridname"       | tee -a $log
 	echo "gridnameabbrev = $gridnameabbrev" | tee -a $log
 	echo "wavemodel      = $wavemodel"      | tee -a $log
 	echo "datetime       = $datetime"       | tee -a $log
+	echo "year           = $year"           | tee -a $log
 	echo "adv            = $adv"            | tee -a $log
-	echo "operator       = $operator"       | tee -a $log
+	echo "project_code   = $projcode"       | tee -a $log
 	echo "ensname        = $ensname"        | tee -a $log
 	echo "weathertype    = $weathertype"    | tee -a $log
 	echo "windmodel      = $windmodel"      | tee -a $log
-	echo "machine        = $machine"        | tee -a $log
 	echo "urlbase        = $urlbase"        | tee -a $log
 fi
 
